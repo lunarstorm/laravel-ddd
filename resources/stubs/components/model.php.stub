@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ rootNamespace }}\Shared\Models\BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class {{ class }} extends BaseModel
+{
+    use SoftDeletes;
+
+    protected $casts = [];
+
+    public static function metadata()
+    {
+        return [
+            // ...
+        ];
+    }
+}
