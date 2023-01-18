@@ -36,7 +36,7 @@ class MakeModel extends DomainGeneratorCommand
     {
         $baseModel = config('ddd.base_model');
 
-        if (!class_exists($baseModel)) {
+        if (! class_exists($baseModel)) {
             $this->warn("Base model {$baseModel} doesn't exist, generating...");
         }
 

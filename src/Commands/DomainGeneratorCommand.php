@@ -19,7 +19,7 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
         return $rootNamespace.'\\'.$domain.'\\'.$this->getRelativeDomainNamespace();
     }
 
-    abstract protected function getRelativeDomainNamespace():string;
+    abstract protected function getRelativeDomainNamespace(): string;
 
     protected function getNameInput()
     {
