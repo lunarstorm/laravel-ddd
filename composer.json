@@ -4,7 +4,9 @@
     "keywords": [
         "lunarstorm",
         "laravel",
-        "laravel-ddd"
+        "laravel-ddd",
+        "ddd",
+        "domain driven design"
     ],
     "homepage": "https://github.com/lunarstorm/laravel-ddd",
     "license": "MIT",

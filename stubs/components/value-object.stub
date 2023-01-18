@@ -1,0 +1,12 @@
+<?php
+
+namespace {{ namespace }};
+
+class {{ class }}
+{
+    public function __construct(
+        public readonly $value = null
+    ) {
+        // ...
+    }
+}

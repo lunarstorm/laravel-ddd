@@ -1,33 +1,82 @@
 <?php
 
 return [
-    'paths' => [
-        // Path to the Application layer
-        'application' => 'app/Modules',
 
-        // Path to the Domain layer
+    /*
+    |--------------------------------------------------------------------------
+    | Paths
+    |--------------------------------------------------------------------------
+    |
+    | This value contains paths to the layers of the application in the context
+    | of domain driven design, relative to the base folder of the application.
+    |
+    */
+
+    'paths' => [
+        //
+        // Path to the Domain layer.
+        //
         'domains' => 'src/Domains',
 
-        // Relative paths of domain objects
-        'dataTransferObjects' => 'Data',
-        'models' => 'Models',
-        'viewModels' => 'ViewModels',
-
-        // Relative paths of domain-application objects
-        'requests' => 'Requests',
-        'resources' => 'Resources',
-        'controllers' => 'Controllers',
+        //
+        // Path to modules in the application layer. This is an extension of
+        // domain driven design applied to the application layer, bundling
+        // application objects (Controllers, Resources, Requests) in a
+        // more modular fashion.
+        //
+        // e.g., app/Modules/Invoicing/Controllers/*
+        //       app/Modules/Invoicing/Resources/*
+        //       app/Modules/Invoicing/Requests/*
+        //
+        'modules' => 'app/Modules',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Domain Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of generated domain
+    | objects relative to the domain namespace of which the object
+    | belongs to.
+    |
+    | e.g., Domains/Invoicing/Models/*
+    |       Domains/Invoicing/Data/*
+    |       Domains/Invoicing/ViewModels/*
+    |       Domains/Invoicing/ValueObjects/*
+    |
+    */
     'namespaces' => [
-        // Domain Layer
+        //
+        // Models
+        //
         'models' => 'Models',
+
+        //
+        // Data Transfer Objects (DTO)
+        //
         'data_transfer_objects' => 'Data',
+
+        //
+        // View Models
+        //
         'view_models' => 'ViewModels',
 
-        // Application Layer
-        'requests' => 'Requests',
-        'resources' => 'Resources',
-        'controllers' => 'Controllers',
-    ]
+        //
+        // Value Objects
+        //
+        'value_objects' => 'ValueObjects',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Model
+    |--------------------------------------------------------------------------
+    |
+    | This base model which generated domain models should extend. By default,
+    | generated domain models will extend `Domains\Shared\Models\BaseModel`,
+    | and if it doesn't already exist
+    |
+    */
+    'base_model' => 'Domains\Shared\Models\BaseModel',
 ];
