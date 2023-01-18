@@ -26,4 +26,9 @@ class MakeBaseModel extends DomainGeneratorCommand
     {
         return $this->resolveStubPath('components/base-model.php.stub');
     }
+
+    protected function getRelativeDomainNamespace(): string
+    {
+        return config('ddd.namespaces.models', 'Models');
+    }
 }
