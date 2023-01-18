@@ -52,7 +52,7 @@ it('can generate domain models in custom domain folder', function () {
     expect(file_exists($expectedModelPath))->toBeTrue();
 });
 
-it('normalizes generated model name to pascal case', function ($given, $normalized) {
+it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 
     $expectedModelPath = base_path(implode('/', [

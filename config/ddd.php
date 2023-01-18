@@ -75,8 +75,21 @@ return [
     |
     | This base model which generated domain models should extend. By default,
     | generated domain models will extend `Domains\Shared\Models\BaseModel`,
-    | and if it doesn't already exist
+    | and will be created if it doesn't already exist.
     |
     */
     'base_model' => 'Domains\Shared\Models\BaseModel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base DTO
+    |--------------------------------------------------------------------------
+    |
+    | This base model which generated data transfer objects should extend. By
+    | default, generated DTOs will extend `Spatie\LaravelData\Data` from
+    | Spatie's Laravel-data package, a highly recommended data object
+    | package to work with.
+    |
+    */
+    'base_dto' => 'Spatie\LaravelData\Data',
 ];

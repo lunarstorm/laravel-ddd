@@ -22,13 +22,13 @@ class MakeValueObject extends DomainGeneratorCommand
 
     protected $type = 'ValueObject';
 
+    protected function getRelativeDomainNamespace(): string
+    {
+        return config('ddd.namespaces.value_objects', 'ValueObjects');
+    }
+
     protected function getStub()
     {
         return $this->resolveStubPath('components/value-object.php.stub');
-    }
-
-    public function handle()
-    {
-        parent::handle();
     }
 }

@@ -16,8 +16,10 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     {
         $domain = $this->getDomain();
 
-        return $rootNamespace.'\\'.$domain.'\\Models';
+        return $rootNamespace.'\\'.$domain.'\\'.$this->getRelativeDomainNamespace();
     }
+
+    abstract protected function getRelativeDomainNamespace():string;
 
     protected function getNameInput()
     {

@@ -27,9 +27,19 @@ class MakeModel extends DomainGeneratorCommand
         return $this->resolveStubPath('components/model.php.stub');
     }
 
+    protected function getRelativeDomainNamespace(): string
+    {
+        return config('ddd.namespaces.models', 'Models');
+    }
+
     public function handle()
     {
+        $baseModel = config('ddd.base_model');
+
+        if (!class_exists($baseModel)) {
+            $this->warn("Base model {$baseModel} doesn't exist, generating...");
+        }
+
         parent::handle();
-        // $this->alreadyExists();
     }
 }

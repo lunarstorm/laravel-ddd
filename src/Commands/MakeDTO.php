@@ -24,13 +24,11 @@ class MakeDTO extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return resource_path('/stubs/ddd/dto.php.stub');
+        return $this->resolveStubPath('components/dto.php.stub');
     }
 
-    public function handle()
+    protected function getRelativeDomainNamespace(): string
     {
-        parent::handle();
-
-        // $this->alreadyExists();
+        return config('ddd.namespaces.data_transfer_objects', 'Data');
     }
 }
