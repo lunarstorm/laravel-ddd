@@ -2,10 +2,10 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Lunarstorm\LaravelDDD\Commands\LaravelDDDCommand;
 use Lunarstorm\LaravelDDD\Commands\MakeModel;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class LaravelDDDServiceProvider extends PackageServiceProvider
 {

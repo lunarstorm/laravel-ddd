@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -13,7 +12,7 @@ it('can generate domain models', function () {
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.models'),
-        "{$modelName}.php"
+        "{$modelName}.php",
     ]));
 
     if (file_exists($expectedModelPath)) {
@@ -39,7 +38,7 @@ it('can generate domain models in custom domain folder', function () {
         $customDomainPath,
         $domain,
         config('ddd.namespaces.models'),
-        "{$modelName}.php"
+        "{$modelName}.php",
     ]));
 
     if (file_exists($expectedModelPath)) {
@@ -60,7 +59,7 @@ it('normalizes generated model name to pascal case', function ($given, $normaliz
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.models'),
-        "{$normalized}.php"
+        "{$normalized}.php",
     ]));
 
     Artisan::call("ddd:make:model {$domain} {$given}");
@@ -82,7 +81,7 @@ it('generates the base model if needed', function () {
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.models'),
-        "{$modelName}.php"
+        "{$modelName}.php",
     ]));
 
     if (file_exists($expectedModelPath)) {

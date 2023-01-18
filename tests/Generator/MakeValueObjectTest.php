@@ -12,7 +12,7 @@ it('can generate value objects', function () {
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.value_objects'),
-        "{$valueObjectName}.php"
+        "{$valueObjectName}.php",
     ]));
 
     if (file_exists($expectedPath)) {
@@ -38,7 +38,7 @@ it('can generate domain models in custom domain folder', function () {
         $customDomainPath,
         $domain,
         config('ddd.namespaces.value_objects'),
-        "{$valueObjectName}.php"
+        "{$valueObjectName}.php",
     ]));
 
     if (file_exists($expectedPath)) {
@@ -59,7 +59,7 @@ it('normalizes generated model name to pascal case', function ($given, $normaliz
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.value_objects'),
-        "{$normalized}.php"
+        "{$normalized}.php",
     ]));
 
     Artisan::call("ddd:make:model {$domain} {$given}");
@@ -81,7 +81,7 @@ it('generates the base model if needed', function () {
         config('ddd.paths.domains'),
         $domain,
         config('ddd.namespaces.value_objects'),
-        "{$valueObjectName}.php"
+        "{$valueObjectName}.php",
     ]));
 
     if (file_exists($expectedPath)) {

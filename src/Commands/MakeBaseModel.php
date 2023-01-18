@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\GeneratorCommand;
 
 class MakeBaseModel extends DomainGeneratorCommand
 {
