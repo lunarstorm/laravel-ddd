@@ -24,7 +24,7 @@ class MakeModel extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('components/model.php.stub');
+        return $this->resolveStubPath('model.php.stub');
     }
 
     protected function getRelativeDomainNamespace(): string

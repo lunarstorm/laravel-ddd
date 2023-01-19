@@ -9,17 +9,30 @@ class InstallCommand extends Command
 {
     public $signature = 'ddd:install {--composer=global : Absolute path to the Composer binary which should be used}';
 
-    public $description = 'Initializes the configured Domain path in composer.json.';
+    protected $description = 'Install and initialize Laravel-DDD';
 
     public function handle(): int
     {
-        $this->initializeComposerAutoload();
-        $this->composerReload();
+        $this->comment('Publishing config...');
+        $this->call('vendor:publish', [
+            '--tag' => 'ddd-config',
+        ]);
+
+        $this->comment('Ensuring domain path is registered in composer.json...');
+        $this->registerDomainAutoload();
+
+        if ($this->confirm('Would you like to publish stubs?')) {
+            $this->comment('Publishing stubs...');
+
+            $this->callSilently('vendor:publish', [
+                '--tag' => 'ddd-stubs',
+            ]);
+        }
 
         return self::SUCCESS;
     }
 
-    public function initializeComposerAutoload()
+    public function registerDomainAutoload()
     {
         $domainPath = config('ddd.paths.domains');
 
@@ -30,6 +43,8 @@ class InstallCommand extends Command
         data_fill($data, ['autoload', 'psr-4', 'Domains\\'], $domainPath);
 
         file_put_contents($composerFile, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
+        $this->composerReload();
     }
 
     protected function composerReload()
