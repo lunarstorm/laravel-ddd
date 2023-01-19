@@ -4,7 +4,9 @@
     "keywords": [
         "lunarstorm",
         "laravel",
-        "laravel-ddd"
+        "laravel-ddd",
+        "ddd",
+        "domain driven design"
     ],
     "homepage": "https://github.com/lunarstorm/laravel-ddd",
     "license": "MIT",
@@ -24,7 +26,7 @@
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^6.0",
         "nunomaduro/larastan": "^2.0.1",
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^7.19",
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.1",
         "phpstan/extension-installer": "^1.1",

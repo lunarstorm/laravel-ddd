@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\GeneratorCommand;
 
 class MakeModel extends DomainGeneratorCommand
 {
@@ -25,13 +24,36 @@ class MakeModel extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return resource_path('/stubs/ddd/model.php.stub');
+        return $this->resolveStubPath('components/model.php.stub');
+    }
+
+    protected function getRelativeDomainNamespace(): string
+    {
+        return config('ddd.namespaces.models', 'Models');
     }
 
     public function handle()
     {
-        parent::handle();
+        $baseModel = config('ddd.base_model');
 
-        // $this->alreadyExists();
+        $parts = str($baseModel)->explode('\\');
+        $baseModelName = $parts->last();
+        $baseModelPath = $this->getPath($baseModel);
+        // dd($baseModelPath);
+
+        if (! file_exists($baseModelPath)) {
+            $this->warn("Base model {$baseModel} doesn't exist, generating...");
+
+            // dd($baseModel, $baseModelName);
+
+            $this->call(MakeBaseModel::class, [
+                'domain' => 'Shared',
+                'name' => $baseModelName,
+            ]);
+        } else {
+            // dd('file exists', $baseModelPath);
+        }
+
+        parent::handle();
     }
 }

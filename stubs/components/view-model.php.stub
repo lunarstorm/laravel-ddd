@@ -1,0 +1,11 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ baseViewModel }};
+
+class {{ class }} extends ViewModel
+{
+    public function __construct() {
+    }
+}
