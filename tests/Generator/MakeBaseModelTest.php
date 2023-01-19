@@ -1,12 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
 
 it('can generate domain base model', function () {
-    $modelName = "BaseModel";
-    $domain = "Shared";
+    $modelName = 'BaseModel';
+    $domain = 'Shared';
 
     $expectedModelPath = base_path(implode('/', [
         config('ddd.paths.domains'),
@@ -26,13 +24,13 @@ it('can generate domain base model', function () {
     expect(file_exists($expectedModelPath))->toBeTrue();
 
     $expectedClass = implode('\\', [
-        "Domains",
+        'Domains',
         $domain,
         config('ddd.namespaces.models'),
         $modelName,
     ]);
 
-    Artisan::call("ddd:install");
+    Artisan::call('ddd:install');
 
     new $expectedClass();
 });
