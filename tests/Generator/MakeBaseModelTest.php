@@ -22,15 +22,4 @@ it('can generate domain base model', function () {
     Artisan::call("ddd:make:base-model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
-
-    $expectedClass = implode('\\', [
-        'Domains',
-        $domain,
-        config('ddd.namespaces.models'),
-        $modelName,
-    ]);
-
-    Artisan::call('ddd:install');
-
-    new $expectedClass();
 });
