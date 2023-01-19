@@ -7,12 +7,19 @@
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:make:model`, plus a few more.
 
+> :warning: **Disclaimer: While this package is publicly available for installation, it is subject to frequent design changes as it evolves towards a stable v1.0 release. It is currently being tested and fine tuned within Lunarstorm's client projects.
+
 ## Installation
 
 You can install the package via composer:
 
 ```bash
 composer require lunarstorm/laravel-ddd
+```
+
+You may then initialize the package using the `ddd:install` artisan command. This command will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
+```bash
+php artisan ddd:install
 ```
 
 ## Usage
@@ -37,10 +44,10 @@ Examples:
 php artisan ddd:make:model Invoicing LineItem # Domains/Invoicing/Models/LineItem
 php artisan ddd:make:dto Invoicing LinePayload # Domains/Invoicing/Data/LinePayload
 php artisan ddd:make:value Shared Percentage # Domains/Shared/ValueObjects/Percentage
-php artisan ddd:make:value Invoicing ShowInvoiceViewModel # Domains/Invoicing/ViewModels/ShowInvoiceViewModel
+php artisan ddd:make:view-model Invoicing ShowInvoiceViewModel # Domains/Invoicing/ViewModels/ShowInvoiceViewModel
 ```
 
-This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs:
+This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
 
 ```bash
 php artisan vendor:publish --tag="ddd-config"
