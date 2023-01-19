@@ -90,7 +90,12 @@ it('generates the base model if needed', function () {
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
+    $baseModel = config('ddd.base_model');
+    expect(class_exists($baseModel))->toBeFalse();
+
     Artisan::call("ddd:make:model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
+
+    new $baseModel();
 });

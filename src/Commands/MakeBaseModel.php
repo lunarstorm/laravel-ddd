@@ -11,7 +11,7 @@ class MakeBaseModel extends DomainGeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'ddd:make:base-model {domain} {name}';
+    protected $signature = 'ddd:make:base-model {domain} {name=BaseModel}';
 
     /**
      * The console command description.

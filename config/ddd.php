@@ -75,7 +75,7 @@ return [
     |
     | This base model which generated domain models should extend. By default,
     | generated domain models will extend `Domains\Shared\Models\BaseModel`,
-    | and will be created if it doesn't already exist.
+    | which will be created if it doesn't already exist.
     |
     */
     'base_model' => 'Domains\Shared\Models\BaseModel',
