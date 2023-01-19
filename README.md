@@ -28,12 +28,16 @@ php artisan ddd:make:dto {domain} {name}
 
 # Generates a value object
 php artisan ddd:make:value {domain} {name}
+
+# Generates a view model
+php artisan ddd:make:view-model {domain} {name}
 ```
 Examples:
 ```bash
 php artisan ddd:make:model Invoicing LineItem # Domains/Invoicing/Models/LineItem
 php artisan ddd:make:dto Invoicing LinePayload # Domains/Invoicing/Data/LinePayload
 php artisan ddd:make:value Shared Percentage # Domains/Shared/ValueObjects/Percentage
+php artisan ddd:make:value Invoicing ShowInvoiceViewModel # Domains/Invoicing/ViewModels/ShowInvoiceViewModel
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file:
