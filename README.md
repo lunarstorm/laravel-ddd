@@ -40,10 +40,11 @@ php artisan ddd:make:value Shared Percentage # Domains/Shared/ValueObjects/Perce
 php artisan ddd:make:value Invoicing ShowInvoiceViewModel # Domains/Invoicing/ViewModels/ShowInvoiceViewModel
 ```
 
-This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file:
+This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs:
 
 ```bash
-php artisan vendor:publish --tag="laravel-ddd-config"
+php artisan vendor:publish --tag="ddd-config"
+php artisan vendor:publish --tag="ddd-stubs"
 ```
 
 This is the content of the published config file (`ddd.php`):
