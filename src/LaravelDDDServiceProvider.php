@@ -22,7 +22,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-ddd')
-            ->hasConfigFile('ddd')
+            ->hasConfigFile()
             ->hasCommands([
                 InstallCommand::class,
                 MakeModel::class,
@@ -31,5 +31,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 MakeValueObject::class,
                 MakeViewModel::class,
             ]);
+    }
+
+    public function packageBooted()
+    {
+        $this->publishes([
+            $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
+        ], "{$this->package->shortName()}-stubs");
     }
 }

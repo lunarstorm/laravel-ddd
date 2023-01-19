@@ -29,6 +29,6 @@ class MakeViewModel extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('components/view-model.php.stub');
+        return $this->resolveStubPath('view-model.php.stub');
     }
 }

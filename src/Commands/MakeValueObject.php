@@ -29,6 +29,6 @@ class MakeValueObject extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('components/value-object.php.stub');
+        return $this->resolveStubPath('value-object.php.stub');
     }
 }
