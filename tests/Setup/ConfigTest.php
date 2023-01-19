@@ -11,8 +11,8 @@ it('can publish config file', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("vendor:publish", [
-        '--tag' => 'ddd-config'
+    Artisan::call('vendor:publish', [
+        '--tag' => 'ddd-config',
     ]);
 
     expect(file_exists($expectedPath))->toBeTrue();
