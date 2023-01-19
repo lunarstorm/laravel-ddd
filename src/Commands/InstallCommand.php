@@ -4,7 +4,6 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
-use Spatie\LaravelPackageTools\Commands\InstallCommand as BaseInstaller;
 
 class InstallCommand extends Command
 {
@@ -15,8 +14,8 @@ class InstallCommand extends Command
     public function handle(): int
     {
         $this->comment('Publishing config...');
-        $this->call("vendor:publish", [
-            '--tag' => "ddd-config",
+        $this->call('vendor:publish', [
+            '--tag' => 'ddd-config',
         ]);
 
         $this->comment('Ensuring domain path is registered in composer.json...');
@@ -25,8 +24,8 @@ class InstallCommand extends Command
         if ($this->confirm('Would you like to publish stubs?')) {
             $this->comment('Publishing stubs...');
 
-            $this->callSilently("vendor:publish", [
-                '--tag' => "ddd-stubs",
+            $this->callSilently('vendor:publish', [
+                '--tag' => 'ddd-stubs',
             ]);
         }
 

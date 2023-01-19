@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
-
 it('publishes config', function () {
     $path = config_path('ddd.php');
 
@@ -19,7 +17,7 @@ it('publishes config', function () {
 
     expect(file_exists($path))->toBeTrue();
     expect(file_get_contents($path))
-        ->toEqual(file_get_contents(__DIR__ . '/../config/ddd.php'));
+        ->toEqual(file_get_contents(__DIR__.'/../config/ddd.php'));
 
     unlink($path);
 });
