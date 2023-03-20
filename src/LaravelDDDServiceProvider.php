@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD;
 
 use Lunarstorm\LaravelDDD\Commands\InstallCommand;
 use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
+use Lunarstorm\LaravelDDD\Commands\MakeBaseViewModel;
 use Lunarstorm\LaravelDDD\Commands\MakeDTO;
 use Lunarstorm\LaravelDDD\Commands\MakeModel;
 use Lunarstorm\LaravelDDD\Commands\MakeValueObject;
@@ -30,6 +31,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 MakeDTO::class,
                 MakeValueObject::class,
                 MakeViewModel::class,
+                MakeBaseViewModel::class,
             ]);
     }
 

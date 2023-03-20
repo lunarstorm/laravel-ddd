@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use {{ baseViewModel }};
+use {{ rootNamespace }}\Shared\ViewModels\ViewModel;
 
 class {{ class }} extends ViewModel
 {

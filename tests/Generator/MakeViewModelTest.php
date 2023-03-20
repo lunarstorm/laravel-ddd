@@ -70,3 +70,30 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
     'ShowInvoiceViewModel' => ['ShowInvoiceViewModel', 'ShowInvoiceViewModel'],
     'show-invoice-view-model' => ['show-invoice-view-model', 'ShowInvoiceViewModel'],
 ]);
+
+it('generates the base view model if needed', function () {
+    $className = Str::studly(fake()->word());
+    $domain = Str::studly(fake()->word());
+
+    $expectedPath = base_path(implode('/', [
+        config('ddd.paths.domains'),
+        $domain,
+        config('ddd.namespaces.view_models'),
+        "{$className}.php",
+    ]));
+
+    if (file_exists($expectedPath)) {
+        unlink($expectedPath);
+    }
+
+    expect(file_exists($expectedPath))->toBeFalse();
+
+    // This currently only tests for the default base model
+    $expectedBaseViewModelPath = base_path('src/Domains/Shared/ViewModels/ViewModel.php');
+
+    expect(file_exists($expectedBaseViewModelPath))->toBeFalse();
+
+    Artisan::call("ddd:view-model {$domain} {$className}");
+
+    expect(file_exists($expectedBaseViewModelPath))->toBeTrue();
+});

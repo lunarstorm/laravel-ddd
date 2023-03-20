@@ -31,4 +31,24 @@ class MakeViewModel extends DomainGeneratorCommand
     {
         return $this->resolveStubPath('view-model.php.stub');
     }
+
+    public function handle()
+    {
+        $baseViewModel = config('ddd.base_view_model');
+
+        $parts = str($baseViewModel)->explode('\\');
+        $baseName = $parts->last();
+        $basePath = $this->getPath($baseViewModel);
+
+        if (!file_exists($basePath)) {
+            $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
+
+            $this->call(MakeBaseViewModel::class, [
+                'domain' => 'Shared',
+                'name' => $baseName,
+            ]);
+        }
+
+        parent::handle();
+    }
 }
