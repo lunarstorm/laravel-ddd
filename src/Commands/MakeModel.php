@@ -11,7 +11,7 @@ class MakeModel extends DomainGeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'ddd:make:model {domain} {name}';
+    protected $signature = 'ddd:model {domain} {name}';
 
     /**
      * The console command description.
@@ -41,7 +41,7 @@ class MakeModel extends DomainGeneratorCommand
         $baseModelPath = $this->getPath($baseModel);
         // dd($baseModelPath);
 
-        if (! file_exists($baseModelPath)) {
+        if (!file_exists($baseModelPath)) {
             $this->warn("Base model {$baseModel} doesn't exist, generating...");
 
             // dd($baseModel, $baseModelName);

@@ -11,7 +11,7 @@ class MakeDTO extends DomainGeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'ddd:make:dto {domain} {name}';
+    protected $signature = 'ddd:dto {domain} {name}';
 
     /**
      * The console command description.

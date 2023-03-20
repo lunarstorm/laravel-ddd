@@ -21,7 +21,7 @@ it('can generate view models', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:view-model {$domain} {$viewModelName}");
+    Artisan::call("ddd:view-model {$domain} {$viewModelName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -47,7 +47,7 @@ it('can generate view models in custom domain folder', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:view-model {$domain} {$viewModelName}");
+    Artisan::call("ddd:view-model {$domain} {$viewModelName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -62,7 +62,7 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:make:view-model {$domain} {$given}");
+    Artisan::call("ddd:view-model {$domain} {$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with([

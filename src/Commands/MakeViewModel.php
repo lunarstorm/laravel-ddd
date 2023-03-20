@@ -11,7 +11,7 @@ class MakeViewModel extends DomainGeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'ddd:make:view-model {domain} {name}';
+    protected $signature = 'ddd:view-model {domain} {name}';
 
     /**
      * The console command description.
