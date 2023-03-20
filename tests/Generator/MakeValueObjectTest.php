@@ -21,7 +21,7 @@ it('can generate value objects', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:value {$domain} {$valueObjectName}");
+    Artisan::call("ddd:value {$domain} {$valueObjectName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -47,7 +47,7 @@ it('can generate value objects in custom domain folder', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:value {$domain} {$valueObjectName}");
+    Artisan::call("ddd:value {$domain} {$valueObjectName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -62,7 +62,7 @@ it('normalizes generated value object to pascal case', function ($given, $normal
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:make:value {$domain} {$given}");
+    Artisan::call("ddd:value {$domain} {$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with([

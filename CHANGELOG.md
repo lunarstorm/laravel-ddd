@@ -2,9 +2,16 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [0.2.0] - 2023-02-20
+### Added
+- Support for Laravel 10.
+
 ### Changed
 - Install command now publishes config, registers the default domain path in composer.json, and prompts to publish stubs.
+- Generator command signatures simplified to `ddd:*` (previously `ddd:make:*`).
+
+### Fixed
+- When ViewModels are generated, base view model import statement is now properly substituted.
 
 ## [0.1.0] - 2023-01-19
 ### Added

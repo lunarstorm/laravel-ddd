@@ -21,7 +21,7 @@ it('can generate data transfer objects', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:dto {$domain} {$dtoName}");
+    Artisan::call("ddd:dto {$domain} {$dtoName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -47,7 +47,7 @@ it('can generate data transfer objects in custom domain folder', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:make:dto {$domain} {$dtoName}");
+    Artisan::call("ddd:dto {$domain} {$dtoName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 });
@@ -62,7 +62,7 @@ it('normalizes generated data transfer object to pascal case', function ($given,
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:make:dto {$domain} {$given}");
+    Artisan::call("ddd:dto {$domain} {$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with([

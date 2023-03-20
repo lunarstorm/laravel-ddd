@@ -21,7 +21,7 @@ it('can generate domain models', function () {
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
-    Artisan::call("ddd:make:model {$domain} {$modelName}");
+    Artisan::call("ddd:model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 });
@@ -47,7 +47,7 @@ it('can generate domain models in custom domain folder', function () {
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
-    Artisan::call("ddd:make:model {$domain} {$modelName}");
+    Artisan::call("ddd:model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 });
@@ -62,7 +62,7 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:make:model {$domain} {$given}");
+    Artisan::call("ddd:model {$domain} {$given}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 })->with([
@@ -99,7 +99,7 @@ it('generates the base model if needed', function () {
 
     expect(file_exists($expectedBaseModelPath))->toBeFalse();
 
-    Artisan::call("ddd:make:model {$domain} {$modelName}");
+    Artisan::call("ddd:model {$domain} {$modelName}");
 
     expect(file_exists($expectedBaseModelPath))->toBeTrue();
 });

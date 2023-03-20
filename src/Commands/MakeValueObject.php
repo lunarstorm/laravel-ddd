@@ -11,7 +11,7 @@ class MakeValueObject extends DomainGeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'ddd:make:value {domain} {name}';
+    protected $signature = 'ddd:value {domain} {name}';
 
     /**
      * The console command description.

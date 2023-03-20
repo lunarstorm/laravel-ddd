@@ -19,7 +19,7 @@ it('can generate domain base model', function () {
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
-    Artisan::call("ddd:make:base-model {$domain} {$modelName}");
+    Artisan::call("ddd:base-model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 });

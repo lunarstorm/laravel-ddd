@@ -92,4 +92,16 @@ return [
     |
     */
     'base_dto' => 'Spatie\LaravelData\Data',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base ViewModel
+    |--------------------------------------------------------------------------
+    |
+    | This base view model which generated view models should extend. By default,
+    | generated domain models will extend `Domains\Shared\ViewModels\BaseViewModel`,
+    | which will be created if it doesn't already exist.
+    |
+    */
+    'base_view_model' => 'Domains\Shared\ViewModels\ViewModel',
 ];
