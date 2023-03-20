@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [0.2.0] - 2023-02-20
+## [0.2.0] - 2023-03-20
 ### Added
 - Support for Laravel 10.
 
