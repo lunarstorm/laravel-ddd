@@ -16,7 +16,7 @@ return [
         //
         // Path to the Domain layer.
         //
-        'domains' => 'src/Domains',
+        'domains' => 'src/Domain',
 
         //
         // Path to modules in the application layer. This is an extension of
@@ -40,10 +40,10 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domains/Invoicing/Models/*
-    |       Domains/Invoicing/Data/*
-    |       Domains/Invoicing/ViewModels/*
-    |       Domains/Invoicing/ValueObjects/*
+    | e.g., Domain/Invoicing/Models/*
+    |       Domain/Invoicing/Data/*
+    |       Domain/Invoicing/ViewModels/*
+    |       Domain/Invoicing/ValueObjects/*
     |
     */
     'namespaces' => [
@@ -74,11 +74,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | This base model which generated domain models should extend. By default,
-    | generated domain models will extend `Domains\Shared\Models\BaseModel`,
+    | generated domain models will extend `Domain\Shared\Models\BaseModel`,
     | which will be created if it doesn't already exist.
     |
     */
-    'base_model' => 'Domains\Shared\Models\BaseModel',
+    'base_model' => 'Domain\Shared\Models\BaseModel',
 
     /*
     |--------------------------------------------------------------------------
@@ -99,9 +99,9 @@ return [
     |--------------------------------------------------------------------------
     |
     | This base view model which generated view models should extend. By default,
-    | generated domain models will extend `Domains\Shared\ViewModels\BaseViewModel`,
+    | generated domain models will extend `Domain\Shared\ViewModels\BaseViewModel`,
     | which will be created if it doesn't already exist.
     |
     */
-    'base_view_model' => 'Domains\Shared\ViewModels\ViewModel',
+    'base_view_model' => 'Domain\Shared\ViewModels\ViewModel',
 ];
