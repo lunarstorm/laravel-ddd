@@ -49,10 +49,4 @@ it('normalizes generated data transfer object to pascal case', function ($given,
     Artisan::call("ddd:dto {$domain} {$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-})->with([
-    'payload' => ['payload', 'Payload'],
-    'Payload' => ['Payload', 'Payload'],
-    'invoicePayload' => ['invoicePayload', 'InvoicePayload'],
-    'InvoicePayload' => ['InvoicePayload', 'InvoicePayload'],
-    'invoice-payload' => ['invoice-payload', 'InvoicePayload'],
-]);
+})->with('makeDtoInputs');
