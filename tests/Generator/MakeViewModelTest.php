@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
-it('can generate view models', function () {
+it('can generate view models', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
+
     $viewModelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        $domainPath,
         $domain,
         config('ddd.namespaces.view_models'),
         "{$viewModelName}.php",
@@ -24,33 +26,15 @@ it('can generate view models', function () {
     Artisan::call("ddd:view-model {$domain} {$viewModelName}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-});
 
-it('can generate view models in custom domain folder', function () {
-    $customDomainPath = 'Custom/Domains';
-
-    Config::set('ddd.paths.domains', $customDomainPath);
-
-    $viewModelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
-
-    $expectedPath = base_path(implode('/', [
-        $customDomainPath,
+    $expectedNamespace = implode('\\', [
+        $domainRoot,
         $domain,
         config('ddd.namespaces.view_models'),
-        "{$viewModelName}.php",
-    ]));
+    ]);
 
-    if (file_exists($expectedPath)) {
-        unlink($expectedPath);
-    }
-
-    expect(file_exists($expectedPath))->toBeFalse();
-
-    Artisan::call("ddd:view-model {$domain} {$viewModelName}");
-
-    expect(file_exists($expectedPath))->toBeTrue();
-});
+    expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
+})->with('domainPaths');
 
 it('normalizes generated view model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
@@ -65,11 +49,7 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
     Artisan::call("ddd:view-model {$domain} {$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-})->with([
-    'summaryViewModel' => ['summaryViewModel', 'SummaryViewModel'],
-    'ShowInvoiceViewModel' => ['ShowInvoiceViewModel', 'ShowInvoiceViewModel'],
-    'show-invoice-view-model' => ['show-invoice-view-model', 'ShowInvoiceViewModel'],
-]);
+})->with('makeViewModelInputs');
 
 it('generates the base view model if needed', function () {
     $className = Str::studly(fake()->word());
@@ -89,7 +69,11 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path('src/Domains/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains') . '/Shared/ViewModels/ViewModel.php');
+
+    if (file_exists($expectedBaseViewModelPath)) {
+        unlink($expectedBaseViewModelPath);
+    }
 
     expect(file_exists($expectedBaseViewModelPath))->toBeFalse();
 
