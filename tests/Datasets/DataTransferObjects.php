@@ -1,6 +1,6 @@
 <?php
 
-dataset('makeViewModelInputs', [
+dataset('makeDtoInputs', [
     'payload' => ['payload', 'Payload'],
     'Payload' => ['Payload', 'Payload'],
     'invoicePayload' => ['invoicePayload', 'InvoicePayload'],
