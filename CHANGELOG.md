@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [0.3.0] - 2023-03-23
+### Added
+- Increase test coverage to ensure expected namespaces are present in generated objects.
+
+### Changed
+- Domain generator commands will infer the root domain namespace based on the configured `ddd.paths.domains`.
+- Change the default domain path in config to `src/Domain` (was previously `src/Domains`), thereby generating objects with the singular `Domain` root namespace.
+
 ## [0.2.0] - 2023-03-20
 ### Added
 - Support for Laravel 10.
