@@ -69,7 +69,7 @@ it('generates the base model if needed', function () {
     expect(file_exists($expectedModelPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseModelPath = base_path(config('ddd.paths.domains') . '/Shared/Models/BaseModel.php');
+    $expectedBaseModelPath = base_path(config('ddd.paths.domains').'/Shared/Models/BaseModel.php');
 
     if (file_exists($expectedBaseModelPath)) {
         unlink($expectedBaseModelPath);
