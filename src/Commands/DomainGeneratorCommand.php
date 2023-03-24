@@ -9,7 +9,10 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
 {
     protected function rootNamespace()
     {
-        return 'Domains';
+        return str($this->getDomainBasePath())
+            ->rtrim('/\\')
+            ->basename()
+            ->toString();
     }
 
     protected function getDefaultNamespace($rootNamespace)

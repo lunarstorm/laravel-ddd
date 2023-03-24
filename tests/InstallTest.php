@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
+
 it('publishes config', function () {
     $path = config_path('ddd.php');
 
@@ -22,9 +24,11 @@ it('publishes config', function () {
     unlink($path);
 });
 
-it('initializes composer.json', function () {
+it('can initialize composer.json', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
+
     $data = json_decode(file_get_contents(base_path('composer.json')), true);
-    $before = data_get($data, ['autoload', 'psr-4', 'Domains\\']);
+    $before = data_get($data, ['autoload', 'psr-4', $domainRoot.'\\']);
     expect($before)->toBeNull();
 
     $command = $this->artisan('ddd:install');
@@ -32,8 +36,12 @@ it('initializes composer.json', function () {
     $command->execute();
 
     $data = json_decode(file_get_contents(base_path('composer.json')), true);
-    $after = data_get($data, ['autoload', 'psr-4', 'Domains\\']);
+    $after = data_get($data, ['autoload', 'psr-4', $domainRoot.'\\']);
     expect($after)->toEqual(config('ddd.paths.domains'));
 
     unlink(config_path('ddd.php'));
-});
+})->with([
+    ['src/Domain', 'Domain'],
+    ['src/Domains', 'Domains'],
+    ['src/CustomDomainRoot', 'CustomDomainRoot'],
+]);

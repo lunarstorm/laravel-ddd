@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
-it('can generate domain models', function () {
+it('can generate domain models', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
+
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
     $expectedModelPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        $domainPath,
         $domain,
         config('ddd.namespaces.models'),
         "{$modelName}.php",
@@ -24,33 +26,15 @@ it('can generate domain models', function () {
     Artisan::call("ddd:model {$domain} {$modelName}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
-});
 
-it('can generate domain models in custom domain folder', function () {
-    $customDomainPath = 'Custom/Domains';
-
-    Config::set('ddd.paths.domains', $customDomainPath);
-
-    $modelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
-
-    $expectedModelPath = base_path(implode('/', [
-        $customDomainPath,
+    $expectedNamespace = implode('\\', [
+        $domainRoot,
         $domain,
         config('ddd.namespaces.models'),
-        "{$modelName}.php",
-    ]));
+    ]);
 
-    if (file_exists($expectedModelPath)) {
-        unlink($expectedModelPath);
-    }
-
-    expect(file_exists($expectedModelPath))->toBeFalse();
-
-    Artisan::call("ddd:model {$domain} {$modelName}");
-
-    expect(file_exists($expectedModelPath))->toBeTrue();
-});
+    expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
+})->with('domainPaths');
 
 it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
@@ -65,13 +49,7 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
     Artisan::call("ddd:model {$domain} {$given}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
-})->with([
-    'apple' => ['apple', 'Apple'],
-    'Apple' => ['Apple', 'Apple'],
-    'appleBottom' => ['appleBottom', 'AppleBottom'],
-    'AppleBottom' => ['AppleBottom', 'AppleBottom'],
-    'apple-bottom' => ['apple-bottom', 'AppleBottom'],
-]);
+})->with('makeModelInputs');
 
 it('generates the base model if needed', function () {
     $modelName = Str::studly(fake()->word());
@@ -91,7 +69,11 @@ it('generates the base model if needed', function () {
     expect(file_exists($expectedModelPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseModelPath = base_path('src/Domains/Shared/Models/BaseModel.php');
+    $expectedBaseModelPath = base_path(config('ddd.paths.domains').'/Shared/Models/BaseModel.php');
+
+    if (file_exists($expectedBaseModelPath)) {
+        unlink($expectedBaseModelPath);
+    }
 
     // Todo: should bypass base model creation if
     // a custom base model is being used.
