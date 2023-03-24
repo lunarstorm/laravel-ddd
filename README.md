@@ -41,10 +41,10 @@ php artisan ddd:view-model {domain} {name}
 ```
 Examples:
 ```bash
-php artisan ddd:model Invoicing LineItem # Domains/Invoicing/Models/LineItem
-php artisan ddd:dto Invoicing LinePayload # Domains/Invoicing/Data/LinePayload
-php artisan ddd:value Shared Percentage # Domains/Shared/ValueObjects/Percentage
-php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domains/Invoicing/ViewModels/ShowInvoiceViewModel
+php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
+php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
+php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
+php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
@@ -73,7 +73,7 @@ return [
         //
         // Path to the Domain layer.
         //
-        'domains' => 'src/Domains',
+        'domains' => 'src/Domain',
 
         //
         // Path to modules in the application layer. This is an extension of
@@ -97,10 +97,10 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domains/Invoicing/Models/*
-    |       Domains/Invoicing/Data/*
-    |       Domains/Invoicing/ViewModels/*
-    |       Domains/Invoicing/ValueObjects/*
+    | e.g., Domain/Invoicing/Models/*
+    |       Domain/Invoicing/Data/*
+    |       Domain/Invoicing/ViewModels/*
+    |       Domain/Invoicing/ValueObjects/*
     |
     */
     'namespaces' => [
@@ -123,7 +123,44 @@ return [
         // Value Objects
         //
         'value_objects' => 'ValueObjects',
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Model
+    |--------------------------------------------------------------------------
+    |
+    | This base model which generated domain models should extend. By default,
+    | generated domain models will extend `Domain\Shared\Models\BaseModel`,
+    | which will be created if it doesn't already exist.
+    |
+    */
+    'base_model' => 'Domain\Shared\Models\BaseModel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base DTO
+    |--------------------------------------------------------------------------
+    |
+    | This base model which generated data transfer objects should extend. By
+    | default, generated DTOs will extend `Spatie\LaravelData\Data` from
+    | Spatie's Laravel-data package, a highly recommended data object
+    | package to work with.
+    |
+    */
+    'base_dto' => 'Spatie\LaravelData\Data',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base ViewModel
+    |--------------------------------------------------------------------------
+    |
+    | This base view model which generated view models should extend. By default,
+    | generated domain models will extend `Domain\Shared\ViewModels\BaseViewModel`,
+    | which will be created if it doesn't already exist.
+    |
+    */
+    'base_view_model' => 'Domain\Shared\ViewModels\ViewModel',
 ];
 ```
 
