@@ -26,7 +26,7 @@ class TestCase extends Orchestra
         $this->composerReload();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         File::deleteDirectory(resource_path('stubs/ddd'));
