@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [0.4.0]
+## [0.4.0] - 2023-05-08
 ### Changed
 - Update argument definitions across generator commands so that it plays nicely with `PromptsForMissingInput` behaviour introduced in Laravel v9.49.0.
 
