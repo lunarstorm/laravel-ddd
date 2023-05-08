@@ -1,13 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 
-it('can generate base view model', function () {
+it('can generate base view model', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
+
     $className = 'ViewModel';
     $domain = 'Shared';
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        $domainPath,
         $domain,
         config('ddd.namespaces.view_models'),
         "{$className}.php",
@@ -22,7 +25,15 @@ it('can generate base view model', function () {
     Artisan::call("ddd:base-view-model {$domain} {$className}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-});
+
+    $expectedNamespace = implode('\\', [
+        $domainRoot,
+        $domain,
+        config('ddd.namespaces.view_models'),
+    ]);
+
+    expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
+})->with('domainPaths');
 
 it('shows meaningful hints when prompting for missing input', function () {
     $this->artisan('ddd:base-view-model')
