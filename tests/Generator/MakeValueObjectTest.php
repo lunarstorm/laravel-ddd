@@ -58,7 +58,7 @@ it('normalizes generated value object to pascal case', function ($given, $normal
 ]);
 
 it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan("ddd:value")
+    $this->artisan('ddd:value')
         ->expectsQuestion('What is the domain?', 'Utility')
         ->expectsQuestion('What should the value object be named?', 'Belt')
         ->assertExitCode(0);

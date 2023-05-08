@@ -28,7 +28,7 @@ class MakeBaseModel extends DomainGeneratorCommand
                 InputArgument::OPTIONAL,
                 'The name of the base model',
                 'BaseModel'
-            )
+            ),
         ];
     }
 

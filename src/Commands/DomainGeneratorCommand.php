@@ -31,7 +31,7 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     {
         $domain = $this->getDomain();
 
-        return $rootNamespace . '\\' . $domain . '\\' . $this->getRelativeDomainNamespace();
+        return $rootNamespace.'\\'.$domain.'\\'.$this->getRelativeDomainNamespace();
     }
 
     abstract protected function getRelativeDomainNamespace(): string;
@@ -63,17 +63,17 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 
-        return $this->getDomainBasePath() . '/' . str_replace('\\', '/', $name) . '.php';
+        return $this->getDomainBasePath().'/'.str_replace('\\', '/', $name).'.php';
     }
 
     protected function resolveStubPath($path)
     {
         $path = ltrim($path, '/\\');
 
-        $publishedPath = resource_path('stubs/ddd/' . $path);
+        $publishedPath = resource_path('stubs/ddd/'.$path);
 
         return file_exists($publishedPath)
             ? $publishedPath
-            : __DIR__ . DIRECTORY_SEPARATOR . '../../stubs' . DIRECTORY_SEPARATOR . $path;
+            : __DIR__.DIRECTORY_SEPARATOR.'../../stubs'.DIRECTORY_SEPARATOR.$path;
     }
 }

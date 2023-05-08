@@ -52,7 +52,7 @@ it('normalizes generated data transfer object to pascal case', function ($given,
 })->with('makeDtoInputs');
 
 it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan("ddd:dto")
+    $this->artisan('ddd:dto')
         ->expectsQuestion('What is the domain?', 'Utility')
         ->expectsQuestion('What should the data transfer object be named?', 'Belt')
         ->assertExitCode(0);

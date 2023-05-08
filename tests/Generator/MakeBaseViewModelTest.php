@@ -25,7 +25,7 @@ it('can generate base view model', function () {
 });
 
 it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan("ddd:base-view-model")
+    $this->artisan('ddd:base-view-model')
         ->expectsQuestion('What is the domain?', 'Shared')
         ->assertExitCode(0);
 });

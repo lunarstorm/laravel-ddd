@@ -27,7 +27,7 @@ class MakeDTO extends DomainGeneratorCommand
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the DTO',
-            )
+            ),
         ];
     }
 

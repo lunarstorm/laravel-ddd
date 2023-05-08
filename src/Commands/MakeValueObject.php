@@ -27,7 +27,7 @@ class MakeValueObject extends DomainGeneratorCommand
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the value object',
-            )
+            ),
         ];
     }
 

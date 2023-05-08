@@ -28,7 +28,7 @@ class MakeBaseViewModel extends DomainGeneratorCommand
                 InputArgument::OPTIONAL,
                 'The name of the base view model',
                 'ViewModel'
-            )
+            ),
         ];
     }
 
