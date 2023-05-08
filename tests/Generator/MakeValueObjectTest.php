@@ -56,3 +56,10 @@ it('normalizes generated value object to pascal case', function ($given, $normal
     'LargeNumber' => ['LargeNumber', 'LargeNumber'],
     'large-number' => ['large-number', 'LargeNumber'],
 ]);
+
+it('shows meaningful hints when prompting for missing input', function () {
+    $this->artisan("ddd:value")
+        ->expectsQuestion('What is the domain?', 'Utility')
+        ->expectsQuestion('What should the value object be named?', 'Belt')
+        ->assertExitCode(0);
+});

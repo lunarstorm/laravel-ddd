@@ -3,15 +3,11 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputArgument;
 
 class MakeModel extends DomainGeneratorCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'ddd:model {domain} {name}';
+    protected $name = 'ddd:model';
 
     /**
      * The console command description.
@@ -21,6 +17,19 @@ class MakeModel extends DomainGeneratorCommand
     protected $description = 'Generate a domain model';
 
     protected $type = 'Model';
+
+    protected function getArguments()
+    {
+        return [
+            ...parent::getArguments(),
+
+            new InputArgument(
+                'name',
+                InputArgument::REQUIRED,
+                'The name of the model',
+            )
+        ];
+    }
 
     protected function getStub()
     {
@@ -40,7 +49,7 @@ class MakeModel extends DomainGeneratorCommand
         $baseModelName = $parts->last();
         $baseModelPath = $this->getPath($baseModel);
 
-        if (! file_exists($baseModelPath)) {
+        if (!file_exists($baseModelPath)) {
             $this->warn("Base model {$baseModel} doesn't exist, generating...");
 
             $this->call(MakeBaseModel::class, [
