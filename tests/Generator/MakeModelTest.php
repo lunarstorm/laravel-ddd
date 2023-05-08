@@ -85,3 +85,10 @@ it('generates the base model if needed', function () {
 
     expect(file_exists($expectedBaseModelPath))->toBeTrue();
 });
+
+it('shows meaningful hints when prompting for missing input', function () {
+    $this->artisan('ddd:model')
+        ->expectsQuestion('What is the domain?', 'Utility')
+        ->expectsQuestion('What should the model be named?', 'Belt')
+        ->assertExitCode(0);
+})->ifSupportsPromptForMissingInput();

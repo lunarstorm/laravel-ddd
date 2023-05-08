@@ -81,3 +81,10 @@ it('generates the base view model if needed', function () {
 
     expect(file_exists($expectedBaseViewModelPath))->toBeTrue();
 });
+
+it('shows meaningful hints when prompting for missing input', function () {
+    $this->artisan('ddd:view-model')
+        ->expectsQuestion('What is the domain?', 'Utility')
+        ->expectsQuestion('What should the view model be named?', 'Belt')
+        ->assertExitCode(0);
+})->ifSupportsPromptForMissingInput();

@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [0.4.0] - 2023-05-08
+### Changed
+- Update argument definitions across generator commands so that it plays nicely with `PromptsForMissingInput` behaviour introduced in Laravel v9.49.0.
+
+### Fixed
+- Ensure the configured domain path and namespace is respected by `ddd:base-model` and `ddd:base-view-model`.
+
 ## [0.3.0] - 2023-03-23
 ### Added
 - Increase test coverage to ensure expected namespaces are present in generated objects.

@@ -1,13 +1,13 @@
 <?php
 
-namespace Domains\Shared\ViewModels;
+namespace {{ namespace }};
 
 use Illuminate\Contracts\Support\Arrayable;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
 
-abstract class ViewModel implements Arrayable
+abstract class {{ class }} implements Arrayable
 {
     protected $hidden = [];
 

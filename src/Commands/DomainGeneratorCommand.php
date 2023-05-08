@@ -4,9 +4,21 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputArgument;
 
 abstract class DomainGeneratorCommand extends GeneratorCommand
 {
+    protected function getArguments()
+    {
+        return [
+            new InputArgument(
+                'domain',
+                InputArgument::REQUIRED,
+                'The domain'
+            ),
+        ];
+    }
+
     protected function rootNamespace()
     {
         return str($this->getDomainBasePath())
