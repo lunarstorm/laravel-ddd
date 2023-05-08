@@ -3,15 +3,11 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputArgument;
 
 class MakeBaseViewModel extends DomainGeneratorCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'ddd:base-view-model {domain} {name=ViewModel}';
+    protected $name = 'ddd:base-view-model';
 
     /**
      * The console command description.
@@ -20,7 +16,21 @@ class MakeBaseViewModel extends DomainGeneratorCommand
      */
     protected $description = 'Generate a base view model';
 
-    protected $type = 'ViewModel';
+    protected $type = 'Base View Model';
+
+    protected function getArguments()
+    {
+        return [
+            ...parent::getArguments(),
+
+            new InputArgument(
+                'name',
+                InputArgument::OPTIONAL,
+                'The name of the base view model',
+                'ViewModel'
+            ),
+        ];
+    }
 
     protected function getStub()
     {
