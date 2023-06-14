@@ -17,18 +17,6 @@ return [
         // Path to the Domain layer.
         //
         'domains' => 'src/Domain',
-
-        //
-        // Path to modules in the application layer. This is an extension of
-        // domain driven design applied to the application layer, bundling
-        // application objects (Controllers, Resources, Requests) in a
-        // more modular fashion.
-        //
-        // e.g., app/Modules/Invoicing/Controllers/*
-        //       app/Modules/Invoicing/Resources/*
-        //       app/Modules/Invoicing/Requests/*
-        //
-        'modules' => 'app/Modules',
     ],
 
     /*
@@ -44,6 +32,7 @@ return [
     |       Domain/Invoicing/Data/*
     |       Domain/Invoicing/ViewModels/*
     |       Domain/Invoicing/ValueObjects/*
+    |       Domain/Invoicing/Actions/*
     |
     */
     'namespaces' => [
@@ -66,6 +55,11 @@ return [
         // Value Objects
         //
         'value_objects' => 'ValueObjects',
+
+        //
+        // Actions
+        //
+        'actions' => 'Actions',
     ],
 
     /*
@@ -73,7 +67,7 @@ return [
     | Base Model
     |--------------------------------------------------------------------------
     |
-    | This base model which generated domain models should extend. By default,
+    | The base class which generated domain models should extend. By default,
     | generated domain models will extend `Domain\Shared\Models\BaseModel`,
     | which will be created if it doesn't already exist.
     |
@@ -85,7 +79,7 @@ return [
     | Base DTO
     |--------------------------------------------------------------------------
     |
-    | This base model which generated data transfer objects should extend. By
+    | The base class which generated data transfer objects should extend. By
     | default, generated DTOs will extend `Spatie\LaravelData\Data` from
     | Spatie's Laravel-data package, a highly recommended data object
     | package to work with.
@@ -98,10 +92,22 @@ return [
     | Base ViewModel
     |--------------------------------------------------------------------------
     |
-    | This base view model which generated view models should extend. By default,
+    | The base class which generated view models should extend. By default,
     | generated domain models will extend `Domain\Shared\ViewModels\BaseViewModel`,
     | which will be created if it doesn't already exist.
     |
     */
     'base_view_model' => 'Domain\Shared\ViewModels\ViewModel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Action
+    |--------------------------------------------------------------------------
+    |
+    | The base class which generated action objects should extend. By default,
+    | generated actions are based on the `lorisleiva/laravel-actions` package
+    | and do not extend anything.
+    |
+    */
+    'base_action' => null,
 ];

@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [0.5.0] - 2023-06-14
+### Added
+- Ability to generate actions (`ddd:action`), which by default generates an action class based on the `lorisleiva/laravel-actions` package.
+
+### Changed
+- Minor cleanups and updates to the default `ddd.php` config file.
+- Update stubs to be less opinionated where possible.
+
 ## [0.4.0] - 2023-05-08
 ### Changed
 - Update argument definitions across generator commands to play nicely with `PromptsForMissingInput` behaviour introduced in Laravel v9.49.0.

@@ -6,8 +6,7 @@ use Spatie\LaravelData\Data;
 
 class {{ class }} extends Data
 {
-    public function __construct(
+    public function __construct() {
         // ...
-    ) {
     }
 }

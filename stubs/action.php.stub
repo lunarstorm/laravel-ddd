@@ -1,0 +1,14 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class {{ class }}{{ extends }}
+{
+    use AsAction;
+
+    public function handle() {
+        // ...
+    }
+}
