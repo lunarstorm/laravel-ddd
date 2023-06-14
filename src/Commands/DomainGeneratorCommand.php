@@ -76,4 +76,9 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
             ? $publishedPath
             : __DIR__.DIRECTORY_SEPARATOR.'../../stubs'.DIRECTORY_SEPARATOR.$path;
     }
+
+    protected function fillPlaceholder($stub, $placeholder, $value)
+    {
+        return str_replace(["{{$placeholder}}", "{{ $placeholder }}"], $value, $stub);
+    }
 }

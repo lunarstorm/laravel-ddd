@@ -15,6 +15,8 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
+        $this->cleanFilesAndFolders();
+
         $composerFile = base_path('composer.json');
         $data = json_decode(file_get_contents($composerFile), true);
 
@@ -29,14 +31,7 @@ class TestCase extends Orchestra
             fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
-        File::deleteDirectory(resource_path('stubs/ddd'));
-        File::deleteDirectory(resource_path('config/ddd'));
-
-        $this->beforeApplicationDestroyed(function () {
-            File::cleanDirectory(app_path());
-            File::deleteDirectory(base_path('Custom'));
-            File::deleteDirectory(base_path('src/Domains'));
-        });
+        $this->beforeApplicationDestroyed(fn () => $this->cleanFilesAndFolders());
     }
 
     protected function getPackageProviders($app)
@@ -59,5 +54,16 @@ class TestCase extends Orchestra
             ->setTimeout(null)
             ->run(function ($type, $output) {
             });
+    }
+
+    protected function cleanFilesAndFolders()
+    {
+        File::delete(base_path('config/ddd.php'));
+
+        File::cleanDirectory(app_path());
+
+        File::deleteDirectory(resource_path('stubs/ddd'));
+        File::deleteDirectory(base_path('Custom'));
+        File::deleteDirectory(base_path('src/Domains'));
     }
 }

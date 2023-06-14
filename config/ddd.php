@@ -17,18 +17,6 @@ return [
         // Path to the Domain layer.
         //
         'domains' => 'src/Domain',
-
-        //
-        // Path to modules in the application layer. This is an extension of
-        // domain driven design applied to the application layer, bundling
-        // application objects (Controllers, Resources, Requests) in a
-        // more modular fashion.
-        //
-        // e.g., app/Modules/Invoicing/Controllers/*
-        //       app/Modules/Invoicing/Resources/*
-        //       app/Modules/Invoicing/Requests/*
-        //
-        'modules' => 'app/Modules',
     ],
 
     /*
@@ -66,6 +54,11 @@ return [
         // Value Objects
         //
         'value_objects' => 'ValueObjects',
+
+        //
+        // Actions
+        //
+        'actions' => 'Actions',
     ],
 
     /*
@@ -104,4 +97,15 @@ return [
     |
     */
     'base_view_model' => 'Domain\Shared\ViewModels\ViewModel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Action
+    |--------------------------------------------------------------------------
+    |
+    | This base class which generated action objects should extend. By
+    | default, generated actions do not extend anything.
+    |
+    */
+    'base_action' => null,
 ];

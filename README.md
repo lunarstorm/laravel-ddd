@@ -38,6 +38,9 @@ php artisan ddd:value {domain} {name}
 
 # Generates a view model
 php artisan ddd:view-model {domain} {name}
+
+# Generates an action
+php artisan ddd:action {domain} {name}
 ```
 Examples:
 ```bash
@@ -45,6 +48,7 @@ php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
 php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
 php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
 php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
+php artisan ddd:action Invoicing SendInvoiceToCustomer # Domain/Invoicing/Actions/SendInvoiceToCustomer
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
@@ -74,18 +78,6 @@ return [
         // Path to the Domain layer.
         //
         'domains' => 'src/Domain',
-
-        //
-        // Path to modules in the application layer. This is an extension of
-        // domain driven design applied to the application layer, bundling
-        // application objects (Controllers, Resources, Requests) in a
-        // more modular fashion.
-        //
-        // e.g., app/Modules/Invoicing/Controllers/*
-        //       app/Modules/Invoicing/Resources/*
-        //       app/Modules/Invoicing/Requests/*
-        //
-        'modules' => 'app/Modules',
     ],
 
     /*
@@ -123,6 +115,11 @@ return [
         // Value Objects
         //
         'value_objects' => 'ValueObjects',
+
+        //
+        // Actions
+        //
+        'actions' => 'Actions',
     ],
 
     /*
@@ -161,6 +158,17 @@ return [
     |
     */
     'base_view_model' => 'Domain\Shared\ViewModels\ViewModel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Action
+    |--------------------------------------------------------------------------
+    |
+    | This base class which generated action objects should extend. By
+    | default, generated actions do not extend anything.
+    |
+    */
+    'base_action' => null,
 ];
 ```
 

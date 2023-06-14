@@ -7,5 +7,6 @@ use {{ rootNamespace }}\Shared\ViewModels\ViewModel;
 class {{ class }} extends ViewModel
 {
     public function __construct() {
+        // ...
     }
 }
