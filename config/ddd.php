@@ -32,6 +32,7 @@ return [
     |       Domain/Invoicing/Data/*
     |       Domain/Invoicing/ViewModels/*
     |       Domain/Invoicing/ValueObjects/*
+    |       Domain/Invoicing/Actions/*
     |
     */
     'namespaces' => [
