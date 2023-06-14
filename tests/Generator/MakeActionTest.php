@@ -79,7 +79,7 @@ it('extends a base action if specified in config', function ($baseAction) {
 
     expect(file_exists($expectedPath))->toBeTrue();
 
-    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}\n{");
+    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}".PHP_EOL.'{');
 })->with([
     'BaseAction' => 'BaseAction',
     'Base\Action' => 'Base\Action',
