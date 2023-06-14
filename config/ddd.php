@@ -67,7 +67,7 @@ return [
     | Base Model
     |--------------------------------------------------------------------------
     |
-    | This base model which generated domain models should extend. By default,
+    | The base class which generated domain models should extend. By default,
     | generated domain models will extend `Domain\Shared\Models\BaseModel`,
     | which will be created if it doesn't already exist.
     |
@@ -79,7 +79,7 @@ return [
     | Base DTO
     |--------------------------------------------------------------------------
     |
-    | This base model which generated data transfer objects should extend. By
+    | The base class which generated data transfer objects should extend. By
     | default, generated DTOs will extend `Spatie\LaravelData\Data` from
     | Spatie's Laravel-data package, a highly recommended data object
     | package to work with.
@@ -92,7 +92,7 @@ return [
     | Base ViewModel
     |--------------------------------------------------------------------------
     |
-    | This base view model which generated view models should extend. By default,
+    | The base class which generated view models should extend. By default,
     | generated domain models will extend `Domain\Shared\ViewModels\BaseViewModel`,
     | which will be created if it doesn't already exist.
     |
@@ -104,8 +104,9 @@ return [
     | Base Action
     |--------------------------------------------------------------------------
     |
-    | This base class which generated action objects should extend. By
-    | default, generated actions do not extend anything.
+    | The base class which generated action objects should extend. By default,
+    | generated actions are based on the `lorisleiva/laravel-actions` package
+    | and do not extend anything.
     |
     */
     'base_action' => null,
