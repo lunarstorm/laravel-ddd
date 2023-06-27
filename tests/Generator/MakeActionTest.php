@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate action objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -27,7 +28,10 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
 
     Artisan::call("ddd:action {$domain} {$name}");
 
-    expect(Artisan::output())->toMatchRegularExpression('/Action (\[.*\])? created successfully./');
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
 
     expect(file_exists($expectedPath))->toBeTrue();
 
@@ -83,7 +87,7 @@ it('extends a base action if specified in config', function ($baseAction) {
 
     expect(file_exists($expectedPath))->toBeTrue();
 
-    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}" . PHP_EOL . '{');
 })->with([
     'BaseAction' => 'BaseAction',
     'Base\Action' => 'Base\Action',
@@ -109,5 +113,5 @@ it('does not extend a base action if not specified in config', function () {
     Artisan::call("ddd:action {$domain} {$name}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-    expect(file_get_contents($expectedPath))->toContain("class {$name}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name}" . PHP_EOL . '{');
 });

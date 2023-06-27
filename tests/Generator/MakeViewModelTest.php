@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate view models', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -27,7 +28,10 @@ it('can generate view models', function ($domainPath, $domainRoot) {
 
     Artisan::call("ddd:view-model {$domain} {$viewModelName}");
 
-    expect(Artisan::output())->toMatchRegularExpression('/View Model (\[.*\])? created successfully./');
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
 
     expect(file_exists($expectedPath))->toBeTrue();
 
@@ -73,7 +77,7 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains').'/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains') . '/Shared/ViewModels/ViewModel.php');
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);
