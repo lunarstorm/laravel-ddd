@@ -7,7 +7,10 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Clean up default stubs; get rid of extraneous ellipses in comment blocks and ensure code style is consistent.
 
 ### Fixed
-- Ensure generator commands show a nicely sanitized path to generated file in the console output (previously, double slashes were present).
+- Ensure generator commands show a nicely sanitized path to generated file in the console output (previously, double slashes were present). Only applies to Laravel 9.32.0 onwards, when file paths were added to the console output.
+
+### Chore
+- Upgrade test suite to use Pest 2.x.
 
 ## [0.5.0] - 2023-06-14
 ### Added
