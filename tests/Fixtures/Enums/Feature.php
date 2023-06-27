@@ -14,6 +14,6 @@ enum Feature: string
 
     public function missing(): bool
     {
-        return !$this->exists();
+        return ! $this->exists();
     }
 }

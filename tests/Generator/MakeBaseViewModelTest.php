@@ -30,7 +30,7 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
     expect(Artisan::output())->ifElse(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
         fn ($output) => $output->toContain("Base View Model [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain("Base View Model created successfully."),
+        fn ($output) => $output->toContain('Base View Model created successfully.'),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();

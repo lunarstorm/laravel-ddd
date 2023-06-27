@@ -31,7 +31,7 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
     expect(Artisan::output())->ifElse(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
         fn ($output) => $output->toContain("Action [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain("Action created successfully."),
+        fn ($output) => $output->toContain('Action created successfully.'),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
@@ -88,7 +88,7 @@ it('extends a base action if specified in config', function ($baseAction) {
 
     expect(file_exists($expectedPath))->toBeTrue();
 
-    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}" . PHP_EOL . '{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}".PHP_EOL.'{');
 })->with([
     'BaseAction' => 'BaseAction',
     'Base\Action' => 'Base\Action',
@@ -114,5 +114,5 @@ it('does not extend a base action if not specified in config', function () {
     Artisan::call("ddd:action {$domain} {$name}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-    expect(file_get_contents($expectedPath))->toContain("class {$name}" . PHP_EOL . '{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name}".PHP_EOL.'{');
 });

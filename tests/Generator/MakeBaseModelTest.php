@@ -30,7 +30,7 @@ it('can generate domain base model', function ($domainPath, $domainRoot) {
     expect(Artisan::output())->ifElse(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
         fn ($output) => $output->toContain("Base Model [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain("Base Model created successfully."),
+        fn ($output) => $output->toContain('Base Model created successfully.'),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();

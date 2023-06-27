@@ -31,7 +31,7 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     expect(Artisan::output())->ifElse(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
         fn ($output) => $output->toContain("Data Transfer Object [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain("Data Transfer Object created successfully."),
+        fn ($output) => $output->toContain('Data Transfer Object created successfully.'),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();

@@ -31,7 +31,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     expect(Artisan::output())->ifElse(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
         fn ($output) => $output->toContain("Value Object [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain("Value Object created successfully."),
+        fn ($output) => $output->toContain('Value Object created successfully.'),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
