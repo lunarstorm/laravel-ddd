@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -10,12 +11,14 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     $dtoName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
-    $expectedPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.data_transfer_objects'),
         "{$dtoName}.php",
-    ]));
+    ]);
+
+    $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
         unlink($expectedPath);
@@ -24,6 +27,11 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedPath))->toBeFalse();
 
     Artisan::call("ddd:dto {$domain} {$dtoName}");
+
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
 
     expect(file_exists($expectedPath))->toBeTrue();
 

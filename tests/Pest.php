@@ -17,3 +17,8 @@ function ifSupportsPromptForMissingInput()
 {
     return skipOnLaravelVersionsBelow('9.49.0');
 }
+
+function ifGeneratorCommandsOutputFilePath()
+{
+    return skipOnLaravelVersionsBelow('9.32.0');
+}

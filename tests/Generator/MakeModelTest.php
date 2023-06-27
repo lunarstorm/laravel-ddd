@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -10,12 +11,14 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
-    $expectedModelPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.models'),
         "{$modelName}.php",
-    ]));
+    ]);
+
+    $expectedModelPath = base_path($relativePath);
 
     if (file_exists($expectedModelPath)) {
         unlink($expectedModelPath);
@@ -24,6 +27,11 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedModelPath))->toBeFalse();
 
     Artisan::call("ddd:model {$domain} {$modelName}");
+
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 

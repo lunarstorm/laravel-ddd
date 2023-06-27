@@ -4,7 +4,8 @@ namespace {{ namespace }};
 
 class {{ class }}
 {
-    public function __construct() {
-        // ...
+    public function __construct()
+    {
+        //
     }
 }
