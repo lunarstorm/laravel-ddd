@@ -9,12 +9,14 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
     $className = 'ViewModel';
     $domain = 'Shared';
 
-    $expectedPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.view_models'),
         "{$className}.php",
-    ]));
+    ]);
+
+    $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
         unlink($expectedPath);
@@ -23,6 +25,8 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedPath))->toBeFalse();
 
     Artisan::call("ddd:base-view-model {$domain} {$className}");
+
+    expect(Artisan::output())->toContain("[{$relativePath}] created successfully.");
 
     expect(file_exists($expectedPath))->toBeTrue();
 

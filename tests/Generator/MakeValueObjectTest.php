@@ -10,12 +10,14 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     $valueObjectName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
-    $expectedPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.value_objects'),
         "{$valueObjectName}.php",
-    ]));
+    ]);
+
+    $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
         unlink($expectedPath);
@@ -24,6 +26,8 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedPath))->toBeFalse();
 
     Artisan::call("ddd:value {$domain} {$valueObjectName}");
+
+    expect(Artisan::output())->toContain("[{$relativePath}] created successfully.");
 
     expect(file_exists($expectedPath))->toBeTrue();
 

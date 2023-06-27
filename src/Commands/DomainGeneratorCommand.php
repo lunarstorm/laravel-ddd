@@ -61,9 +61,14 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
 
     protected function getPath($name)
     {
-        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+        $name = str($name)
+            ->replaceFirst($this->rootNamespace(), '')
+            ->replace('\\', '/')
+            ->ltrim('/')
+            ->append('.php')
+            ->toString();
 
-        return $this->getDomainBasePath().'/'.str_replace('\\', '/', $name).'.php';
+        return $this->getDomainBasePath().'/'.$name;
     }
 
     protected function resolveStubPath($path)
@@ -80,5 +85,26 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     protected function fillPlaceholder($stub, $placeholder, $value)
     {
         return str_replace(["{{$placeholder}}", "{{ $placeholder }}"], $value, $stub);
+    }
+
+    protected function preparePlaceholders(): array
+    {
+        return [];
+    }
+
+    protected function applyPlaceholders($stub)
+    {
+        $placeholders = $this->preparePlaceholders();
+
+        foreach ($placeholders as $placeholder => $value) {
+            $stub = $this->fillPlaceholder($stub, $placeholder, $value ?? '');
+        }
+
+        return $stub;
+    }
+
+    protected function buildClass($name)
+    {
+        return $this->applyPlaceholders(parent::buildClass($name));
     }
 }

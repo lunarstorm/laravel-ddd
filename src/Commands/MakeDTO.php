@@ -40,4 +40,13 @@ class MakeDTO extends DomainGeneratorCommand
     {
         return config('ddd.namespaces.data_transfer_objects', 'Data');
     }
+
+    protected function preparePlaceholders(): array
+    {
+        $baseClass = config('ddd.base_dto');
+
+        return [
+            'extends' => filled($baseClass) ? " extends {$baseClass}" : '',
+        ];
+    }
 }

@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Changed
+- Clean up default stubs; get rid of extraneous ellipses in comment blocks and ensure code style is consistent.
+
+### Fixed
+- Ensure generator commands show a nicely sanitized path to generated file in the console output (previously, double slashes were present).
+
 ## [0.5.0] - 2023-06-14
 ### Added
 - Ability to generate actions (`ddd:action`), which by default generates an action class based on the `lorisleiva/laravel-actions` package.

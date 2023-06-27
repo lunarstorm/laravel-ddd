@@ -10,12 +10,14 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     $dtoName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
-    $expectedPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.data_transfer_objects'),
         "{$dtoName}.php",
-    ]));
+    ]);
+
+    $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
         unlink($expectedPath);
@@ -24,6 +26,8 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedPath))->toBeFalse();
 
     Artisan::call("ddd:dto {$domain} {$dtoName}");
+
+    expect(Artisan::output())->toContain("[{$relativePath}] created successfully.");
 
     expect(file_exists($expectedPath))->toBeTrue();
 

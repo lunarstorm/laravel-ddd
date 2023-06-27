@@ -10,12 +10,14 @@ it('can generate view models', function ($domainPath, $domainRoot) {
     $viewModelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
-    $expectedPath = base_path(implode('/', [
+    $relativePath = implode('/', [
         $domainPath,
         $domain,
         config('ddd.namespaces.view_models'),
         "{$viewModelName}.php",
-    ]));
+    ]);
+
+    $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
         unlink($expectedPath);
@@ -24,6 +26,8 @@ it('can generate view models', function ($domainPath, $domainRoot) {
     expect(file_exists($expectedPath))->toBeFalse();
 
     Artisan::call("ddd:view-model {$domain} {$viewModelName}");
+
+    expect(Artisan::output())->toContain("[{$relativePath}] created successfully.");
 
     expect(file_exists($expectedPath))->toBeTrue();
 

@@ -41,13 +41,12 @@ class MakeAction extends DomainGeneratorCommand
         return config('ddd.namespaces.actions', 'Actions');
     }
 
-    protected function buildClass($name)
+    protected function preparePlaceholders(): array
     {
-        $stub = parent::buildClass($name);
-
         $baseClass = config('ddd.base_action');
-        $extends = filled($baseClass) ? " extends {$baseClass}" : '';
 
-        return $this->fillPlaceholder($stub, 'extends', $extends);
+        return [
+            'extends' => filled($baseClass) ? " extends {$baseClass}" : '',
+        ];
     }
 }
