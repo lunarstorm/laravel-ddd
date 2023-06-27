@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate base view model', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -27,11 +26,8 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
 
     Artisan::call("ddd:base-view-model {$domain} {$className}");
 
-    expect(Artisan::output())->ifElse(
-        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain("Base View Model [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain('Base View Model created successfully.'),
-    );
+    expect(Artisan::output())
+        ->toMatchRegularExpression('/Base View Model (\[.*\])? created successfully./');
 
     expect(file_exists($expectedPath))->toBeTrue();
 

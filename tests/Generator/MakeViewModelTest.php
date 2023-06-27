@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate view models', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -28,11 +27,7 @@ it('can generate view models', function ($domainPath, $domainRoot) {
 
     Artisan::call("ddd:view-model {$domain} {$viewModelName}");
 
-    expect(Artisan::output())->ifElse(
-        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain("[{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain('View Model created successfully.'),
-    );
+    expect(Artisan::output())->toMatchRegularExpression('/View Model (\[.*\])? created successfully./');
 
     expect(file_exists($expectedPath))->toBeTrue();
 

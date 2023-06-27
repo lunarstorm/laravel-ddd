@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate value objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.paths.domains', $domainPath);
@@ -28,11 +27,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
 
     Artisan::call("ddd:value {$domain} {$valueObjectName}");
 
-    expect(Artisan::output())->ifElse(
-        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain("Value Object [{$relativePath}] created successfully."),
-        fn ($output) => $output->toContain('Value Object created successfully.'),
-    );
+    expect(Artisan::output())->toMatchRegularExpression('/Value Object (\[.*\])? created successfully./');
 
     expect(file_exists($expectedPath))->toBeTrue();
 

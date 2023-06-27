@@ -1,7 +1,9 @@
 <?php
 
-expect()->extend('ifElse', function ($condition, callable $callbackWhenTrue, callable $callbackElse) {
-    return $this
-        ->when($condition, $callbackWhenTrue)
-        ->unless($condition, $callbackElse);
+use function PHPUnit\Framework\assertMatchesRegularExpression;
+
+expect()->extend('toMatchRegularExpression', function ($pattern, string $message = '') {
+    assertMatchesRegularExpression($pattern, $this->value, $message);
+
+    return $this;
 });

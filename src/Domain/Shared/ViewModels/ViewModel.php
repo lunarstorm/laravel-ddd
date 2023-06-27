@@ -1,0 +1,34 @@
+<?php
+
+namespace Domain\Shared\ViewModels;
+
+use Illuminate\Contracts\Support\Arrayable;
+use Reflection;
+use ReflectionClass;
+use ReflectionMethod;
+
+abstract class ViewModel implements Arrayable
+{
+    protected $hidden = [];
+
+    public static function make(...$args)
+    {
+        return new static(...$args);
+    }
+
+    public function toArray(): array
+    {
+        return collect((new ReflectionClass($this))->getMethods())
+            ->reject(
+                fn (ReflectionMethod $method) => in_array($method->getName(), [
+                    '__construct', 'make', 'toArray',
+                    ...$this->hidden,
+                ])
+            )
+            ->filter(fn (ReflectionMethod $method) => in_array('public', Reflection::getModifierNames($method->getModifiers())))
+            ->mapWithKeys(fn (ReflectionMethod $method) => [
+                $method->getName() => $this->{$method->getName()}(),
+            ])
+            ->toArray();
+    }
+}
