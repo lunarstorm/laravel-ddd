@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [0.5.1] - 2023-06-27
 ### Changed
 - Clean up default stubs; get rid of extraneous ellipses in comment blocks and ensure code style is consistent.
 
