@@ -56,7 +56,7 @@ class MakeModel extends DomainGeneratorCommand
         $baseModelName = $parts->last();
         $baseModelPath = $this->getPath($baseModel);
 
-        if (!file_exists($baseModelPath)) {
+        if (! file_exists($baseModelPath)) {
             $this->warn("Base model {$baseModel} doesn't exist, generating...");
 
             $this->call(MakeBaseModel::class, [
@@ -76,7 +76,7 @@ class MakeModel extends DomainGeneratorCommand
     {
         $this->call(MakeFactory::class, [
             'domain' => $this->getDomain(),
-            'name' => $this->getNameInput() . 'Factory',
+            'name' => $this->getNameInput().'Factory',
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }

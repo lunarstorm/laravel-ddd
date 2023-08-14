@@ -75,7 +75,7 @@ it('can generate a domain model with factory', function () {
         unlink($expectedFactoryPath);
     }
 
-    Artisan::call("ddd:model", [
+    Artisan::call('ddd:model', [
         'domain' => $domain,
         'name' => $modelName,
         '--factory' => true,
@@ -123,7 +123,7 @@ it('generates the base model if needed', function () {
     expect(file_exists($expectedModelPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseModelPath = base_path(config('ddd.paths.domains') . '/Shared/Models/BaseModel.php');
+    $expectedBaseModelPath = base_path(config('ddd.paths.domains').'/Shared/Models/BaseModel.php');
 
     if (file_exists($expectedBaseModelPath)) {
         unlink($expectedBaseModelPath);

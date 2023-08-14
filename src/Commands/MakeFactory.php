@@ -54,7 +54,7 @@ class MakeFactory extends DomainGeneratorCommand
     {
         $domain = $this->getDomain();
 
-        return $rootNamespace . '\\' . $domain;
+        return $rootNamespace.'\\'.$domain;
     }
 
     protected function getRelativeDomainNamespace(): string
@@ -65,7 +65,7 @@ class MakeFactory extends DomainGeneratorCommand
     public function handle()
     {
         $domain = $this->getDomain();
-        $nameWithDomain = $domain . '/' . $this->getNameInput();
+        $nameWithDomain = $domain.'/'.$this->getNameInput();
         $model = Str::studly($this->option('model') ?? '');
 
         // Generate the factory using the native factory generator
