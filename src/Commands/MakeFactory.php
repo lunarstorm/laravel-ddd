@@ -65,8 +65,8 @@ class MakeFactory extends DomainGeneratorCommand
     public function handle()
     {
         $domain = $this->getDomain();
-        $nameWithDomain = $domain.'/'.$this->getNameInput();
-        $model = Str::studly($this->option('model') ?? '');
+        $nameWithDomain = $domain . '/' . $this->getNameInput();
+        $model = $this->option('model');
 
         // Generate the factory using the native factory generator
         $this->call(FactoryMakeCommand::class, [
