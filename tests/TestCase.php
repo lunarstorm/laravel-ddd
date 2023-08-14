@@ -23,12 +23,17 @@ class TestCase extends Orchestra
         // Reset the domain namespace
         Arr::forget($data, ['autoload', 'psr-4', 'Domains\\']);
 
+        // Set up the essential app namespaces
+        data_set($data, ['autoload', 'psr-4', 'App\\'], "vendor/orchestra/testbench-core/laravel/app");
+        data_set($data, ['autoload', 'psr-4', 'Database\\Factories\\'], "vendor/orchestra/testbench-core/laravel/database/factories");
+        data_set($data, ['autoload', 'psr-4', 'Database\\Seeders\\'], "vendor/orchestra/testbench-core/laravel/database/seeders");
+
         file_put_contents($composerFile, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         $this->composerReload();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
 
         $this->beforeApplicationDestroyed(fn () => $this->cleanFilesAndFolders());
@@ -61,6 +66,7 @@ class TestCase extends Orchestra
         File::delete(base_path('config/ddd.php'));
 
         File::cleanDirectory(app_path());
+        File::cleanDirectory(base_path('database/factories'));
 
         File::deleteDirectory(resource_path('stubs/ddd'));
         File::deleteDirectory(base_path('Custom'));
