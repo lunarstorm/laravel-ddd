@@ -19,7 +19,7 @@ class Domain
         ]);
     }
 
-    public function namespacedModel(string $model): string
+    public function namespacedModel(?string $model): string
     {
         $prefix = implode('\\', [
             $this->domainRoot,
