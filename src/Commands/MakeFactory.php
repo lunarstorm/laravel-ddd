@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -65,7 +64,7 @@ class MakeFactory extends DomainGeneratorCommand
     public function handle()
     {
         $domain = $this->getDomain();
-        $nameWithDomain = $domain . '/' . $this->getNameInput();
+        $nameWithDomain = $domain.'/'.$this->getNameInput();
         $model = $this->option('model');
 
         // Generate the factory using the native factory generator
