@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [0.6.0] - 2023-08-14
 ### Added
 - Ability to generate domain model factories, in a few ways:
     - `ddd:factory Invoicing InvoiceFactory`
