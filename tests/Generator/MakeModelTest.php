@@ -44,6 +44,52 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
+it('can generate a domain model with factory', function () {
+    $domainPath = config('ddd.paths.domains');
+
+    $modelName = Str::studly(fake()->word());
+    $domain = Str::studly(fake()->word());
+
+    $factoryName = "{$modelName}Factory";
+
+    $relativePath = implode('/', [
+        $domainPath,
+        $domain,
+        config('ddd.namespaces.models'),
+        "{$modelName}.php",
+    ]);
+
+    $expectedModelPath = base_path($relativePath);
+
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
+
+    $expectedFactoryPath = base_path(implode('/', [
+        'database/factories',
+        $domain,
+        "{$factoryName}.php",
+    ]));
+
+    if (file_exists($expectedFactoryPath)) {
+        unlink($expectedFactoryPath);
+    }
+
+    Artisan::call("ddd:model", [
+        'domain' => $domain,
+        'name' => $modelName,
+        '--factory' => true,
+    ]);
+
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
+
+    expect(file_exists($expectedModelPath))->toBeTrue();
+    expect(file_exists($expectedFactoryPath))->toBeTrue();
+});
+
 it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 
@@ -77,7 +123,7 @@ it('generates the base model if needed', function () {
     expect(file_exists($expectedModelPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseModelPath = base_path(config('ddd.paths.domains').'/Shared/Models/BaseModel.php');
+    $expectedBaseModelPath = base_path(config('ddd.paths.domains') . '/Shared/Models/BaseModel.php');
 
     if (file_exists($expectedBaseModelPath)) {
         unlink($expectedBaseModelPath);
