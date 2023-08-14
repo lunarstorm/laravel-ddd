@@ -52,8 +52,8 @@ php artisan ddd:action {domain} {name}
 Examples:
 ```bash
 php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
-php artisan ddd:model Invoicing LineItem -f # Domain/Invoicing/Models/LineItem + Domain/Invoicing/Models/LineItemFactory
-php artisan ddd:factory Invoicing LineItemFactory # Domain/Invoicing/Models/LineItemFactory
+php artisan ddd:model Invoicing LineItem -f # Domain/Invoicing/Models/LineItem + Database/Factories/Invoicing/LineItemFactory
+php artisan ddd:factory Invoicing LineItemFactory # Database/Factories/Invoicing/LineItemFactory
 php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
 php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
 php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
