@@ -30,6 +30,13 @@ The following generator commands are currently available:
 # Generate a domain model
 php artisan ddd:model {domain} {name}
 
+# Generate a domain model with factory
+php artisan ddd:model {domain} {name} -f
+php artisan ddd:model {domain} {name} --factory
+
+# Generate a domain factory
+php artisan ddd:factory {domain} {name} [--model={model}]
+
 # Generate a data transfer object
 php artisan ddd:dto {domain} {name}
 
@@ -45,6 +52,8 @@ php artisan ddd:action {domain} {name}
 Examples:
 ```bash
 php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
+php artisan ddd:model Invoicing LineItem -f # Domain/Invoicing/Models/LineItem + Domain/Invoicing/Models/LineItemFactory
+php artisan ddd:factory Invoicing LineItemFactory # Domain/Invoicing/Models/LineItemFactory
 php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
 php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
 php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel

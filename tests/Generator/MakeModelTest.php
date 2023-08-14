@@ -44,6 +44,62 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
+it('can generate a domain model with factory', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
+
+    $modelName = Str::studly(fake()->word());
+    $domain = Str::studly(fake()->word());
+
+    $factoryName = "{$modelName}Factory";
+
+    $relativePath = implode('/', [
+        $domainPath,
+        $domain,
+        config('ddd.namespaces.models'),
+        "{$modelName}.php",
+    ]);
+
+    $expectedModelPath = base_path($relativePath);
+
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
+
+    $expectedFactoryPath = base_path(implode('/', [
+        'database/factories',
+        $domain,
+        "{$factoryName}.php",
+    ]));
+
+    if (file_exists($expectedFactoryPath)) {
+        unlink($expectedFactoryPath);
+    }
+
+    Artisan::call('ddd:model', [
+        'domain' => $domain,
+        'name' => $modelName,
+        '--factory' => true,
+    ]);
+
+    expect(Artisan::output())->when(
+        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
+        fn ($output) => $output->toContain($relativePath),
+    );
+
+    expect(file_exists($expectedModelPath))->toBeTrue();
+    expect(file_exists($expectedFactoryPath))->toBeTrue();
+
+    $expectedNamespacedModel = implode('\\', [
+        $domainRoot,
+        $domain,
+        config('ddd.namespaces.models'),
+        $modelName,
+    ]);
+
+    expect(file_get_contents($expectedFactoryPath))
+        ->toContain($expectedNamespacedModel);
+})->with('domainPaths');
+
 it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 

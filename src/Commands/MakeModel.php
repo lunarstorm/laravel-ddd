@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class MakeModel extends DomainGeneratorCommand
 {
@@ -27,6 +28,13 @@ class MakeModel extends DomainGeneratorCommand
                 InputArgument::REQUIRED,
                 'The name of the model',
             ),
+        ];
+    }
+
+    protected function getOptions()
+    {
+        return [
+            ['factory', 'f', InputOption::VALUE_NONE, 'Create a new factory for the domain model'],
         ];
     }
 
@@ -58,5 +66,18 @@ class MakeModel extends DomainGeneratorCommand
         }
 
         parent::handle();
+
+        if ($this->option('factory')) {
+            $this->createFactory();
+        }
+    }
+
+    protected function createFactory()
+    {
+        $this->call(MakeFactory::class, [
+            'domain' => $this->getDomain(),
+            'name' => $this->getNameInput().'Factory',
+            '--model' => $this->qualifyClass($this->getNameInput()),
+        ]);
     }
 }

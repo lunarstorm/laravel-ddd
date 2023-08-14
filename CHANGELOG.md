@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- Ability to generate domain model factories, in a few ways:
+    - `ddd:factory Invoicing InvoiceFactory`
+    - `ddd:model Invoicing Invoice --factory`
+    - `ddd:model Invoicing Invoice -f`
+    - `ddd:model -f` (if relying on prompts)
+
 ## [0.5.1] - 2023-06-27
 ### Changed
 - Clean up default stubs; get rid of extraneous ellipses in comment blocks and ensure code style is consistent.

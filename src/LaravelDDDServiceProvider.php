@@ -7,6 +7,7 @@ use Lunarstorm\LaravelDDD\Commands\MakeAction;
 use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
 use Lunarstorm\LaravelDDD\Commands\MakeBaseViewModel;
 use Lunarstorm\LaravelDDD\Commands\MakeDTO;
+use Lunarstorm\LaravelDDD\Commands\MakeFactory;
 use Lunarstorm\LaravelDDD\Commands\MakeModel;
 use Lunarstorm\LaravelDDD\Commands\MakeValueObject;
 use Lunarstorm\LaravelDDD\Commands\MakeViewModel;
@@ -28,6 +29,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasCommands([
                 InstallCommand::class,
                 MakeModel::class,
+                MakeFactory::class,
                 MakeBaseModel::class,
                 MakeDTO::class,
                 MakeValueObject::class,
