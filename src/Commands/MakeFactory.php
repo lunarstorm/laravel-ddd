@@ -35,7 +35,7 @@ class MakeFactory extends DomainGeneratorCommand
     protected function getOptions()
     {
         return [
-            ['model', 'm', InputOption::VALUE_NONE, 'The model to associate to the factory'],
+            ['model', 'm', InputOption::VALUE_OPTIONAL, 'The name of the model'],
         ];
     }
 
