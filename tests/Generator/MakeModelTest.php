@@ -44,8 +44,8 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
-it('can generate a domain model with factory', function () {
-    $domainPath = config('ddd.paths.domains');
+it('can generate a domain model with factory', function ($domainPath, $domainRoot) {
+    Config::set('ddd.paths.domains', $domainPath);
 
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
@@ -88,7 +88,17 @@ it('can generate a domain model with factory', function () {
 
     expect(file_exists($expectedModelPath))->toBeTrue();
     expect(file_exists($expectedFactoryPath))->toBeTrue();
-});
+
+    $expectedNamespacedModel = implode('\\', [
+        $domainRoot,
+        $domain,
+        config('ddd.namespaces.models'),
+        $modelName,
+    ]);
+
+    expect(file_get_contents($expectedFactoryPath))
+        ->toContain($expectedNamespacedModel);
+})->with('domainPaths');
 
 it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());

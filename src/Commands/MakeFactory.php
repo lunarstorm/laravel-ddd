@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
+use Lunarstorm\LaravelDDD\Support\Domain;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -73,14 +74,17 @@ class MakeFactory extends DomainGeneratorCommand
             '--model' => $model ?: false,
         ]);
 
-        // Correct the model namespace inside the generated factory.
+        // Correct the namespaced model reference inside the generated factory.
         $pathToFactory = base_path("database/factories/{$nameWithDomain}.php");
 
         $contents = file_get_contents($pathToFactory);
 
+        $domainHelper = new Domain($domain);
+        $domainNamespacedModel = $domainHelper->namespacedModel($model);
+
         $contents = str_replace(
-            "\\App\\{$model}",
-            "\\{$model}",
+            "App\\{$domainNamespacedModel}",
+            $domainNamespacedModel,
             $contents
         );
 

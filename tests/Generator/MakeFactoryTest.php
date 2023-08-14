@@ -45,5 +45,6 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
         $domain,
     ]);
 
-    expect(file_get_contents($expectedFactoryPath))->toContain("namespace {$expectedNamespace};");
+    expect(file_get_contents($expectedFactoryPath))
+        ->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
