@@ -3,8 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Input\InputArgument;
 
 class MakeFactory extends DomainGeneratorCommand
@@ -47,7 +45,7 @@ class MakeFactory extends DomainGeneratorCommand
     {
         $domain = $this->getDomain();
 
-        return $rootNamespace . '\\' . $domain;
+        return $rootNamespace.'\\'.$domain;
     }
 
     protected function getRelativeDomainNamespace(): string
@@ -58,7 +56,7 @@ class MakeFactory extends DomainGeneratorCommand
     public function handle()
     {
         $domain = $this->getDomain();
-        $name = $domain . '/' . $this->getNameInput();
+        $name = $domain.'/'.$this->getNameInput();
 
         // Generate the factory using the native factory generator
         // with the name prefixed with the domain subdirectory.
