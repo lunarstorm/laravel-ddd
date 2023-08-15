@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [0.6.1] - 2023-08-14
+### Fixed
+- Ensure that generated domain factories set the `protected $model` property.
+
 ## [0.6.0] - 2023-08-14
 ### Added
 - Ability to generate domain model factories, in a few ways:
