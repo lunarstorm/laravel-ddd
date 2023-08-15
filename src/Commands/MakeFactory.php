@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Illuminate\Database\Console\Factories\FactoryMakeCommand;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,32 +61,40 @@ class MakeFactory extends DomainGeneratorCommand
         return '';
     }
 
-    public function handle()
+    protected function getPath($name)
     {
-        $domain = $this->getDomain();
-        $nameWithDomain = $domain.'/'.$this->getNameInput();
-        $model = $this->option('model');
+        $name = str($name)
+            ->replaceFirst($this->rootNamespace(), '')
+            ->replace('\\', '/')
+            ->ltrim('/')
+            ->append('.php')
+            ->toString();
 
-        // Generate the factory using the native factory generator
-        $this->call(FactoryMakeCommand::class, [
-            'name' => $nameWithDomain,
-            '--model' => $model ?: false,
-        ]);
+        return base_path('database/factories/'.$name);
+    }
 
-        // Correct the namespaced model reference inside the generated factory.
-        $pathToFactory = base_path("database/factories/{$nameWithDomain}.php");
+    protected function preparePlaceholders(): array
+    {
+        $domain = new Domain($this->getDomain());
 
-        $contents = file_get_contents($pathToFactory);
+        $name = $this->getNameInput();
 
-        $domainHelper = new Domain($domain);
-        $domainNamespacedModel = $domainHelper->namespacedModel($model);
+        $namespacedModel = $this->option('model')
+            ? $domain->namespacedModel($this->option('model'))
+            : $domain->namespacedModel($this->guessModelName($name));
 
-        $contents = str_replace(
-            "App\\{$domainNamespacedModel}",
-            $domainNamespacedModel,
-            $contents
-        );
+        return [
+            'namespacedModel' => $namespacedModel,
+            'model' => class_basename($namespacedModel),
+        ];
+    }
 
-        file_put_contents($pathToFactory, $contents);
+    protected function guessModelName($name)
+    {
+        if (str_ends_with($name, 'Factory')) {
+            $name = substr($name, 0, -7);
+        }
+
+        return (new Domain($this->getDomain()))->namespacedModel($name);
     }
 }

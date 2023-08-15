@@ -97,7 +97,8 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
     ]);
 
     expect(file_get_contents($expectedFactoryPath))
-        ->toContain($expectedNamespacedModel);
+        ->toContain("use {$expectedNamespacedModel};")
+        ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths');
 
 it('normalizes generated model to pascal case', function ($given, $normalized) {
