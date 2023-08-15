@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain factories', function ($domainPath, $domainRoot) {
@@ -12,6 +13,8 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
     $factoryName = "{$modelName}Factory";
+    $domainHelper = new Domain($domain);
+    $namespacedModel = $domainHelper->namespacedModel($modelName);
 
     // Domain factories are expected to be generated in:
     // database/factories/{Domain}/{Factory}.php
@@ -37,7 +40,9 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
         fn ($output) => $output->toContain($relativePath),
     );
 
-    expect(file_exists($expectedFactoryPath))->toBeTrue();
+    expect(file_exists($expectedFactoryPath))->toBeTrue(
+        "Expected factory to be generated in {$expectedFactoryPath}"
+    );
 
     $expectedNamespace = implode('\\', [
         'Database',
@@ -45,6 +50,10 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
         $domain,
     ]);
 
-    expect(file_get_contents($expectedFactoryPath))
-        ->toContain("namespace {$expectedNamespace};");
+    $contents = file_get_contents($expectedFactoryPath);
+
+    expect($contents)
+        ->toContain("namespace {$expectedNamespace};")
+        ->toContain("use {$namespacedModel};")
+        ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths');
