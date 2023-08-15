@@ -4,7 +4,8 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ## [0.6.1] - 2023-08-14
 ### Fixed
-- Ensure that generated domain factories set the `protected $model` property.
+- Ensure generated domain factories set the `protected $model` property.
+- Ensure generated factory classes are always suffixed by `Factory`.
 
 ## [0.6.0] - 2023-08-14
 ### Added
