@@ -33,7 +33,7 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedFactoryPath))->toBeFalse();
 
-    Artisan::call("ddd:factory {$domain} {$factoryName}");
+    Artisan::call("ddd:factory {$domain} {$modelName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -55,5 +55,8 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
     expect($contents)
         ->toContain("namespace {$expectedNamespace};")
         ->toContain("use {$namespacedModel};")
+        ->toContain("class {$factoryName} extends Factory")
         ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths');
+
+it('enforces generated factory classes have Factory suffix')->todo();
