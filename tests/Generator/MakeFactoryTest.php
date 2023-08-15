@@ -59,4 +59,4 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
         ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths');
 
-it('enforces generated factory classes have Factory suffix')->todo();
+it('normalizes factory classes with Factory suffix')->markTestIncomplete();
