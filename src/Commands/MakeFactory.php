@@ -63,6 +63,10 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function getPath($name)
     {
+        if (! str_ends_with($name, 'Factory')) {
+            $name .= 'Factory';
+        }
+
         $name = str($name)
             ->replaceFirst($this->rootNamespace(), '')
             ->replace('\\', '/')
@@ -71,6 +75,15 @@ class MakeFactory extends DomainGeneratorCommand
             ->toString();
 
         return base_path('database/factories/'.$name);
+    }
+
+    protected function getFactoryName()
+    {
+        $name = $this->getNameInput();
+
+        return str_ends_with($name, 'Factory')
+            ? substr($name, 0, -7)
+            : $name;
     }
 
     protected function preparePlaceholders(): array
@@ -86,6 +99,7 @@ class MakeFactory extends DomainGeneratorCommand
         return [
             'namespacedModel' => $namespacedModel,
             'model' => class_basename($namespacedModel),
+            'factory' => $this->getFactoryName(),
         ];
     }
 
