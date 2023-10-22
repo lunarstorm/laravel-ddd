@@ -4,8 +4,8 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ## [Unversioned]
 ### Added
-- Formally support for subdomains (nested domains) when generating domain objects. For example, to generate a model under `Domain\Reporting\Internal`, the domain argument can be specified in any of the following ways:
-    - `ddd:model Reporting\Internal InvoiceReport`
+- Formal support for subdomains (nested domains). For example, to generate model `Domain\Reporting\Internal\Models\InvoiceReport`, the domain argument can be specified in any of the following ways:
+    - `ddd:model Reporting\\Internal InvoiceReport`
     - `ddd:model Reporting/Internal InvoiceReport`
     - `ddd:model Reporting.Internal InvoiceReport`
 - Implement abstract `Lunarstorm\LaravelDDD\Factories\DomainFactory` extension of `Illuminate\Database\Eloquent\Factories\Factory`:
