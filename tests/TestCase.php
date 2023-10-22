@@ -70,6 +70,7 @@ class TestCase extends Orchestra
 
         File::deleteDirectory(resource_path('stubs/ddd'));
         File::deleteDirectory(base_path('Custom'));
+        File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
     }
 }

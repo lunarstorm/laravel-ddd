@@ -1,31 +1,29 @@
 <?php
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
-it('can generate domain factories', function ($domainPath, $domainRoot) {
+it('can generate domain factories', function ($domainPath, $domainRoot, $domain, $subdomain) {
     Config::set('ddd.paths.domains', $domainPath);
 
     $modelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+
     $factoryName = "{$modelName}Factory";
-    $domainHelper = new Domain($domain);
-    $namespacedModel = $domainHelper->namespacedModel($modelName);
 
-    // Domain factories are expected to be generated in:
-    // database/factories/{Domain}/{Factory}.php
+    $domainArgument = str($domain)
+        ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
+        ->toString();
 
-    $relativePath = implode('/', [
-        'database/factories',
-        $domain,
-        "{$factoryName}.php",
-    ]);
+    $domain = new Domain($domainArgument);
 
-    $expectedFactoryPath = base_path($relativePath);
+    $domainModel = $domain->model($modelName);
+
+    $domainFactory = $domain->factory($factoryName);
+
+    $expectedFactoryPath = base_path($domainFactory->path);
 
     if (file_exists($expectedFactoryPath)) {
         unlink($expectedFactoryPath);
@@ -33,30 +31,24 @@ it('can generate domain factories', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedFactoryPath))->toBeFalse();
 
-    Artisan::call("ddd:factory {$domain} {$modelName}");
+    Artisan::call("ddd:factory {$domain->dotName} {$modelName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($relativePath),
+        fn ($output) => $output->toContain($domainFactory->path),
     );
 
     expect(file_exists($expectedFactoryPath))->toBeTrue(
         "Expected factory to be generated in {$expectedFactoryPath}"
     );
 
-    $expectedNamespace = implode('\\', [
-        'Database',
-        'Factories',
-        $domain,
-    ]);
-
     $contents = file_get_contents($expectedFactoryPath);
 
     expect($contents)
-        ->toContain("namespace {$expectedNamespace};")
-        ->toContain("use {$namespacedModel};")
-        ->toContain("class {$factoryName} extends Factory")
+        ->toContain("namespace {$domainFactory->namespace};")
+        ->toContain("use {$domainModel->fqn};")
+        ->toContain("class {$domainFactory->name} extends Factory")
         ->toContain("protected \$model = {$modelName}::class;");
-})->with('domainPaths');
+})->with('domainPaths')->with('domainSubdomain');
 
 it('normalizes factory classes with Factory suffix')->markTestIncomplete();

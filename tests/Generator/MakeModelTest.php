@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
@@ -44,62 +45,49 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
-it('can generate a domain model with factory', function ($domainPath, $domainRoot) {
+it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {
     Config::set('ddd.paths.domains', $domainPath);
 
     $modelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+
+    $domain = new Domain($domainName, $subdomain);
 
     $factoryName = "{$modelName}Factory";
 
-    $relativePath = implode('/', [
-        $domainPath,
-        $domain,
-        config('ddd.namespaces.models'),
-        "{$modelName}.php",
-    ]);
+    $domainModel = $domain->model($modelName);
 
-    $expectedModelPath = base_path($relativePath);
+    $domainFactory = $domain->factory($factoryName);
+
+    $expectedModelPath = base_path($domainModel->path);
 
     if (file_exists($expectedModelPath)) {
         unlink($expectedModelPath);
     }
 
-    $expectedFactoryPath = base_path(implode('/', [
-        'database/factories',
-        $domain,
-        "{$factoryName}.php",
-    ]));
+    $expectedFactoryPath = base_path($domainFactory->path);
 
     if (file_exists($expectedFactoryPath)) {
         unlink($expectedFactoryPath);
     }
 
     Artisan::call('ddd:model', [
-        'domain' => $domain,
+        'domain' => $domain->dotName,
         'name' => $modelName,
         '--factory' => true,
     ]);
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($relativePath),
+        fn ($output) => $output->toContain($domainModel->path),
     );
 
     expect(file_exists($expectedModelPath))->toBeTrue();
     expect(file_exists($expectedFactoryPath))->toBeTrue();
 
-    $expectedNamespacedModel = implode('\\', [
-        $domainRoot,
-        $domain,
-        config('ddd.namespaces.models'),
-        $modelName,
-    ]);
-
     expect(file_get_contents($expectedFactoryPath))
-        ->toContain("use {$expectedNamespacedModel};")
+        ->toContain("use {$domainModel->fqn};")
         ->toContain("protected \$model = {$modelName}::class;");
-})->with('domainPaths');
+})->with('domainPaths')->with('domainSubdomain');
 
 it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
