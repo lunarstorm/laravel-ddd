@@ -54,9 +54,7 @@ class Domain
 
         $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
-        $this->path = str(app()->joinPaths(config('ddd.paths.domains'), $this->domainWithSubdomain))
-            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
-            ->toString();
+        $this->path = Path::join(config('ddd.paths.domains'), $this->domainWithSubdomain);
     }
 
     protected function getDomainBasePath()
@@ -76,7 +74,7 @@ class Domain
             ->append('.php')
             ->toString();
 
-        return app()->joinPaths($this->path, $path);
+        return Path::join($this->path, $path);
     }
 
     public function relativePath(string $path = ''): string
