@@ -65,8 +65,7 @@ Subdomains (nested domains) can be specified with dot notation:
 ```bash
 php artisan ddd:model Invoicing.Customer CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
 php artisan ddd:factory Invoicing.Customer CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
-# Supported by all generator commands
-```
+# (supported by all generator commands)
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
