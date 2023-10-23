@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- Formal support for subdomains (nested domains). For example, to generate model `Domain\Reporting\Internal\Models\InvoiceReport`, the domain argument can be specified in any of the following ways:
+    - `ddd:model Reporting\\Internal InvoiceReport`
+    - `ddd:model Reporting/Internal InvoiceReport`
+    - `ddd:model Reporting.Internal InvoiceReport`
+- Implement abstract `Lunarstorm\LaravelDDD\Factories\DomainFactory` extension of `Illuminate\Database\Eloquent\Factories\Factory`:
+    - Implements `DomainFactory::resolveFactoryName()` to resolve the corresponding factory for a domain model.
+    - Will resolve the correct factory if the model belongs to a subdomain; `Domain\Reporting\Internal\Models\InvoiceReport` will correctly resolve to `Database\Factories\Reporting\Internal\InvoiceReportFactory`.
+
+### Changed
+- Default base model implementation in `base-model.php.stub` now uses using `DomainFactory::factoryForModel()` inside the `newFactory` method to resolve the model factory.
+
 ## [0.6.1] - 2023-08-14
 ### Fixed
 - Ensure generated domain factories set the `protected $model` property.

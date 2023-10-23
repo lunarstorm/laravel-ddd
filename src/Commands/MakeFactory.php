@@ -92,14 +92,17 @@ class MakeFactory extends DomainGeneratorCommand
 
         $name = $this->getNameInput();
 
-        $namespacedModel = $this->option('model')
-            ? $domain->namespacedModel($this->option('model'))
-            : $domain->namespacedModel($this->guessModelName($name));
+        $modelName = $this->option('model') ?: $this->guessModelName($name);
+
+        $domainModel = $domain->model($modelName);
+
+        $domainFactory = $domain->factory($name);
 
         return [
-            'namespacedModel' => $namespacedModel,
-            'model' => class_basename($namespacedModel),
+            'namespacedModel' => $domainModel->fqn,
+            'model' => class_basename($domainModel->fqn),
             'factory' => $this->getFactoryName(),
+            'namespace' => $domainFactory->namespace,
         ];
     }
 
@@ -109,6 +112,6 @@ class MakeFactory extends DomainGeneratorCommand
             $name = substr($name, 0, -7);
         }
 
-        return (new Domain($this->getDomain()))->namespacedModel($name);
+        return (new Domain($this->getDomain()))->model($name)->name;
     }
 }

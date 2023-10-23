@@ -42,7 +42,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Lunarstorm\\LaravelDDD\\Tests\\": "tests"
+            "Lunarstorm\\LaravelDDD\\Tests\\": "tests",
+            "App\\": "vendor/orchestra/testbench-core/laravel/app/",
+            "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories/",
+            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain/"
         }
     },
     "scripts": {
@@ -50,7 +53,8 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint"
+        "format": "vendor/bin/pint",
+        "lint": "vendor/bin/pint"
     },
     "config": {
         "sort-packages": true,

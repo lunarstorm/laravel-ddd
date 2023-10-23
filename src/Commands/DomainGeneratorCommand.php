@@ -50,6 +50,7 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     {
         return str($this->getDomainInput())
             ->trim()
+            ->replace(['.', '/'], '\\')
             ->studly()
             ->toString();
     }
