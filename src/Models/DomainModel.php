@@ -3,9 +3,10 @@
 namespace Lunarstorm\LaravelDDD\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 
-abstract class DomainModel
+abstract class DomainModel extends Model
 {
     use HasFactory;
 
