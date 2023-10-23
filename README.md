@@ -7,7 +7,7 @@
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus a few more.
 
-> :warning: **Disclaimer**: While this package is publicly available for installation, it is subject to frequent design changes as it evolves towards a stable v1.0 release. It is currently being tested and fine tuned within Lunarstorm's client projects.
+> :warning: **Disclaimer**: This package is subject to frequent design changes as it evolves towards a stable v1.0 release. It is currently being tested and fine tuned within Lunarstorm's client projects.
 
 ## Installation
 
@@ -49,6 +49,7 @@ php artisan ddd:view-model {domain} {name}
 # Generates an action
 php artisan ddd:action {domain} {name}
 ```
+
 Examples:
 ```bash
 php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
@@ -58,6 +59,14 @@ php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
 php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
 php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
 php artisan ddd:action Invoicing SendInvoiceToCustomer # Domain/Invoicing/Actions/SendInvoiceToCustomer
+```
+
+Subdomains (nested domains) can be specified with dot notation:
+```bash
+php artisan ddd:model Invoicing.Customer CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
+php artisan ddd:factory Invoicing.Customer CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
+# Supported by all generator commands
+```
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
