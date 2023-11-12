@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -75,17 +76,32 @@ class MakeModel extends DomainGeneratorCommand
             return;
         }
 
-        $parts = str($baseModel)->explode('\\');
-        $baseModelName = $parts->last();
+        $this->warn("Configured base model {$baseModel} doesn't exist.");
+
+        // If the base model is out of scope, we won't attempt to create it
+        // because we don't want to interfere with outside folders.
+        $allowedRootNamespaces = [
+            $this->rootNamespace(),
+        ];
+
+        if (! str($baseModel)->startsWith($allowedRootNamespaces)) {
+            return;
+        }
+
+        $domain = DomainResolver::fromClass($baseModel);
+
+        if (! $domain) {
+            return;
+        }
+
+        $baseModelName = class_basename($baseModel);
         $baseModelPath = $this->getPath($baseModel);
 
-        // base_path(config('ddd.paths.domains') . '/Shared/Models/BaseModel.php')
-
         if (! file_exists($baseModelPath)) {
-            $this->warn("Base model {$baseModel} doesn't exist, generating...");
+            $this->info("Generating {$baseModel}...");
 
             $this->call(MakeBaseModel::class, [
-                'domain' => 'Shared',
+                'domain' => $domain->domain,
                 'name' => $baseModelName,
             ]);
         }
