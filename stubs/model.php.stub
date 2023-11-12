@@ -5,7 +5,7 @@ namespace {{ namespace }};
 use {{ rootNamespace }}\Shared\Models\BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class {{ class }} extends BaseModel
+class {{ class }}{{ extends }}
 {
     use SoftDeletes;
 

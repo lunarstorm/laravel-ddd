@@ -48,22 +48,19 @@ class MakeModel extends DomainGeneratorCommand
         return config('ddd.namespaces.models', 'Models');
     }
 
+    protected function preparePlaceholders(): array
+    {
+        $baseClass = config('ddd.base_model');
+        $baseClassName = class_basename($baseClass);
+
+        return [
+            'extends' => filled($baseClass) ? " extends {$baseClassName}" : '',
+        ];
+    }
+
     public function handle()
     {
-        $baseModel = config('ddd.base_model');
-
-        $parts = str($baseModel)->explode('\\');
-        $baseModelName = $parts->last();
-        $baseModelPath = $this->getPath($baseModel);
-
-        if (! file_exists($baseModelPath)) {
-            $this->warn("Base model {$baseModel} doesn't exist, generating...");
-
-            $this->call(MakeBaseModel::class, [
-                'domain' => 'Shared',
-                'name' => $baseModelName,
-            ]);
-        }
+        $this->createBaseModelIfNeeded(config('ddd.base_model'));
 
         parent::handle();
 
@@ -72,11 +69,33 @@ class MakeModel extends DomainGeneratorCommand
         }
     }
 
+    protected function createBaseModelIfNeeded($baseModel)
+    {
+        if (class_exists($baseModel)) {
+            return;
+        }
+
+        $parts = str($baseModel)->explode('\\');
+        $baseModelName = $parts->last();
+        $baseModelPath = $this->getPath($baseModel);
+
+        // base_path(config('ddd.paths.domains') . '/Shared/Models/BaseModel.php')
+
+        if (!file_exists($baseModelPath)) {
+            $this->warn("Base model {$baseModel} doesn't exist, generating...");
+
+            $this->call(MakeBaseModel::class, [
+                'domain' => 'Shared',
+                'name' => $baseModelName,
+            ]);
+        }
+    }
+
     protected function createFactory()
     {
         $this->call(MakeFactory::class, [
             'domain' => $this->getDomain(),
-            'name' => $this->getNameInput().'Factory',
+            'name' => $this->getNameInput() . 'Factory',
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }

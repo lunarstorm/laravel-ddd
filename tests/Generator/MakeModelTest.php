@@ -106,7 +106,7 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
     expect(file_exists($expectedModelPath))->toBeTrue();
 })->with('makeModelInputs');
 
-it('generates the base model if needed', function () {
+it('generates the base model when possible', function () {
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
 
@@ -140,6 +140,19 @@ it('generates the base model if needed', function () {
 
     expect(file_exists($expectedBaseModelPath))->toBeTrue();
 });
+
+it('skips base model creation if configured base model already exists', function ($baseModel) {
+    Config::set('ddd.base_model', $baseModel);
+
+    expect(class_exists($baseModel))->toBeTrue();
+
+    Artisan::call('ddd:model Fruits Lemon');
+
+    expect(Artisan::output())->not->toContain("Base model {$baseModel} doesn't exist, generating...");
+})->with([
+    ['Illuminate\Database\Eloquent\Model'],
+    ['Lunarstorm\LaravelDDD\Models\DomainModel'],
+]);
 
 it('shows meaningful hints when prompting for missing input', function () {
     $this->artisan('ddd:model')
