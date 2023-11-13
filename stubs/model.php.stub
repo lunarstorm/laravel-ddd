@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use {{ rootNamespace }}\Shared\Models\BaseModel;
+{{ baseClassImport }}
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class {{ class }}{{ extends }}

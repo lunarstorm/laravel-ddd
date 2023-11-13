@@ -56,12 +56,13 @@ class MakeModel extends DomainGeneratorCommand
 
         return [
             'extends' => filled($baseClass) ? " extends {$baseClassName}" : '',
+            'baseClassImport' => filled($baseClass) ? "use {$baseClass};" : '',
         ];
     }
 
     public function handle()
     {
-        $this->createBaseModelIfNeeded(config('ddd.base_model'));
+        $this->createBaseModelIfNeeded();
 
         parent::handle();
 
@@ -70,8 +71,10 @@ class MakeModel extends DomainGeneratorCommand
         }
     }
 
-    protected function createBaseModelIfNeeded($baseModel)
+    protected function createBaseModelIfNeeded()
     {
+        $baseModel = config('ddd.base_model');
+
         if (class_exists($baseModel)) {
             return;
         }
@@ -79,16 +82,16 @@ class MakeModel extends DomainGeneratorCommand
         $this->warn("Configured base model {$baseModel} doesn't exist.");
 
         // If the base model is out of scope, we won't attempt to create it
-        // because we don't want to interfere with outside folders.
-        $allowedRootNamespaces = [
+        // because we don't want to interfere with external folders.
+        $allowedNamespacePrefixes = [
             $this->rootNamespace(),
         ];
 
-        if (! str($baseModel)->startsWith($allowedRootNamespaces)) {
+        if (! str($baseModel)->startsWith($allowedNamespacePrefixes)) {
             return;
         }
 
-        $domain = DomainResolver::fromClass($baseModel);
+        $domain = DomainResolver::guessDomainFromClass($baseModel);
 
         if (! $domain) {
             return;
@@ -101,7 +104,7 @@ class MakeModel extends DomainGeneratorCommand
             $this->info("Generating {$baseModel}...");
 
             $this->call(MakeBaseModel::class, [
-                'domain' => $domain->domain,
+                'domain' => $domain,
                 'name' => $baseModelName,
             ]);
         }

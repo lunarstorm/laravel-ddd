@@ -2,15 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Illuminate\Support\Str;
-
 class DomainResolver
 {
-    public static function fromClass(string $class): ?Domain
+    public static function guessDomainFromClass(string $class): ?string
     {
         $domainNamespace = basename(config('ddd.paths.domains')).'\\';
 
-        if (! Str::startsWith($class, $domainNamespace)) {
+        if (! str($class)->startsWith($domainNamespace)) {
             // Not a domain model
             return null;
         }
@@ -20,6 +18,6 @@ class DomainResolver
             ->before('\\')
             ->toString();
 
-        return new Domain($domain);
+        return $domain;
     }
 }

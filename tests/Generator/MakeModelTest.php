@@ -119,6 +119,13 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
         "{$modelName}.php",
     ]));
 
+    $expectedModelClass = implode('\\', [
+        basename(config('ddd.paths.domains')),
+        $domain,
+        config('ddd.namespaces.models'),
+        $modelName,
+    ]);
+
     if (file_exists($expectedModelPath)) {
         unlink($expectedModelPath);
     }
@@ -131,17 +138,23 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
         unlink($expectedBaseModelPath);
     }
 
+    expect(class_exists($baseModelClass))->toBeFalse();
+
     expect(file_exists($expectedBaseModelPath))->toBeFalse("{$baseModelPath} expected not to exist.");
 
     Artisan::call("ddd:model {$domain} {$modelName}");
 
-    expect(file_exists($expectedBaseModelPath))->toBeTrue("{$baseModelPath} expected to exist.");
+    expect(file_exists($expectedBaseModelPath))->toBeTrue("Expecting base model file to be generated at {$baseModelPath}");
+
+    // Not able to properly assert the following class_exists checks under the testing environment
+    // expect(class_exists($expectedModelClass))->toBeTrue("Expecting model class {$expectedModelClass} to exist");
+    // expect(class_exists($baseModelClass))->toBeTrue("Expecting base model class {$baseModelClass} to exist");
 })->with([
-    ['Domain\\Shared\\Models\\BaseModel', 'src/Domain/Shared/Models/BaseModel.php'],
-    ['Domain\\Infrastructure\\Models\\BaseModel', 'src/Domain/Infrastructure/Models/BaseModel.php'],
+    ['Domain\Shared\Models\CustomBaseModel', 'src/Domain/Shared/Models/CustomBaseModel.php'],
+    ['Domain\Core\Models\CustomBaseModel', 'src/Domain/Core/Models/CustomBaseModel.php'],
 ]);
 
-it('will not create a base model if the configured base model is out of scope', function ($baseModel) {
+it('will not generate a base model if the configured base model is out of scope', function ($baseModel) {
     Config::set('ddd.base_model', $baseModel);
 
     expect(class_exists($baseModel))->toBeFalse();
@@ -151,9 +164,11 @@ it('will not create a base model if the configured base model is out of scope', 
     expect(Artisan::output())
         ->toContain("Configured base model {$baseModel} doesn't exist.")
         ->not->toContain("Generating {$baseModel}");
+
+    expect(class_exists($baseModel))->toBeFalse();
 })->with([
-    ['Illuminate\\Database\\Eloquent\\NonExistentModel'],
-    ['OtherVendor\\OtherPackage\\Models\\OtherModel'],
+    ['Illuminate\Database\Eloquent\NonExistentModel'],
+    ['OtherVendor\OtherPackage\Models\NonExistentModel'],
 ]);
 
 it('skips base model creation if configured base model already exists', function ($baseModel) {
@@ -167,8 +182,8 @@ it('skips base model creation if configured base model already exists', function
         ->not->toContain("Configured base model {$baseModel} doesn't exist.")
         ->not->toContain("Generating {$baseModel}");
 })->with([
-    ['Illuminate\\Database\\Eloquent\\Model'],
-    ['Lunarstorm\\LaravelDDD\\Models\\DomainModel'],
+    ['Illuminate\Database\Eloquent\Model'],
+    ['Lunarstorm\LaravelDDD\Models\DomainModel'],
 ]);
 
 it('shows meaningful hints when prompting for missing input', function () {
