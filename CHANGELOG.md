@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Changed
+- Implement more robust handling of base models when generating a domain model with `ddd:model`:
+    - If the configured `ddd.base_model` exists (evaluated using `class_exists`), base model generation is skipped.
+    - If `ddd.base_model` does not exist and falls under a domain namespace, base model will be generated.
+    - Falling under a domain namespace means `Domain\**\Models\SomeBaseModel`.
+    - For example, if `ddd.base_model` were set to `App\Models\CustomAppBaseModel` or `Illuminate\Database\Eloquent\NonExistentModel`, they fall outside of the domain namespace and won't be generated on your behalf.
+
+### Fixed
+- Resolve long-standing issue where `ddd:model` would not properly detect whether the configured `ddd.base_model` already exists, leading to unpredictable results when `ddd.base_model` deviated from the default `Domain\Shared\Models\BaseModel`.
+
+### Chore
+- Update composer dependencies.
+
 ## [0.7.0] - 2023-10-22
 ### Added
 - Formal support for subdomains (nested domains). For example, to generate model `Domain\Reporting\Internal\Models\InvoiceReport`, the domain argument can be specified with dot notation: `ddd:model Reporting.Internal InvoiceReport`. Specifying `Reporting/Internal` or `Reporting\\Internal` will also be accepted and normalized to dot notation internally.

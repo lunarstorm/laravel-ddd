@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -48,27 +49,64 @@ class MakeModel extends DomainGeneratorCommand
         return config('ddd.namespaces.models', 'Models');
     }
 
+    protected function preparePlaceholders(): array
+    {
+        $baseClass = config('ddd.base_model');
+        $baseClassName = class_basename($baseClass);
+
+        return [
+            'extends' => filled($baseClass) ? " extends {$baseClassName}" : '',
+            'baseClassImport' => filled($baseClass) ? "use {$baseClass};" : '',
+        ];
+    }
+
     public function handle()
     {
-        $baseModel = config('ddd.base_model');
-
-        $parts = str($baseModel)->explode('\\');
-        $baseModelName = $parts->last();
-        $baseModelPath = $this->getPath($baseModel);
-
-        if (! file_exists($baseModelPath)) {
-            $this->warn("Base model {$baseModel} doesn't exist, generating...");
-
-            $this->call(MakeBaseModel::class, [
-                'domain' => 'Shared',
-                'name' => $baseModelName,
-            ]);
-        }
+        $this->createBaseModelIfNeeded();
 
         parent::handle();
 
         if ($this->option('factory')) {
             $this->createFactory();
+        }
+    }
+
+    protected function createBaseModelIfNeeded()
+    {
+        $baseModel = config('ddd.base_model');
+
+        if (class_exists($baseModel)) {
+            return;
+        }
+
+        $this->warn("Configured base model {$baseModel} doesn't exist.");
+
+        // If the base model is out of scope, we won't attempt to create it
+        // because we don't want to interfere with external folders.
+        $allowedNamespacePrefixes = [
+            $this->rootNamespace(),
+        ];
+
+        if (! str($baseModel)->startsWith($allowedNamespacePrefixes)) {
+            return;
+        }
+
+        $domain = DomainResolver::guessDomainFromClass($baseModel);
+
+        if (! $domain) {
+            return;
+        }
+
+        $baseModelName = class_basename($baseModel);
+        $baseModelPath = $this->getPath($baseModel);
+
+        if (! file_exists($baseModelPath)) {
+            $this->info("Generating {$baseModel}...");
+
+            $this->call(MakeBaseModel::class, [
+                'domain' => $domain,
+                'name' => $baseModelName,
+            ]);
         }
     }
 

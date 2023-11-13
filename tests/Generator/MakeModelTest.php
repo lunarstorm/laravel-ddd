@@ -106,9 +106,11 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
     expect(file_exists($expectedModelPath))->toBeTrue();
 })->with('makeModelInputs');
 
-it('generates the base model if needed', function () {
+it('generates the base model when possible', function ($baseModelClass, $baseModelPath) {
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
+
+    Config::set('ddd.base_model', $baseModelClass);
 
     $expectedModelPath = base_path(implode('/', [
         config('ddd.paths.domains'),
@@ -117,29 +119,72 @@ it('generates the base model if needed', function () {
         "{$modelName}.php",
     ]));
 
+    $expectedModelClass = implode('\\', [
+        basename(config('ddd.paths.domains')),
+        $domain,
+        config('ddd.namespaces.models'),
+        $modelName,
+    ]);
+
     if (file_exists($expectedModelPath)) {
         unlink($expectedModelPath);
     }
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
-    // This currently only tests for the default base model
-    $expectedBaseModelPath = base_path(config('ddd.paths.domains').'/Shared/Models/BaseModel.php');
+    $expectedBaseModelPath = base_path($baseModelPath);
 
     if (file_exists($expectedBaseModelPath)) {
         unlink($expectedBaseModelPath);
     }
 
-    // Todo: should bypass base model creation if
-    // a custom base model is being used.
-    // $baseModel = config('ddd.base_model');
+    expect(class_exists($baseModelClass))->toBeFalse();
 
-    expect(file_exists($expectedBaseModelPath))->toBeFalse();
+    expect(file_exists($expectedBaseModelPath))->toBeFalse("{$baseModelPath} expected not to exist.");
 
     Artisan::call("ddd:model {$domain} {$modelName}");
 
-    expect(file_exists($expectedBaseModelPath))->toBeTrue();
-});
+    expect(file_exists($expectedBaseModelPath))->toBeTrue("Expecting base model file to be generated at {$baseModelPath}");
+
+    // Not able to properly assert the following class_exists checks under the testing environment
+    // expect(class_exists($expectedModelClass))->toBeTrue("Expecting model class {$expectedModelClass} to exist");
+    // expect(class_exists($baseModelClass))->toBeTrue("Expecting base model class {$baseModelClass} to exist");
+})->with([
+    ['Domain\Shared\Models\CustomBaseModel', 'src/Domain/Shared/Models/CustomBaseModel.php'],
+    ['Domain\Core\Models\CustomBaseModel', 'src/Domain/Core/Models/CustomBaseModel.php'],
+]);
+
+it('will not generate a base model if the configured base model is out of scope', function ($baseModel) {
+    Config::set('ddd.base_model', $baseModel);
+
+    expect(class_exists($baseModel))->toBeFalse();
+
+    Artisan::call('ddd:model Fruits Lemon');
+
+    expect(Artisan::output())
+        ->toContain("Configured base model {$baseModel} doesn't exist.")
+        ->not->toContain("Generating {$baseModel}");
+
+    expect(class_exists($baseModel))->toBeFalse();
+})->with([
+    ['Illuminate\Database\Eloquent\NonExistentModel'],
+    ['OtherVendor\OtherPackage\Models\NonExistentModel'],
+]);
+
+it('skips base model creation if configured base model already exists', function ($baseModel) {
+    Config::set('ddd.base_model', $baseModel);
+
+    expect(class_exists($baseModel))->toBeTrue();
+
+    Artisan::call('ddd:model Fruits Lemon');
+
+    expect(Artisan::output())
+        ->not->toContain("Configured base model {$baseModel} doesn't exist.")
+        ->not->toContain("Generating {$baseModel}");
+})->with([
+    ['Illuminate\Database\Eloquent\Model'],
+    ['Lunarstorm\LaravelDDD\Models\DomainModel'],
+]);
 
 it('shows meaningful hints when prompting for missing input', function () {
     $this->artisan('ddd:model')

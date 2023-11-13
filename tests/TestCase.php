@@ -22,6 +22,7 @@ class TestCase extends Orchestra
 
         // Reset the domain namespace
         Arr::forget($data, ['autoload', 'psr-4', 'Domains\\']);
+        Arr::forget($data, ['autoload', 'psr-4', 'Domain\\']);
 
         // Set up the essential app namespaces
         data_set($data, ['autoload', 'psr-4', 'App\\'], 'vendor/orchestra/testbench-core/laravel/app');
@@ -36,7 +37,9 @@ class TestCase extends Orchestra
             fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
-        $this->beforeApplicationDestroyed(fn () => $this->cleanFilesAndFolders());
+        $this->beforeApplicationDestroyed(function () {
+            $this->cleanFilesAndFolders();
+        });
     }
 
     protected function getPackageProviders($app)
