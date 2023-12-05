@@ -2,10 +2,11 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [0.8.0] - 2023-11-12
-### BREAKING
-- The default domain model stub `model.php.stub` has changed. If stubs were published prior to this release, you may have to delete and re-publish; unless the published `model.php.stub` has been entirely customized with independent logic for your respective application.
+## [0.8.1] - 2023-12-05
+### Chore
+- Update dependencies.
 
+## [0.8.0] - 2023-11-12
 ### Changed
 - Implement proper support for custom base models when using `ddd:model`:
     - If the configured `ddd.base_model` exists (evaluated using `class_exists`), base model generation is skipped.
@@ -18,6 +19,9 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ### Chore
 - Update composer dependencies.
+
+### BREAKING
+- The default domain model stub `model.php.stub` has changed. If stubs were published prior to this release, you may have to delete and re-publish; unless the published `model.php.stub` has been entirely customized with independent logic for your respective application.
 
 ## [0.7.0] - 2023-10-22
 ### Added
