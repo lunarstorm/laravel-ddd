@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Chore
+- Add Laravel 11 support.
+
 ## [0.8.1] - 2023-12-05
 ### Chore
 - Update dependencies.
