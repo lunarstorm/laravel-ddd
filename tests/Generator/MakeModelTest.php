@@ -31,7 +31,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedModelPath))->toBeTrue();

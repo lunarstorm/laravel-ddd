@@ -30,7 +30,7 @@ it('can generate view models', function ($domainPath, $domainRoot) {
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
@@ -77,7 +77,7 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains').'/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains') . '/Shared/ViewModels/ViewModel.php');
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);

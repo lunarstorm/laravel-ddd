@@ -7,3 +7,9 @@ expect()->extend('toMatchRegularExpression', function ($pattern, string $message
 
     return $this;
 });
+
+expect()->extend('toContainFilepath', function ($path) {
+    $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+    return $this->toContain($normalizedPath);
+});
