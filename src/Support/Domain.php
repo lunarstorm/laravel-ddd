@@ -19,7 +19,7 @@ class Domain
 
     public readonly DomainNamespaces $namespace;
 
-    public function __construct(string $domain, string $subdomain = null)
+    public function __construct(string $domain, ?string $subdomain = null)
     {
         if (is_null($subdomain)) {
             // If a subdomain isn't explicitly specified, we
@@ -62,7 +62,7 @@ class Domain
         return app()->basePath(config('ddd.paths.domains'));
     }
 
-    public function path(string $path = null): string
+    public function path(?string $path = null): string
     {
         if (is_null($path)) {
             return $this->path;
