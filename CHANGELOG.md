@@ -2,9 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [0.9.0] - 2024-03-11
+### Changed
+- Internals: normalize generator file paths using `DIRECTORY_SEPARATOR` for consistency across different operating systems when it comes to console output and test expectations.
+
 ### Chore
 - Add Laravel 11 support.
+- Add PHP 8.3 support.
 
 ## [0.8.1] - 2023-12-05
 ### Chore
