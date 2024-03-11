@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain factories', function ($domainPath, $domainRoot, $domain, $subdomain) {
@@ -23,7 +24,7 @@ it('can generate domain factories', function ($domainPath, $domainRoot, $domain,
 
     $domainFactory = $domain->factory($factoryName);
 
-    $expectedFactoryPath = base_path($domainFactory->path);
+    $expectedFactoryPath = Path::normalize(base_path($domainFactory->path));
 
     if (file_exists($expectedFactoryPath)) {
         unlink($expectedFactoryPath);
