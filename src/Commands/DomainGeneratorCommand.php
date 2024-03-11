@@ -67,7 +67,7 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
             ->replace('\\', '/')
             ->ltrim('/')
             ->append('.php')
-            ->prepend($this->getDomainBasePath() . DIRECTORY_SEPARATOR)
+            ->prepend($this->getDomainBasePath().DIRECTORY_SEPARATOR)
             ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
             ->toString();
 
