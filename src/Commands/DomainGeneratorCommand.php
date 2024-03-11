@@ -57,7 +57,9 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
 
     protected function getDomainBasePath()
     {
-        return $this->laravel->basePath(config('ddd.paths.domains', 'src/Domains'));
+        return str($this->laravel->basePath(config('ddd.paths.domains', 'src/Domains')))
+            ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+            ->toString();
     }
 
     protected function getPath($name)
