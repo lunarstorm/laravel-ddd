@@ -1,5 +1,7 @@
 <?php
 
+use Lunarstorm\LaravelDDD\Support\Path;
+
 use function PHPUnit\Framework\assertMatchesRegularExpression;
 
 expect()->extend('toMatchRegularExpression', function ($pattern, string $message = '') {
@@ -9,7 +11,5 @@ expect()->extend('toMatchRegularExpression', function ($pattern, string $message
 });
 
 expect()->extend('toContainFilepath', function ($path) {
-    $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-
-    return $this->toContain($normalizedPath);
+    return $this->toContain(Path::normalize($path));
 });

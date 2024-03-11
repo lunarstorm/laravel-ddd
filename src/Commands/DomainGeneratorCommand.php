@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputArgument;
 
 abstract class DomainGeneratorCommand extends GeneratorCommand
@@ -57,23 +58,20 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
 
     protected function getDomainBasePath()
     {
-        return str($this->laravel->basePath(config('ddd.paths.domains', 'src/Domains')))
-            ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
-            ->toString();
+        return Path::normalize($this->laravel->basePath(config('ddd.paths.domains', 'src/Domains')));
     }
 
     protected function getPath($name)
     {
-        $normalizedPath = str($name)
+        $path = str($name)
             ->replaceFirst($this->rootNamespace(), '')
             ->replace('\\', '/')
             ->ltrim('/')
             ->append('.php')
             ->prepend($this->getDomainBasePath().DIRECTORY_SEPARATOR)
-            ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
             ->toString();
 
-        return $normalizedPath;
+        return Path::normalize($path);
     }
 
     protected function resolveStubPath($path)
