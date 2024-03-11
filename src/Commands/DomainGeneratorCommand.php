@@ -62,14 +62,16 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
 
     protected function getPath($name)
     {
-        $name = str($name)
+        $normalizedPath = str($name)
             ->replaceFirst($this->rootNamespace(), '')
             ->replace('\\', '/')
             ->ltrim('/')
             ->append('.php')
+            ->prepend($this->getDomainBasePath() . DIRECTORY_SEPARATOR)
+            ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
             ->toString();
 
-        return $this->getDomainBasePath().'/'.$name;
+        return $normalizedPath;
     }
 
     protected function resolveStubPath($path)
