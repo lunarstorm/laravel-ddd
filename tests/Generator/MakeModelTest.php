@@ -31,7 +31,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedModelPath))->toBeTrue();
@@ -76,11 +76,9 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
         '--factory' => true,
     ]);
 
-    $outputPath = str_replace('\\', '/', $domainModel->path);
-
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($outputPath),
+        fn ($output) => $output->toContainFilepath($domainModel->path),
     );
 
     expect(file_exists($expectedModelPath))->toBeTrue();

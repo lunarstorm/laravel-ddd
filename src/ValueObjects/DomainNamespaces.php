@@ -15,7 +15,7 @@ class DomainNamespaces
     ) {
     }
 
-    public static function from(string $domain, string $subdomain = null): self
+    public static function from(string $domain, ?string $subdomain = null): self
     {
         $domainWithSubdomain = str($domain)
             ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))

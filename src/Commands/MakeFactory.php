@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -74,7 +75,7 @@ class MakeFactory extends DomainGeneratorCommand
             ->append('.php')
             ->toString();
 
-        return base_path('database/factories/'.$name);
+        return Path::normalize(base_path('database/factories/'.$name));
     }
 
     protected function getFactoryName()

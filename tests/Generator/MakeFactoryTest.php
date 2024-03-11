@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain factories', function ($domainPath, $domainRoot, $domain, $subdomain) {
@@ -23,7 +24,7 @@ it('can generate domain factories', function ($domainPath, $domainRoot, $domain,
 
     $domainFactory = $domain->factory($factoryName);
 
-    $expectedFactoryPath = base_path($domainFactory->path);
+    $expectedFactoryPath = Path::normalize(base_path($domainFactory->path));
 
     if (file_exists($expectedFactoryPath)) {
         unlink($expectedFactoryPath);
@@ -33,11 +34,9 @@ it('can generate domain factories', function ($domainPath, $domainRoot, $domain,
 
     Artisan::call("ddd:factory {$domain->dotName} {$modelName}");
 
-    $outputPath = str_replace('\\', '/', $domainFactory->path);
-
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContain($outputPath),
+        fn ($output) => $output->toContainFilepath($domainFactory->path),
     );
 
     expect(file_exists($expectedFactoryPath))->toBeTrue(
