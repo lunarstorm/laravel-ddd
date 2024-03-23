@@ -82,20 +82,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Paths
+    | Domain Path
     |--------------------------------------------------------------------------
     |
-    | This value contains paths to the layers of the application in the context
-    | of domain driven design, relative to the base folder of the application.
+    | The path to the domain folder relative to the application root.
     |
     */
+    'domain_path' => 'src/Domain',
 
-    'paths' => [
-        //
-        // Path to the Domain layer.
-        //
-        'domains' => 'src/Domain',
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Domain Namespace
+    |--------------------------------------------------------------------------
+    |
+    | The root domain namespace.
+    |
+    */
+    'domain_namespace' => 'Domain',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,29 +117,10 @@ return [
     |
     */
     'namespaces' => [
-        //
-        // Models
-        //
         'models' => 'Models',
-
-        //
-        // Data Transfer Objects (DTO)
-        //
         'data_transfer_objects' => 'Data',
-
-        //
-        // View Models
-        //
         'view_models' => 'ViewModels',
-
-        //
-        // Value Objects
-        //
         'value_objects' => 'ValueObjects',
-
-        //
-        // Actions
-        //
         'actions' => 'Actions',
     ],
 

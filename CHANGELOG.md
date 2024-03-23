@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- Config keys `ddd.domain_path` and `ddd.domain_namespace` added to specify path to the domain folder and root domain namespace. This allows a custom domain namespace if it differs from the basename of the domain path. e.g., `src/Domains` domain folder, but with `Domain` namespace.
+
+### Deprecated
+- Config `ddd.paths.domains` deprecated in favour of `ddd.domain_path` and `ddd.domain_namespace`.
+
 ## [0.9.0] - 2024-03-11
 ### Changed
 - Internals: normalize generator file paths using `DIRECTORY_SEPARATOR` for consistency across different operating systems when it comes to console output and test expectations.

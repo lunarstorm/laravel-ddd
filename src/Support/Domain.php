@@ -54,12 +54,12 @@ class Domain
 
         $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
-        $this->path = Path::join(config('ddd.paths.domains'), $this->domainWithSubdomain);
+        $this->path = Path::join(DomainResolver::getConfiguredDomainPath(), $this->domainWithSubdomain);
     }
 
     protected function getDomainBasePath()
     {
-        return app()->basePath(config('ddd.paths.domains'));
+        return app()->basePath(DomainResolver::getConfiguredDomainPath());
     }
 
     public function path(?string $path = null): string
