@@ -6,7 +6,8 @@ use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate action objects', function ($domainPath, $domainRoot) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $name = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
@@ -48,7 +49,7 @@ it('normalizes generated action object to pascal case', function ($given, $norma
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.actions'),
         "{$normalized}.php",
@@ -73,7 +74,7 @@ it('extends a base action if specified in config', function ($baseAction) {
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.actions'),
         "{$name}.php",
@@ -100,7 +101,7 @@ it('does not extend a base action if not specified in config', function () {
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.actions'),
         "{$name}.php",

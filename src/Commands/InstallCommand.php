@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Process\Process;
 
 class InstallCommand extends Command
@@ -34,11 +35,10 @@ class InstallCommand extends Command
 
     public function registerDomainAutoload()
     {
-        $domainPath = config('ddd.paths.domains');
+        $domainPath = DomainResolver::getConfiguredDomainPath();
 
-        $domainRootNamespace = str($domainPath)
+        $domainRootNamespace = str(DomainResolver::getConfiguredDomainNamespace())
             ->rtrim('/\\')
-            ->basename()
             ->toString();
 
         $this->comment("Registering domain path `{$domainPath}` in composer.json...");

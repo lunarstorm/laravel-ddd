@@ -8,7 +8,8 @@ use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain factories', function ($domainPath, $domainRoot, $domain, $subdomain) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $modelName = Str::studly(fake()->word());
 

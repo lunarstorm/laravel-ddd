@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
 
 abstract class DomainFactory extends Factory
 {
@@ -14,7 +15,7 @@ abstract class DomainFactory extends Factory
      */
     protected static function domainNamespace()
     {
-        return basename(config('ddd.paths.domains')).'\\';
+        return Str::finish(DomainResolver::getConfiguredDomainNamespace(), '\\');
     }
 
     /**

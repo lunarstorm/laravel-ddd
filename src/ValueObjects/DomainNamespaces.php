@@ -2,6 +2,8 @@
 
 namespace Lunarstorm\LaravelDDD\ValueObjects;
 
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
+
 class DomainNamespaces
 {
     public function __construct(
@@ -21,7 +23,7 @@ class DomainNamespaces
             ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
             ->toString();
 
-        $root = basename(config('ddd.paths.domains'));
+        $root = DomainResolver::getConfiguredDomainNamespace();
 
         $domainNamespace = implode('\\', [$root, $domainWithSubdomain]);
 

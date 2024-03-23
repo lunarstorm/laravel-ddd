@@ -6,7 +6,8 @@ use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate view models', function ($domainPath, $domainRoot) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $viewModelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
@@ -48,7 +49,7 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.view_models'),
         "{$normalized}.php",
@@ -64,7 +65,7 @@ it('generates the base view model if needed', function () {
     $domain = Str::studly(fake()->word());
 
     $expectedPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.view_models'),
         "{$className}.php",
@@ -77,7 +78,7 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.paths.domains').'/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.domain_path').'/Shared/ViewModels/ViewModel.php');
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);

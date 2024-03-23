@@ -7,7 +7,8 @@ use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $modelName = Str::studly(fake()->word());
     $domain = Str::studly(fake()->word());
@@ -46,7 +47,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
 })->with('domainPaths');
 
 it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
 
     $modelName = Str::studly(fake()->word());
 
@@ -93,7 +94,7 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 
     $expectedModelPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.models'),
         "{$normalized}.php",
@@ -111,14 +112,14 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
     Config::set('ddd.base_model', $baseModelClass);
 
     $expectedModelPath = base_path(implode('/', [
-        config('ddd.paths.domains'),
+        config('ddd.domain_path'),
         $domain,
         config('ddd.namespaces.models'),
         "{$modelName}.php",
     ]));
 
     $expectedModelClass = implode('\\', [
-        basename(config('ddd.paths.domains')),
+        basename(config('ddd.domain_path')),
         $domain,
         config('ddd.namespaces.models'),
         $modelName,

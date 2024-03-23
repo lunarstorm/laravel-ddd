@@ -25,7 +25,8 @@ it('publishes config', function () {
 });
 
 it('can initialize composer.json', function ($domainPath, $domainRoot) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $data = json_decode(file_get_contents(base_path('composer.json')), true);
     $before = data_get($data, ['autoload', 'psr-4', $domainRoot.'\\']);
@@ -37,7 +38,7 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
 
     $data = json_decode(file_get_contents(base_path('composer.json')), true);
     $after = data_get($data, ['autoload', 'psr-4', $domainRoot.'\\']);
-    expect($after)->toEqual(config('ddd.paths.domains'));
+    expect($after)->toEqual(config('ddd.domain_path'));
 
     unlink(config_path('ddd.php'));
 })->with([

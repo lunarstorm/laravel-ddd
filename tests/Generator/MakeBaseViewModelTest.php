@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate base view model', function ($domainPath, $domainRoot) {
-    Config::set('ddd.paths.domains', $domainPath);
+    Config::set('ddd.domain_path', $domainPath);
+    Config::set('ddd.domain_namespace', $domainRoot);
 
     $className = 'ViewModel';
     $domain = 'Shared';
