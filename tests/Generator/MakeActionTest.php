@@ -65,7 +65,7 @@ it('shows meaningful hints when prompting for missing input', function () {
         ->expectsQuestion('What is the domain?', 'Utility')
         ->expectsQuestion('What should the action be named?', 'DoThatThing')
         ->assertExitCode(0);
-})->ifSupportsPromptForMissingInput();
+});
 
 it('extends a base action if specified in config', function ($baseAction) {
     Config::set('ddd.base_action', $baseAction);

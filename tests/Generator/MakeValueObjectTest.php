@@ -71,4 +71,4 @@ it('shows meaningful hints when prompting for missing input', function () {
         ->expectsQuestion('What is the domain?', 'Utility')
         ->expectsQuestion('What should the value object be named?', 'Belt')
         ->assertExitCode(0);
-})->ifSupportsPromptForMissingInput();
+});
