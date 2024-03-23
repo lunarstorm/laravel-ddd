@@ -78,7 +78,7 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.domain_path') . '/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.domain_path').'/Shared/ViewModels/ViewModel.php');
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);
