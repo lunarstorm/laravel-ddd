@@ -2,18 +2,12 @@
 
 namespace Lunarstorm\LaravelDDD\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Lunarstorm\LaravelDDD\Factories\DomainFactory;
+use Lunarstorm\LaravelDDD\Factories\HasDomainFactory;
 
 abstract class DomainModel extends Model
 {
-    use HasFactory;
+    use HasDomainFactory;
 
     protected $guarded = [];
-
-    protected static function newFactory()
-    {
-        return DomainFactory::factoryForModel(get_called_class());
-    }
 }
