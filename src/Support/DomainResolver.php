@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class DomainResolver
 {
-    public static function getConfiguredDomainPath(): string
+    public static function getConfiguredDomainPath(): ?string
     {
         if (Config::has('ddd.paths.domains')) {
             // Deprecated
@@ -17,7 +17,7 @@ class DomainResolver
         return config('ddd.domain_path');
     }
 
-    public static function getConfiguredDomainNamespace(): string
+    public static function getConfiguredDomainNamespace(): ?string
     {
         if (Config::has('ddd.paths.domains')) {
             // Deprecated

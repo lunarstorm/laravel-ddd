@@ -4,10 +4,14 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ## [Unversioned]
 ### Added
-- Config keys `ddd.domain_path` and `ddd.domain_namespace` added to specify path to the domain folder and root domain namespace. This allows a custom domain namespace if it differs from the basename of the domain path. e.g., `src/Domains` domain folder, but with `Domain` namespace.
+- Add `ddd.domain_path` and `ddd.domain_namespace` to config, to specify the path to the domain layer and root domain namespace more explicitly (replaces the previous `ddd.paths.domains` config).
+- Implement `Lunarstorm\LaravelDDD\Factories\HasDomainFactory` trait which can be used on domain models that are unable to extend the base domain model.
+
+### Changed
+- Default `base-model.php.stub` now utilizes the `HasDomainFactory` trait.
 
 ### Deprecated
-- Config `ddd.paths.domains` deprecated in favour of `ddd.domain_path` and `ddd.domain_namespace`.
+- Config `ddd.paths.domains` deprecated in favour of `ddd.domain_path` and `ddd.domain_namespace`. Existing config files published prior to this release should remove `ddd.paths.domains` and add `ddd.domain_path` and `ddd.domain_namespace` accordingly.
 
 ## [0.9.0] - 2024-03-11
 ### Changed
