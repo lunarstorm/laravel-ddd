@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainEventMakeCommand extends EventMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:event';
 }

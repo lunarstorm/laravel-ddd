@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainMailMakeCommand extends MailMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:mail';
 }

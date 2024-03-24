@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainJobMakeCommand extends JobMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:job';
 }

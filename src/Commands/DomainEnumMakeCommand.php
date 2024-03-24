@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainEnumMakeCommand extends EnumMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:enum';
 }

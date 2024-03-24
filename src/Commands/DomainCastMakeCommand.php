@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainCastMakeCommand extends CastMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:cast';
 }

@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainConsoleMakeCommand extends ConsoleMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:command';
 }

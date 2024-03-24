@@ -8,4 +8,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 class DomainExceptionMakeCommand extends ExceptionMakeCommand
 {
     use ResolvesDomainFromInput;
+
+    protected $name = 'ddd:exception';
 }
