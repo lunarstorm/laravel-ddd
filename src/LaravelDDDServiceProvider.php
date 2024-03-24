@@ -3,14 +3,14 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Lunarstorm\LaravelDDD\Commands\InstallCommand;
-use Lunarstorm\LaravelDDD\Commands\MakeAction;
-use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
-use Lunarstorm\LaravelDDD\Commands\MakeBaseViewModel;
-use Lunarstorm\LaravelDDD\Commands\MakeDTO;
-use Lunarstorm\LaravelDDD\Commands\MakeFactory;
-use Lunarstorm\LaravelDDD\Commands\MakeModel;
-use Lunarstorm\LaravelDDD\Commands\MakeValueObject;
-use Lunarstorm\LaravelDDD\Commands\MakeViewModel;
+use Lunarstorm\LaravelDDD\Commands\DomainActionMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainBaseModelMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainBaseViewModelMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainDtoMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainFactoryMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainModelMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainValueObjectMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainViewModelMakeCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -28,14 +28,14 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 InstallCommand::class,
-                MakeModel::class,
-                MakeFactory::class,
-                MakeBaseModel::class,
-                MakeDTO::class,
-                MakeValueObject::class,
-                MakeViewModel::class,
-                MakeBaseViewModel::class,
-                MakeAction::class,
+                DomainModelMakeCommand::class,
+                DomainFactoryMakeCommand::class,
+                DomainBaseModelMakeCommand::class,
+                DomainDtoMakeCommand::class,
+                DomainValueObjectMakeCommand::class,
+                DomainViewModelMakeCommand::class,
+                DomainBaseViewModelMakeCommand::class,
+                DomainActionMakeCommand::class,
                 \Lunarstorm\LaravelDDD\Commands\DomainCastMakeCommand::class,
                 \Lunarstorm\LaravelDDD\Commands\DomainChannelMakeCommand::class,
                 \Lunarstorm\LaravelDDD\Commands\DomainConsoleMakeCommand::class,

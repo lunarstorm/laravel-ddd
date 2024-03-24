@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-class MakeViewModel extends DomainGeneratorCommand
+class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:view-model';
 
@@ -28,10 +28,10 @@ class MakeViewModel extends DomainGeneratorCommand
         $baseName = $parts->last();
         $basePath = $this->getPath($baseViewModel);
 
-        if (! file_exists($basePath)) {
+        if (!file_exists($basePath)) {
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
-            $this->call(MakeBaseViewModel::class, [
+            $this->call(DomainBaseViewModelMakeCommand::class, [
                 '--domain' => 'Shared',
                 'name' => $baseName,
             ]);

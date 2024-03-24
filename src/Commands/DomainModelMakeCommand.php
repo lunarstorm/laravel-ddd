@@ -5,7 +5,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputOption;
 
-class MakeModel extends DomainGeneratorCommand
+class DomainModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:model';
 
@@ -69,23 +69,23 @@ class MakeModel extends DomainGeneratorCommand
             $this->rootNamespace(),
         ];
 
-        if (! str($baseModel)->startsWith($allowedNamespacePrefixes)) {
+        if (!str($baseModel)->startsWith($allowedNamespacePrefixes)) {
             return;
         }
 
         $domain = DomainResolver::guessDomainFromClass($baseModel);
 
-        if (! $domain) {
+        if (!$domain) {
             return;
         }
 
         $baseModelName = class_basename($baseModel);
         $baseModelPath = $this->getPath($baseModel);
 
-        if (! file_exists($baseModelPath)) {
+        if (!file_exists($baseModelPath)) {
             $this->info("Generating {$baseModel}...");
 
-            $this->call(MakeBaseModel::class, [
+            $this->call(DomainBaseModelMakeCommand::class, [
                 '--domain' => $domain,
                 'name' => $baseModelName,
             ]);
@@ -94,8 +94,8 @@ class MakeModel extends DomainGeneratorCommand
 
     protected function createFactory()
     {
-        $this->call(MakeFactory::class, [
-            'name' => $this->getNameInput().'Factory',
+        $this->call(DomainFactoryMakeCommand::class, [
+            'name' => $this->getNameInput() . 'Factory',
             '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);

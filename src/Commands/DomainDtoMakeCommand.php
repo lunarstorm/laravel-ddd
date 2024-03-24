@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-class MakeDTO extends DomainGeneratorCommand
+class DomainDtoMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:dto';
 

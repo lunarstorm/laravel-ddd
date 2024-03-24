@@ -4,7 +4,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-class MakeBaseViewModel extends DomainGeneratorCommand
+class DomainBaseViewModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:base-view-model';
 

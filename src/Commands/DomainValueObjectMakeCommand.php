@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-class MakeValueObject extends DomainGeneratorCommand
+class DomainValueObjectMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:value';
 

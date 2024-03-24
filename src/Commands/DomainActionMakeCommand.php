@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-class MakeAction extends DomainGeneratorCommand
+class DomainActionMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:action';
 
