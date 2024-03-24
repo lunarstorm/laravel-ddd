@@ -28,16 +28,16 @@ trait ResolvesDomainFromInput
     {
         if ($this->domain) {
             return match ($this->name) {
-                'make:cast' => $this->domain->namespace->casts,
-                'make:command' => $this->domain->namespace->commands,
-                'make:enum' => $this->domain->namespace->enums,
-                'make:event' => $this->domain->namespace->events,
-                'make:exception' => $this->domain->namespace->exceptions,
-                'make:job' => $this->domain->namespace->jobs,
-                'make:mail' => $this->domain->namespace->mail,
-                'make:notification' => $this->domain->namespace->notifications,
-                'make:resource' => $this->domain->namespace->resources,
-                'make:rule' => $this->domain->namespace->rules,
+                'ddd:cast' => $this->domain->namespace->casts,
+                'ddd:command' => $this->domain->namespace->commands,
+                'ddd:enum' => $this->domain->namespace->enums,
+                'ddd:event' => $this->domain->namespace->events,
+                'ddd:exception' => $this->domain->namespace->exceptions,
+                'ddd:job' => $this->domain->namespace->jobs,
+                'ddd:mail' => $this->domain->namespace->mail,
+                'ddd:notification' => $this->domain->namespace->notifications,
+                'ddd:resource' => $this->domain->namespace->resources,
+                'ddd:rule' => $this->domain->namespace->rules,
                 default => throw new \Exception("Unsupported domain generator: {$this->name}"),
             };
         }
@@ -50,16 +50,16 @@ trait ResolvesDomainFromInput
         if ($this->domain) {
             return $this->laravel->basePath(
                 match ($this->name) {
-                    'make:cast' => $this->domain->cast($name)->path,
-                    'make:command' => $this->domain->command($name)->path,
-                    'make:enum' => $this->domain->enum($name)->path,
-                    'make:event' => $this->domain->event($name)->path,
-                    'make:exception' => $this->domain->exception($name)->path,
-                    'make:job' => $this->domain->job($name)->path,
-                    'make:mail' => $this->domain->mail($name)->path,
-                    'make:notification' => $this->domain->notification($name)->path,
-                    'make:resource' => $this->domain->resource($name)->path,
-                    'make:rule' => $this->domain->rule($name)->path,
+                    'ddd:cast' => $this->domain->cast($name)->path,
+                    'ddd:command' => $this->domain->command($name)->path,
+                    'ddd:enum' => $this->domain->enum($name)->path,
+                    'ddd:event' => $this->domain->event($name)->path,
+                    'ddd:exception' => $this->domain->exception($name)->path,
+                    'ddd:job' => $this->domain->job($name)->path,
+                    'ddd:mail' => $this->domain->mail($name)->path,
+                    'ddd:notification' => $this->domain->notification($name)->path,
+                    'ddd:resource' => $this->domain->resource($name)->path,
+                    'ddd:rule' => $this->domain->rule($name)->path,
                     default => throw new \Exception("Unsupported domain generator: {$this->name}"),
                 }
             );
