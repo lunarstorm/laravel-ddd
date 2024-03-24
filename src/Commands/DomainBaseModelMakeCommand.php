@@ -4,40 +4,38 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-class MakeBaseViewModel extends DomainGeneratorCommand
+class DomainBaseModelMakeCommand extends DomainGeneratorCommand
 {
-    protected $name = 'ddd:base-view-model';
+    protected $name = 'ddd:base-model';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a base view model';
+    protected $description = 'Generate a base domain model';
 
-    protected $type = 'Base View Model';
+    protected $type = 'Base Model';
 
     protected function getArguments()
     {
         return [
-            ...parent::getArguments(),
-
             new InputArgument(
                 'name',
                 InputArgument::OPTIONAL,
-                'The name of the base view model',
-                'ViewModel'
+                'The name of the base model',
+                'BaseModel'
             ),
         ];
     }
 
     protected function getStub()
     {
-        return $this->resolveStubPath('base-view-model.php.stub');
+        return $this->resolveStubPath('base-model.php.stub');
     }
 
     protected function getRelativeDomainNamespace(): string
     {
-        return config('ddd.namespaces.view_models', 'ViewModels');
+        return config('ddd.namespaces.model', 'Models');
     }
 }

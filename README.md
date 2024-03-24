@@ -5,9 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 
-Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus a few more.
-
-> :warning: **Disclaimer**: This package is subject to frequent design changes as it evolves towards a stable v1.0 release. It is currently being tested and fine tuned within Lunarstorm's client projects.
+Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus many more.
 
 ## Installation
 
@@ -24,48 +22,85 @@ php artisan ddd:install
 
 ## Usage
 
-The following generator commands are currently available:
+Command syntax:
+```bash
+# Specifying the domain as an option
+php artisan ddd:{object} {name} --domain={domain}
 
+# Specifying the domain as part of the name (short-hand syntax)
+php artisan ddd:{object} {domain}:{name}
+
+# Not specifying the domain at all, which will then prompt
+# you to enter the domain name (with auto-completion)
+php artisan ddd:{object} {name}
+```
+
+The following generators are currently available, shown using short-hand syntax:
 ```bash
 # Generate a domain model
-php artisan ddd:model {domain} {name}
+php artisan ddd:model {domain}:{name}
 
 # Generate a domain model with factory
-php artisan ddd:model {domain} {name} -f
-php artisan ddd:model {domain} {name} --factory
+php artisan ddd:model {domain}:{name} -f
+php artisan ddd:model {domain}:{name} --factory
 
 # Generate a domain factory
-php artisan ddd:factory {domain} {name} [--model={model}]
+php artisan ddd:factory {domain}:{name} [--model={model}]
 
 # Generate a data transfer object
-php artisan ddd:dto {domain} {name}
+php artisan ddd:dto {domain}:{name}
 
 # Generates a value object
-php artisan ddd:value {domain} {name}
+php artisan ddd:value {domain}:{name}
 
 # Generates a view model
-php artisan ddd:view-model {domain} {name}
+php artisan ddd:view-model {domain}:{name}
 
 # Generates an action
-php artisan ddd:action {domain} {name}
+php artisan ddd:action {domain}:{name}
+
+# Extended Commands 
+# (extends Laravel's make:* generators and funnels the objects into the domain layer)
+php artisan ddd:cast {domain}:{name}
+php artisan ddd:channel {domain}:{name}
+php artisan ddd:command {domain}:{name}
+php artisan ddd:enum {domain}:{name} # Requires Laravel 11+
+php artisan ddd:event {domain}:{name}
+php artisan ddd:exception {domain}:{name}
+php artisan ddd:job {domain}:{name}
+php artisan ddd:listener {domain}:{name}
+php artisan ddd:mail {domain}:{name}
+php artisan ddd:notification {domain}:{name}
+php artisan ddd:observer {domain}:{name}
+php artisan ddd:policy {domain}:{name}
+php artisan ddd:provider {domain}:{name}
+php artisan ddd:resource {domain}:{name}
+php artisan ddd:rule {domain}:{name}
+php artisan ddd:scope {domain}:{name}
 ```
 
 Examples:
 ```bash
-php artisan ddd:model Invoicing LineItem # Domain/Invoicing/Models/LineItem
-php artisan ddd:model Invoicing LineItem -f # Domain/Invoicing/Models/LineItem + Database/Factories/Invoicing/LineItemFactory
-php artisan ddd:factory Invoicing LineItemFactory # Database/Factories/Invoicing/LineItemFactory
-php artisan ddd:dto Invoicing LinePayload # Domain/Invoicing/Data/LinePayload
-php artisan ddd:value Shared Percentage # Domain/Shared/ValueObjects/Percentage
-php artisan ddd:view-model Invoicing ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
-php artisan ddd:action Invoicing SendInvoiceToCustomer # Domain/Invoicing/Actions/SendInvoiceToCustomer
+php artisan ddd:model Invoicing:LineItem # Domain/Invoicing/Models/LineItem
+php artisan ddd:model Invoicing:LineItem -f # Domain/Invoicing/Models/LineItem + Database/Factories/Invoicing/LineItemFactory
+php artisan ddd:factory Invoicing:LineItemFactory # Database/Factories/Invoicing/LineItemFactory
+php artisan ddd:dto Invoicing:LinePayload # Domain/Invoicing/Data/LinePayload
+php artisan ddd:value Shared:Percentage # Domain/Shared/ValueObjects/Percentage
+php artisan ddd:view-model Invoicing:ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
+php artisan ddd:action Invoicing:SendInvoiceToCustomer # Domain/Invoicing/Actions/SendInvoiceToCustomer
 ```
 
 Subdomains (nested domains) can be specified with dot notation:
 ```bash
-php artisan ddd:model Invoicing.Customer CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
-php artisan ddd:factory Invoicing.Customer CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
+php artisan ddd:model Invoicing.Customer:CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
+php artisan ddd:factory Invoicing.Customer:CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
 # (supported by all generator commands)
+```
+
+### Other Commands
+```bash
+# Show a summary of current domains in the domain folder
+php artisan ddd:list
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
@@ -74,6 +109,7 @@ This package ships with opinionated (but sensible) configuration defaults. If yo
 php artisan vendor:publish --tag="ddd-config"
 php artisan vendor:publish --tag="ddd-stubs"
 ```
+Note that the extended commands do not publish ddd-specific stubs, and inherit the respective application-level stubs published by Laravel.
 
 This is the content of the published config file (`ddd.php`):
 
@@ -117,11 +153,27 @@ return [
     |
     */
     'namespaces' => [
-        'models' => 'Models',
-        'data_transfer_objects' => 'Data',
-        'view_models' => 'ViewModels',
-        'value_objects' => 'ValueObjects',
-        'actions' => 'Actions',
+        'model' => 'Models',
+        'data_transfer_object' => 'Data',
+        'view_model' => 'ViewModels',
+        'value_object' => 'ValueObjects',
+        'action' => 'Actions',
+        'cast' => 'Casts',
+        'channel' => 'Channels',
+        'command' => 'Commands',
+        'enum' => 'Enums',
+        'event' => 'Events',
+        'exception' => 'Exceptions',
+        'job' => 'Jobs',
+        'listener' => 'Listeners',
+        'mail' => 'Mail',
+        'notification' => 'Notifications',
+        'observer' => 'Observers',
+        'policy' => 'Policies',
+        'provider' => 'Providers',
+        'resource' => 'Resources',
+        'rule' => 'Rules',
+        'scope' => 'Scopes',
     ],
 
     /*

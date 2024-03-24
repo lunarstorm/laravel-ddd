@@ -2,9 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Symfony\Component\Console\Input\InputArgument;
-
-class MakeViewModel extends DomainGeneratorCommand
+class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:view-model';
 
@@ -16,24 +14,6 @@ class MakeViewModel extends DomainGeneratorCommand
     protected $description = 'Generate a view model';
 
     protected $type = 'View Model';
-
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the view model',
-            ),
-        ];
-    }
-
-    protected function getRelativeDomainNamespace(): string
-    {
-        return config('ddd.namespaces.view_models', 'ViewModels');
-    }
 
     protected function getStub()
     {
@@ -51,8 +31,8 @@ class MakeViewModel extends DomainGeneratorCommand
         if (! file_exists($basePath)) {
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
-            $this->call(MakeBaseViewModel::class, [
-                'domain' => 'Shared',
+            $this->call(DomainBaseViewModelMakeCommand::class, [
+                '--domain' => 'Shared',
                 'name' => $baseName,
             ]);
         }

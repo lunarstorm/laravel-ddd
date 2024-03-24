@@ -2,12 +2,10 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\Path;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class MakeFactory extends DomainGeneratorCommand
+class DomainFactoryMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:factory';
 
@@ -20,22 +18,10 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected $type = 'Factory';
 
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the factory',
-            ),
-        ];
-    }
-
     protected function getOptions()
     {
         return [
+            ...parent::getOptions(),
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'The name of the model'],
         ];
     }
@@ -52,7 +38,7 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        $domain = $this->getDomain();
+        $domain = $this->domain?->domainWithSubdomain;
 
         return $rootNamespace.'\\'.$domain;
     }
@@ -89,7 +75,7 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function preparePlaceholders(): array
     {
-        $domain = new Domain($this->getDomain());
+        $domain = $this->domain;
 
         $name = $this->getNameInput();
 
@@ -98,6 +84,12 @@ class MakeFactory extends DomainGeneratorCommand
         $domainModel = $domain->model($modelName);
 
         $domainFactory = $domain->factory($name);
+
+        // dump('preparing placeholders', [
+        //     'name' => $name,
+        //     'modelName' => $modelName,
+        //     'domainFactory' => $domainFactory,
+        // ]);
 
         return [
             'namespacedModel' => $domainModel->fqn,
@@ -113,6 +105,6 @@ class MakeFactory extends DomainGeneratorCommand
             $name = substr($name, 0, -7);
         }
 
-        return (new Domain($this->getDomain()))->model($name)->name;
+        return $this->domain->model($name)->name;
     }
 }
