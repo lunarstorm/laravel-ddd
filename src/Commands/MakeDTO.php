@@ -2,10 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Symfony\Component\Console\Input\InputArgument;
 
 class MakeDTO extends DomainGeneratorCommand
 {
+    use ResolvesDomainFromInput;
+
     protected $name = 'ddd:dto';
 
     /**
@@ -17,19 +20,6 @@ class MakeDTO extends DomainGeneratorCommand
 
     protected $type = 'Data Transfer Object';
 
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the DTO',
-            ),
-        ];
-    }
-
     protected function getStub()
     {
         return $this->resolveStubPath('dto.php.stub');
@@ -37,7 +27,7 @@ class MakeDTO extends DomainGeneratorCommand
 
     protected function getRelativeDomainNamespace(): string
     {
-        return config('ddd.namespaces.data_transfer_objects', 'Data');
+        return config('ddd.namespaces.data_transfer_object', 'Data');
     }
 
     protected function preparePlaceholders(): array

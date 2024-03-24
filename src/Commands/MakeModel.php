@@ -2,12 +2,15 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 class MakeModel extends DomainGeneratorCommand
 {
+    use ResolvesDomainFromInput;
+
     protected $name = 'ddd:model';
 
     /**
@@ -19,19 +22,6 @@ class MakeModel extends DomainGeneratorCommand
 
     protected $type = 'Model';
 
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the model',
-            ),
-        ];
-    }
-
     protected function getOptions()
     {
         return [
@@ -42,11 +32,6 @@ class MakeModel extends DomainGeneratorCommand
     protected function getStub()
     {
         return $this->resolveStubPath('model.php.stub');
-    }
-
-    protected function getRelativeDomainNamespace(): string
-    {
-        return config('ddd.namespaces.models', 'Models');
     }
 
     protected function preparePlaceholders(): array
@@ -87,24 +72,24 @@ class MakeModel extends DomainGeneratorCommand
             $this->rootNamespace(),
         ];
 
-        if (! str($baseModel)->startsWith($allowedNamespacePrefixes)) {
+        if (!str($baseModel)->startsWith($allowedNamespacePrefixes)) {
             return;
         }
 
         $domain = DomainResolver::guessDomainFromClass($baseModel);
 
-        if (! $domain) {
+        if (!$domain) {
             return;
         }
 
         $baseModelName = class_basename($baseModel);
         $baseModelPath = $this->getPath($baseModel);
 
-        if (! file_exists($baseModelPath)) {
+        if (!file_exists($baseModelPath)) {
             $this->info("Generating {$baseModel}...");
 
             $this->call(MakeBaseModel::class, [
-                'domain' => $domain,
+                '--domain' => $domain,
                 'name' => $baseModelName,
             ]);
         }
@@ -113,8 +98,8 @@ class MakeModel extends DomainGeneratorCommand
     protected function createFactory()
     {
         $this->call(MakeFactory::class, [
-            'domain' => $this->getDomain(),
-            'name' => $this->getNameInput().'Factory',
+            'name' => $this->getNameInput() . 'Factory',
+            '--domain' => $this->domain->domain,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }

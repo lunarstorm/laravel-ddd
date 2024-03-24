@@ -15,7 +15,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
         "{$valueObjectName}.php",
     ]);
 
@@ -39,7 +39,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
@@ -51,11 +51,11 @@ it('normalizes generated value object to pascal case', function ($given, $normal
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:value {$domain} {$given}");
+    Artisan::call("ddd:value {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with([

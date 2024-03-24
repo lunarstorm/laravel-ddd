@@ -79,3 +79,13 @@ it('can describe an action', function ($domainName, $name, $expectedFQN, $expect
     ['Reporting', 'SendInvoiceReport', 'Domain\\Reporting\\Actions\\SendInvoiceReport', 'src/Domain/Reporting/Actions/SendInvoiceReport.php'],
     ['Reporting.Internal', 'SendInvoiceReport', 'Domain\\Reporting\\Internal\\Actions\\SendInvoiceReport', 'src/Domain/Reporting/Internal/Actions/SendInvoiceReport.php'],
 ]);
+
+it('can describe an anonymous domain object', function ($domainName, $objectType, $objectName, $expectedFQN, $expectedPath) {
+    expect((new Domain($domainName))->object($objectType, $objectName))
+        ->name->toBe($objectName)
+        ->fqn->toBe($expectedFQN)
+        ->path->toBe(Path::normalize($expectedPath));
+})->with([
+    ['Invoicing', 'rule', 'SomeRule', 'Domain\\Invoicing\\Rules\\SomeRule', 'src/Domain/Invoicing/Rules/SomeRule.php'],
+    ['Other', 'thing', 'Something', 'Domain\\Other\\Things\\Something', 'src/Domain/Other/Things/Something.php'],
+]);

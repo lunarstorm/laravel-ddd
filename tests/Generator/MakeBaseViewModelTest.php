@@ -14,7 +14,7 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
         "{$className}.php",
     ]);
 
@@ -38,7 +38,7 @@ it('can generate base view model', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");

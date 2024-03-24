@@ -19,6 +19,8 @@ class Domain
 
     public readonly DomainNamespaces $namespace;
 
+    public static array $objects = [];
+
     public function __construct(string $domain, ?string $subdomain = null)
     {
         if (is_null($subdomain)) {
@@ -57,6 +59,14 @@ class Domain
         $this->path = Path::join(DomainResolver::getConfiguredDomainPath(), $this->domainWithSubdomain);
     }
 
+    protected function registerDomainObjects()
+    {
+    }
+
+    protected function registerDomainObject()
+    {
+    }
+
     protected function getDomainBasePath()
     {
         return app()->basePath(DomainResolver::getConfiguredDomainPath());
@@ -82,24 +92,33 @@ class Domain
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
     }
 
-    public function model(string $name): DomainObject
+    public function namespaceFor(string $type): string
     {
-        $name = str_replace($this->namespace->models.'\\', '', $name);
+        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type);
+    }
+
+    public function object(string $type, string $name): DomainObject
+    {
+        $namespace = $this->namespaceFor($type);
 
         return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->models,
-            fqn: $this->namespace->models.'\\'.$name,
-            path: $this->path($this->namespace->models.'\\'.$name),
+            name: str($name)->replace($this->namespace->root, '')->toString(),
+            namespace: $namespace,
+            fqn: $namespace.'\\'.$name,
+            path: $this->path($namespace.'\\'.$name),
         );
+    }
+
+    public function model(string $name): DomainObject
+    {
+        return $this->object('model', $name);
     }
 
     public function factory(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->factories.'\\', '', $name);
-
+        // Domain factories are a special breed...
         return new DomainObject(
-            name: $name,
+            name: str($name)->replace($this->namespace->root, '')->toString(),
             namespace: $this->namespace->factories,
             fqn: $this->namespace->factories.'\\'.$name,
             path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
@@ -110,14 +129,7 @@ class Domain
 
     public function dataTransferObject(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->dataTransferObjects.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->dataTransferObjects,
-            fqn: $this->namespace->dataTransferObjects.'\\'.$name,
-            path: $this->path($this->namespace->dataTransferObjects.'\\'.$name),
-        );
+        return $this->object('data_transfer_object', $name);
     }
 
     public function dto(string $name): DomainObject
@@ -127,157 +139,66 @@ class Domain
 
     public function viewModel(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->viewModels.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->viewModels,
-            fqn: $this->namespace->viewModels.'\\'.$name,
-            path: $this->path($this->namespace->viewModels.'\\'.$name),
-        );
+        return $this->object('view_model', $name);
     }
 
     public function valueObject(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->valueObjects.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->valueObjects,
-            fqn: $this->namespace->valueObjects.'\\'.$name,
-            path: $this->path($this->namespace->valueObjects.'\\'.$name),
-        );
+        return $this->object('value_object', $name);
     }
 
     public function action(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->actions.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->actions,
-            fqn: $this->namespace->actions.'\\'.$name,
-            path: $this->path($this->namespace->actions.'\\'.$name),
-        );
+        return $this->object('action', $name);
     }
 
     public function cast(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->casts.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->casts,
-            fqn: $this->namespace->casts.'\\'.$name,
-            path: $this->path($this->namespace->casts.'\\'.$name),
-        );
+        return $this->object('cast', $name);
     }
 
     public function command(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->commands.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->commands,
-            fqn: $this->namespace->commands.'\\'.$name,
-            path: $this->path($this->namespace->commands.'\\'.$name),
-        );
+        return $this->object('command', $name);
     }
 
     public function enum(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->enums.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->enums,
-            fqn: $this->namespace->enums.'\\'.$name,
-            path: $this->path($this->namespace->enums.'\\'.$name),
-        );
+        return $this->object('enum', $name);
     }
 
     public function job(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->jobs.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->jobs,
-            fqn: $this->namespace->jobs.'\\'.$name,
-            path: $this->path($this->namespace->jobs.'\\'.$name),
-        );
+        return $this->object('job', $name);
     }
 
     public function mail(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->mail.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->mail,
-            fqn: $this->namespace->mail.'\\'.$name,
-            path: $this->path($this->namespace->mail.'\\'.$name),
-        );
+        return $this->object('mail', $name);
     }
 
     public function notification(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->notifications.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->notifications,
-            fqn: $this->namespace->notifications.'\\'.$name,
-            path: $this->path($this->namespace->notifications.'\\'.$name),
-        );
+        return $this->object('notification', $name);
     }
 
     public function resource(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->resources.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->resources,
-            fqn: $this->namespace->resources.'\\'.$name,
-            path: $this->path($this->namespace->resources.'\\'.$name),
-        );
+        return $this->object('resource', $name);
     }
 
     public function rule(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->rules.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->rules,
-            fqn: $this->namespace->rules.'\\'.$name,
-            path: $this->path($this->namespace->rules.'\\'.$name),
-        );
+        return $this->object('rule', $name);
     }
 
     public function event(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->events.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->events,
-            fqn: $this->namespace->events.'\\'.$name,
-            path: $this->path($this->namespace->events.'\\'.$name),
-        );
+        return $this->object('event', $name);
     }
 
     public function exception(string $name): DomainObject
     {
-        $name = str_replace($this->namespace->exceptions.'\\', '', $name);
-
-        return new DomainObject(
-            name: $name,
-            namespace: $this->namespace->exceptions,
-            fqn: $this->namespace->exceptions.'\\'.$name,
-            path: $this->path($this->namespace->exceptions.'\\'.$name),
-        );
+        return $this->object('exception', $name);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,6 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeFactory extends DomainGeneratorCommand
 {
+    use ResolvesDomainFromInput;
+
     protected $name = 'ddd:factory';
 
     /**
@@ -20,22 +23,10 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected $type = 'Factory';
 
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the factory',
-            ),
-        ];
-    }
-
     protected function getOptions()
     {
         return [
+            ...parent::getOptions(),
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'The name of the model'],
         ];
     }
@@ -52,9 +43,9 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        $domain = $this->getDomain();
+        $domain = $this->domain?->domain;
 
-        return $rootNamespace.'\\'.$domain;
+        return $rootNamespace . '\\' . $domain;
     }
 
     protected function getRelativeDomainNamespace(): string
@@ -64,7 +55,7 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function getPath($name)
     {
-        if (! str_ends_with($name, 'Factory')) {
+        if (!str_ends_with($name, 'Factory')) {
             $name .= 'Factory';
         }
 
@@ -75,7 +66,7 @@ class MakeFactory extends DomainGeneratorCommand
             ->append('.php')
             ->toString();
 
-        return Path::normalize(base_path('database/factories/'.$name));
+        return Path::normalize(base_path('database/factories/' . $name));
     }
 
     protected function getFactoryName()

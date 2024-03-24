@@ -2,6 +2,28 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- Additional generator commands that extend Laravel's generators and funnel the generated objects into the domain layer:
+    - `ddd:cast {domain}:{name}`
+    - `ddd:channel {domain}:{name}`
+    - `ddd:command {domain}:{name}`
+    - `ddd:enum {domain}:{name}` (Laravel 11 only)
+    - `ddd:event {domain}:{name}`
+    - `ddd:exception {domain}:{name}`
+    - `ddd:job {domain}:{name}`
+    - `ddd:listener {domain}:{name}`
+    - `ddd:mail {domain}:{name}`
+    - `ddd:notification {domain}:{name}`
+    - `ddd:policy {domain}:{name}`
+    - `ddd:provider {domain}:{name}`
+    - `ddd:resource {domain}:{name}`
+    - `ddd:rule {domain}:{name}`
+    - `ddd:scope {domain}:{name}`
+
+### Chore
+- Dropped Laravel 9 support.
+
 ## [0.10.0] - 2024-03-23
 ### Added
 - Add `ddd.domain_path` and `ddd.domain_namespace` to config, to specify the path to the domain layer and root domain namespace more explicitly (replaces the previous `ddd.paths.domains` config).

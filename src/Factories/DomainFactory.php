@@ -28,7 +28,7 @@ abstract class DomainFactory extends Factory
     {
         $resolver = function (string $modelName) {
             $domainNamespace = static::domainNamespace();
-            $modelNamespace = config('ddd.namespaces.models');
+            $modelNamespace = config('ddd.namespaces.model');
 
             // Expected domain model FQN:
             // {DomainNamespace}\{Domain}\{ModelNamespace}\{Model}

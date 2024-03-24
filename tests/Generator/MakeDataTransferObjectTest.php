@@ -15,7 +15,7 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.data_transfer_objects'),
+        config('ddd.namespaces.data_transfer_object'),
         "{$dtoName}.php",
     ]);
 
@@ -39,7 +39,7 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.data_transfer_objects'),
+        config('ddd.namespaces.data_transfer_object'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
@@ -51,11 +51,11 @@ it('normalizes generated data transfer object to pascal case', function ($given,
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.data_transfer_objects'),
+        config('ddd.namespaces.data_transfer_object'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:dto {$domain} {$given}");
+    Artisan::call("ddd:dto {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with('makeDtoInputs');

@@ -15,7 +15,7 @@ it('can generate view models', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
         "{$viewModelName}.php",
     ]);
 
@@ -39,7 +39,7 @@ it('can generate view models', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
@@ -51,11 +51,11 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:view-model {$domain} {$given}");
+    Artisan::call("ddd:view-model {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with('makeViewModelInputs');
@@ -67,7 +67,7 @@ it('generates the base view model if needed', function () {
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.view_models'),
+        config('ddd.namespaces.view_model'),
         "{$className}.php",
     ]));
 
@@ -78,7 +78,7 @@ it('generates the base view model if needed', function () {
     expect(file_exists($expectedPath))->toBeFalse();
 
     // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.domain_path').'/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = base_path(config('ddd.domain_path') . '/Shared/ViewModels/ViewModel.php');
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);

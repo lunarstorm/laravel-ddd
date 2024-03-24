@@ -16,7 +16,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
         "{$modelName}.php",
     ]);
 
@@ -40,7 +40,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
     ]);
 
     expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
@@ -96,11 +96,11 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
     $expectedModelPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:model {$domain} {$given}");
+    Artisan::call("ddd:model {$domain}:{$given}");
 
     expect(file_exists($expectedModelPath))->toBeTrue();
 })->with('makeModelInputs');
@@ -114,14 +114,14 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
     $expectedModelPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
         "{$modelName}.php",
     ]));
 
     $expectedModelClass = implode('\\', [
         basename(config('ddd.domain_path')),
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
         $modelName,
     ]);
 

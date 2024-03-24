@@ -2,10 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Symfony\Component\Console\Input\InputArgument;
 
 class MakeValueObject extends DomainGeneratorCommand
 {
+    use ResolvesDomainFromInput;
+
     protected $name = 'ddd:value';
 
     /**
@@ -16,24 +19,6 @@ class MakeValueObject extends DomainGeneratorCommand
     protected $description = 'Generate a value object';
 
     protected $type = 'Value Object';
-
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the value object',
-            ),
-        ];
-    }
-
-    protected function getRelativeDomainNamespace(): string
-    {
-        return config('ddd.namespaces.value_objects', 'ValueObjects');
-    }
 
     protected function getStub()
     {

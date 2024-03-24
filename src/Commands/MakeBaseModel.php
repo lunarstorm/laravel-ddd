@@ -2,10 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Symfony\Component\Console\Input\InputArgument;
 
 class MakeBaseModel extends DomainGeneratorCommand
 {
+    use ResolvesDomainFromInput;
+    
     protected $name = 'ddd:base-model';
 
     /**
@@ -20,8 +23,6 @@ class MakeBaseModel extends DomainGeneratorCommand
     protected function getArguments()
     {
         return [
-            ...parent::getArguments(),
-
             new InputArgument(
                 'name',
                 InputArgument::OPTIONAL,
@@ -38,6 +39,6 @@ class MakeBaseModel extends DomainGeneratorCommand
 
     protected function getRelativeDomainNamespace(): string
     {
-        return config('ddd.namespaces.models', 'Models');
+        return config('ddd.namespaces.model', 'Models');
     }
 }

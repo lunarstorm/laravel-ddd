@@ -15,7 +15,7 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.actions'),
+        config('ddd.namespaces.action'),
         "{$name}.php",
     ]);
 
@@ -27,7 +27,7 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:action {$domain} {$name}");
+    Artisan::call("ddd:action {$domain}:{$name}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -39,7 +39,7 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.actions'),
+        config('ddd.namespaces.action'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
@@ -51,11 +51,11 @@ it('normalizes generated action object to pascal case', function ($given, $norma
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.actions'),
+        config('ddd.namespaces.action'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:action {$domain} {$given}");
+    Artisan::call("ddd:action {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with('makeActionInputs');
@@ -76,7 +76,7 @@ it('extends a base action if specified in config', function ($baseAction) {
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.actions'),
+        config('ddd.namespaces.action'),
         "{$name}.php",
     ]));
 
@@ -84,11 +84,11 @@ it('extends a base action if specified in config', function ($baseAction) {
         unlink($expectedPath);
     }
 
-    Artisan::call("ddd:action {$domain} {$name}");
+    Artisan::call("ddd:action {$domain}:{$name}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 
-    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}" . PHP_EOL . '{');
 })->with([
     'BaseAction' => 'BaseAction',
     'Base\Action' => 'Base\Action',
@@ -103,7 +103,7 @@ it('does not extend a base action if not specified in config', function () {
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.actions'),
+        config('ddd.namespaces.action'),
         "{$name}.php",
     ]));
 
@@ -111,8 +111,8 @@ it('does not extend a base action if not specified in config', function () {
         unlink($expectedPath);
     }
 
-    Artisan::call("ddd:action {$domain} {$name}");
+    Artisan::call("ddd:action {$domain}:{$name}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-    expect(file_get_contents($expectedPath))->toContain("class {$name}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name}" . PHP_EOL . '{');
 });

@@ -14,7 +14,7 @@ it('can generate domain base model', function ($domainPath, $domainRoot) {
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
         "{$modelName}.php",
     ]);
 
@@ -38,7 +38,7 @@ it('can generate domain base model', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.models'),
+        config('ddd.namespaces.model'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");

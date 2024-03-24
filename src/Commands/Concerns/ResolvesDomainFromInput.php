@@ -5,6 +5,7 @@ namespace Lunarstorm\LaravelDDD\Commands\Concerns;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputOption;
 
 trait ResolvesDomainFromInput
@@ -24,22 +25,17 @@ trait ResolvesDomainFromInput
         return Str::finish(DomainResolver::getConfiguredDomainNamespace(), '\\');
     }
 
+    protected function guessObjectType(): string
+    {
+        $type = str($this->name)->after(':')->snake()->toString();
+
+        return $type;
+    }
+
     protected function getDefaultNamespace($rootNamespace)
     {
         if ($this->domain) {
-            return match ($this->name) {
-                'ddd:cast' => $this->domain->namespace->casts,
-                'ddd:command' => $this->domain->namespace->commands,
-                'ddd:enum' => $this->domain->namespace->enums,
-                'ddd:event' => $this->domain->namespace->events,
-                'ddd:exception' => $this->domain->namespace->exceptions,
-                'ddd:job' => $this->domain->namespace->jobs,
-                'ddd:mail' => $this->domain->namespace->mail,
-                'ddd:notification' => $this->domain->namespace->notifications,
-                'ddd:resource' => $this->domain->namespace->resources,
-                'ddd:rule' => $this->domain->namespace->rules,
-                default => throw new \Exception("Unsupported domain generator: {$this->name}"),
-            };
+            return $this->domain->namespaceFor($this->guessObjectType());
         }
 
         return parent::getDefaultNamespace($rootNamespace);
@@ -48,21 +44,9 @@ trait ResolvesDomainFromInput
     protected function getPath($name)
     {
         if ($this->domain) {
-            return $this->laravel->basePath(
-                match ($this->name) {
-                    'ddd:cast' => $this->domain->cast($name)->path,
-                    'ddd:command' => $this->domain->command($name)->path,
-                    'ddd:enum' => $this->domain->enum($name)->path,
-                    'ddd:event' => $this->domain->event($name)->path,
-                    'ddd:exception' => $this->domain->exception($name)->path,
-                    'ddd:job' => $this->domain->job($name)->path,
-                    'ddd:mail' => $this->domain->mail($name)->path,
-                    'ddd:notification' => $this->domain->notification($name)->path,
-                    'ddd:resource' => $this->domain->resource($name)->path,
-                    'ddd:rule' => $this->domain->rule($name)->path,
-                    default => throw new \Exception("Unsupported domain generator: {$this->name}"),
-                }
-            );
+            return Path::normalize($this->laravel->basePath(
+                $this->domain->object($this->guessObjectType(), class_basename($name))->path
+            ));
         }
 
         return parent::getPath($name);

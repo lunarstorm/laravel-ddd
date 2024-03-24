@@ -2,16 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Lunarstorm\LaravelDDD\Commands\DomainCastMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainConsoleMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainEnumMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainEventMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainExceptionMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainJobMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainMailMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainNotificationMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainResourceMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\DomainRuleMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\InstallCommand;
 use Lunarstorm\LaravelDDD\Commands\MakeAction;
 use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
@@ -46,20 +36,26 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 MakeViewModel::class,
                 MakeBaseViewModel::class,
                 MakeAction::class,
-                DomainCastMakeCommand::class,
-                DomainConsoleMakeCommand::class,
-                DomainEventMakeCommand::class,
-                DomainExceptionMakeCommand::class,
-                DomainJobMakeCommand::class,
-                DomainMailMakeCommand::class,
-                DomainNotificationMakeCommand::class,
-                DomainResourceMakeCommand::class,
-                DomainRuleMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainCastMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainChannelMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainConsoleMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainEventMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainExceptionMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainJobMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainListenerMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainMailMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainNotificationMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainObserverMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainPolicyMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainProviderMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainResourceMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainRuleMakeCommand::class,
+                \Lunarstorm\LaravelDDD\Commands\DomainScopeMakeCommand::class,
             ]);
 
         // Enum generator only in Laravel 11
         if (app()->version() >= 11) {
-            $package->hasCommand(DomainEnumMakeCommand::class);
+            $package->hasCommand(\Lunarstorm\LaravelDDD\Commands\DomainEnumMakeCommand::class);
         }
     }
 

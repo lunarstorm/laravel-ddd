@@ -4,87 +4,32 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Lunarstorm\LaravelDDD\Support\Path;
-use Symfony\Component\Console\Input\InputArgument;
 
 abstract class DomainGeneratorCommand extends GeneratorCommand
 {
-    protected function getArguments()
+    use ResolvesDomainFromInput;
+
+    protected function getRelativeDomainNamespace(): string
     {
-        return [
-            new InputArgument(
-                'domain',
-                InputArgument::REQUIRED,
-                'The domain'
-            ),
-        ];
+        return DomainResolver::getRelativeObjectNamespace($this->guessObjectType());
     }
-
-    protected function rootNamespace()
-    {
-        return str(DomainResolver::getConfiguredDomainNamespace())
-            ->rtrim('/\\')
-            ->toString();
-    }
-
-    protected function getDefaultNamespace($rootNamespace)
-    {
-        $domain = $this->getDomain();
-
-        return $rootNamespace.'\\'.$domain.'\\'.$this->getRelativeDomainNamespace();
-    }
-
-    abstract protected function getRelativeDomainNamespace(): string;
 
     protected function getNameInput()
     {
         return Str::studly($this->argument('name'));
     }
 
-    protected function getDomainInput()
-    {
-        return $this->argument('domain');
-    }
-
-    protected function getDomain()
-    {
-        return str($this->getDomainInput())
-            ->trim()
-            ->replace(['.', '/'], '\\')
-            ->studly()
-            ->toString();
-    }
-
-    protected function getDomainBasePath()
-    {
-        return Path::normalize($this->laravel->basePath(
-            DomainResolver::getConfiguredDomainPath() ?? 'src/Domain'
-        ));
-    }
-
-    protected function getPath($name)
-    {
-        $path = str($name)
-            ->replaceFirst($this->rootNamespace(), '')
-            ->replace('\\', '/')
-            ->ltrim('/')
-            ->append('.php')
-            ->prepend($this->getDomainBasePath().DIRECTORY_SEPARATOR)
-            ->toString();
-
-        return Path::normalize($path);
-    }
-
     protected function resolveStubPath($path)
     {
         $path = ltrim($path, '/\\');
 
-        $publishedPath = resource_path('stubs/ddd/'.$path);
+        $publishedPath = resource_path('stubs/ddd/' . $path);
 
         return file_exists($publishedPath)
             ? $publishedPath
-            : __DIR__.DIRECTORY_SEPARATOR.'../../stubs'.DIRECTORY_SEPARATOR.$path;
+            : __DIR__ . DIRECTORY_SEPARATOR . '../../stubs' . DIRECTORY_SEPARATOR . $path;
     }
 
     protected function fillPlaceholder($stub, $placeholder, $value)
