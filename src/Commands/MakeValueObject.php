@@ -6,8 +6,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 class MakeValueObject extends DomainGeneratorCommand
 {
-    use ResolvesDomainFromInput;
-
     protected $name = 'ddd:value';
 
     /**

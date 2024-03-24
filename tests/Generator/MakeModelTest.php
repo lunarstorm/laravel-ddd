@@ -10,8 +10,8 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 
-    $modelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+    $modelName = 'Record';
+    $domain = 'World';
 
     $relativePath = implode('/', [
         $domainPath,
@@ -28,7 +28,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedModelPath))->toBeFalse();
 
-    Artisan::call("ddd:model {$domain} {$modelName}");
+    Artisan::call("ddd:model {$domain}:{$modelName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -49,7 +49,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
 it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {
     Config::set('ddd.domain_path', $domainPath);
 
-    $modelName = Str::studly(fake()->word());
+    $modelName = 'Record';
 
     $domain = new Domain($domainName, $subdomain);
 
@@ -72,18 +72,17 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
     }
 
     Artisan::call('ddd:model', [
-        'domain' => $domain->dotName,
         'name' => $modelName,
+        '--domain' => $domain->dotName,
         '--factory' => true,
     ]);
 
-    expect(Artisan::output())->when(
-        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContainFilepath($domainModel->path),
-    );
+    $output = Artisan::output();
 
-    expect(file_exists($expectedModelPath))->toBeTrue();
-    expect(file_exists($expectedFactoryPath))->toBeTrue();
+    expect($output)->toContainFilepath($domainModel->path);
+
+    expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
+    expect(file_exists($expectedFactoryPath))->toBeTrue("Expecting factory file to be generated at {$expectedFactoryPath}");
 
     expect(file_get_contents($expectedFactoryPath))
         ->toContain("use {$domainModel->fqn};")
@@ -91,7 +90,7 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
 })->with('domainPaths')->with('domainSubdomain');
 
 it('normalizes generated model to pascal case', function ($given, $normalized) {
-    $domain = Str::studly(fake()->word());
+    $domain = 'World';
 
     $expectedModelPath = base_path(implode('/', [
         config('ddd.domain_path'),
@@ -106,8 +105,8 @@ it('normalizes generated model to pascal case', function ($given, $normalized) {
 })->with('makeModelInputs');
 
 it('generates the base model when possible', function ($baseModelClass, $baseModelPath) {
-    $modelName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+    $modelName = 'Record';
+    $domain = 'World';
 
     Config::set('ddd.base_model', $baseModelClass);
 
@@ -141,7 +140,7 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
 
     expect(file_exists($expectedBaseModelPath))->toBeFalse("{$baseModelPath} expected not to exist.");
 
-    Artisan::call("ddd:model {$domain} {$modelName}");
+    Artisan::call("ddd:model {$domain}:{$modelName}");
 
     expect(file_exists($expectedBaseModelPath))->toBeTrue("Expecting base model file to be generated at {$baseModelPath}");
 
@@ -158,7 +157,7 @@ it('will not generate a base model if the configured base model is out of scope'
 
     expect(class_exists($baseModel))->toBeFalse();
 
-    Artisan::call('ddd:model Fruits Lemon');
+    Artisan::call('ddd:model Fruits:Lemon');
 
     expect(Artisan::output())
         ->toContain("Configured base model {$baseModel} doesn't exist.")
@@ -175,7 +174,7 @@ it('skips base model creation if configured base model already exists', function
 
     expect(class_exists($baseModel))->toBeTrue();
 
-    Artisan::call('ddd:model Fruits Lemon');
+    Artisan::call('ddd:model Fruits:Lemon');
 
     expect(Artisan::output())
         ->not->toContain("Configured base model {$baseModel} doesn't exist.")
@@ -184,10 +183,3 @@ it('skips base model creation if configured base model already exists', function
     ['Illuminate\Database\Eloquent\Model'],
     ['Lunarstorm\LaravelDDD\Models\DomainModel'],
 ]);
-
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:model')
-        ->expectsQuestion('What is the domain?', 'Utility')
-        ->expectsQuestion('What should the model be named?', 'Belt')
-        ->assertExitCode(0);
-});

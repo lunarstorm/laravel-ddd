@@ -26,7 +26,7 @@ it('can generate domain base model', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:base-model {$domain} {$modelName}");
+    Artisan::call("ddd:base-model {$domain}:{$modelName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -43,9 +43,3 @@ it('can generate domain base model', function ($domainPath, $domainRoot) {
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
-
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:base-model')
-        ->expectsQuestion('What is the domain?', 'Shared')
-        ->assertExitCode(0);
-});

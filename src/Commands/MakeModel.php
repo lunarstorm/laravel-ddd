@@ -8,8 +8,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeModel extends DomainGeneratorCommand
 {
-    use ResolvesDomainFromInput;
-
     protected $name = 'ddd:model';
 
     /**
@@ -24,6 +22,7 @@ class MakeModel extends DomainGeneratorCommand
     protected function getOptions()
     {
         return [
+            ...parent::getOptions(),
             ['factory', 'f', InputOption::VALUE_NONE, 'Create a new factory for the domain model'],
         ];
     }
@@ -97,8 +96,8 @@ class MakeModel extends DomainGeneratorCommand
     protected function createFactory()
     {
         $this->call(MakeFactory::class, [
-            'name' => $this->getNameInput().'Factory',
-            '--domain' => $this->domain->domain,
+            'name' => $this->getNameInput() . 'Factory',
+            '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }

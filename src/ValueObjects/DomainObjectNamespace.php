@@ -19,11 +19,11 @@ class DomainObjectNamespace
             ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
             ->toString();
 
-        $root = DomainResolver::getConfiguredDomainNamespace();
+        $root = DomainResolver::domainRootNamespace();
 
         $domainNamespace = implode('\\', [$root, $domainWithSubdomain]);
 
-        $namespace = "{$domainNamespace}\\".config("ddd.namespaces.{$key}", Str::studly($key));
+        $namespace = "{$domainNamespace}\\" . config("ddd.namespaces.{$key}", Str::studly($key));
 
         return new self(key: $key, namespace: $namespace);
     }

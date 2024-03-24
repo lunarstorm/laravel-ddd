@@ -60,13 +60,6 @@ it('normalizes generated action object to pascal case', function ($given, $norma
     expect(file_exists($expectedPath))->toBeTrue();
 })->with('makeActionInputs');
 
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:action')
-        ->expectsQuestion('What is the domain?', 'Utility')
-        ->expectsQuestion('What should the action be named?', 'DoThatThing')
-        ->assertExitCode(0);
-});
-
 it('extends a base action if specified in config', function ($baseAction) {
     Config::set('ddd.base_action', $baseAction);
 

@@ -9,8 +9,8 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 
-    $valueObjectName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+    $domain = 'Mission';
+    $valueObjectName = 'ImpossibleValue';
 
     $relativePath = implode('/', [
         $domainPath,
@@ -27,7 +27,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:value {$domain} {$valueObjectName}");
+    Artisan::call("ddd:value {$domain}:{$valueObjectName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -65,10 +65,3 @@ it('normalizes generated value object to pascal case', function ($given, $normal
     'LargeNumber' => ['LargeNumber', 'LargeNumber'],
     'large-number' => ['large-number', 'LargeNumber'],
 ]);
-
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:value')
-        ->expectsQuestion('What is the domain?', 'Utility')
-        ->expectsQuestion('What should the value object be named?', 'Belt')
-        ->assertExitCode(0);
-});

@@ -7,8 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class MakeBaseModel extends DomainGeneratorCommand
 {
-    use ResolvesDomainFromInput;
-
     protected $name = 'ddd:base-model';
 
     /**

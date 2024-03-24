@@ -56,7 +56,7 @@ class Domain
 
         $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
-        $this->path = Path::join(DomainResolver::getConfiguredDomainPath(), $this->domainWithSubdomain);
+        $this->path = Path::join(DomainResolver::domainPath(), $this->domainWithSubdomain);
     }
 
     protected function registerDomainObjects()
@@ -69,7 +69,7 @@ class Domain
 
     protected function getDomainBasePath()
     {
-        return app()->basePath(DomainResolver::getConfiguredDomainPath());
+        return app()->basePath(DomainResolver::domainPath());
     }
 
     public function path(?string $path = null): string
@@ -101,11 +101,13 @@ class Domain
     {
         $namespace = $this->namespaceFor($type);
 
+        $name = str($name)->replace("{$namespace}\\", '')->toString();
+
         return new DomainObject(
-            name: str($name)->replace($this->namespace->root, '')->toString(),
+            name: $name,
             namespace: $namespace,
-            fqn: $namespace.'\\'.$name,
-            path: $this->path($namespace.'\\'.$name),
+            fqn: $namespace . '\\' . $name,
+            path: $this->path($namespace . '\\' . $name),
         );
     }
 
@@ -116,11 +118,12 @@ class Domain
 
     public function factory(string $name): DomainObject
     {
-        // Domain factories are a special breed...
+        $name = str($name)->replace($this->namespace->root, '')->toString();
+
         return new DomainObject(
-            name: str($name)->replace($this->namespace->root, '')->toString(),
+            name: $name,
             namespace: $this->namespace->factories,
-            fqn: $this->namespace->factories.'\\'.$name,
+            fqn: $this->namespace->factories . '\\' . $name,
             path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
                 ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
                 ->toString()

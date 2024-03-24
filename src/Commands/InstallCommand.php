@@ -35,9 +35,9 @@ class InstallCommand extends Command
 
     public function registerDomainAutoload()
     {
-        $domainPath = DomainResolver::getConfiguredDomainPath();
+        $domainPath = DomainResolver::domainPath();
 
-        $domainRootNamespace = str(DomainResolver::getConfiguredDomainNamespace())
+        $domainRootNamespace = str(DomainResolver::domainRootNamespace())
             ->rtrim('/\\')
             ->toString();
 
@@ -45,7 +45,7 @@ class InstallCommand extends Command
 
         $composerFile = base_path('composer.json');
         $data = json_decode(file_get_contents($composerFile), true);
-        data_fill($data, ['autoload', 'psr-4', $domainRootNamespace.'\\'], $domainPath);
+        data_fill($data, ['autoload', 'psr-4', $domainRootNamespace . '\\'], $domainPath);
 
         file_put_contents($composerFile, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 

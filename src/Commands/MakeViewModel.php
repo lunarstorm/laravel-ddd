@@ -2,12 +2,8 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-
 class MakeViewModel extends DomainGeneratorCommand
 {
-    use ResolvesDomainFromInput;
-
     protected $name = 'ddd:view-model';
 
     /**
@@ -36,7 +32,7 @@ class MakeViewModel extends DomainGeneratorCommand
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
             $this->call(MakeBaseViewModel::class, [
-                'domain' => 'Shared',
+                '--domain' => 'Shared',
                 'name' => $baseName,
             ]);
         }

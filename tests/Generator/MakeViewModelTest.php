@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate view models', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
@@ -27,12 +26,9 @@ it('can generate view models', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:view-model {$domain} {$viewModelName}");
+    Artisan::call("ddd:view-model {$domain}:{$viewModelName}");
 
-    expect(Artisan::output())->when(
-        Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContainFilepath($relativePath),
-    );
+    expect(Artisan::output())->toContainFilepath($relativePath);
 
     expect(file_exists($expectedPath))->toBeTrue();
 
@@ -86,14 +82,7 @@ it('generates the base view model if needed', function () {
 
     expect(file_exists($expectedBaseViewModelPath))->toBeFalse();
 
-    Artisan::call("ddd:view-model {$domain} {$className}");
+    Artisan::call("ddd:view-model {$domain}:{$className}");
 
     expect(file_exists($expectedBaseViewModelPath))->toBeTrue();
-});
-
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:view-model')
-        ->expectsQuestion('What is the domain?', 'Utility')
-        ->expectsQuestion('What should the view model be named?', 'Belt')
-        ->assertExitCode(0);
 });

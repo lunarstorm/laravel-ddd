@@ -9,8 +9,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeFactory extends DomainGeneratorCommand
 {
-    use ResolvesDomainFromInput;
-
     protected $name = 'ddd:factory';
 
     /**
@@ -42,7 +40,7 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        $domain = $this->domain?->domain;
+        $domain = $this->domain?->domainWithSubdomain;
 
         return $rootNamespace.'\\'.$domain;
     }
@@ -79,7 +77,7 @@ class MakeFactory extends DomainGeneratorCommand
 
     protected function preparePlaceholders(): array
     {
-        $domain = new Domain($this->getDomain());
+        $domain = $this->domain;
 
         $name = $this->getNameInput();
 
@@ -88,6 +86,12 @@ class MakeFactory extends DomainGeneratorCommand
         $domainModel = $domain->model($modelName);
 
         $domainFactory = $domain->factory($name);
+
+        // dump('preparing placeholders', [
+        //     'name' => $name,
+        //     'modelName' => $modelName,
+        //     'domainFactory' => $domainFactory,
+        // ]);
 
         return [
             'namespacedModel' => $domainModel->fqn,
@@ -103,6 +107,6 @@ class MakeFactory extends DomainGeneratorCommand
             $name = substr($name, 0, -7);
         }
 
-        return (new Domain($this->getDomain()))->model($name)->name;
+        return ($this->domain)->model($name)->name;
     }
 }
