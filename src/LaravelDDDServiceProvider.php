@@ -48,7 +48,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 MakeAction::class,
                 DomainCastMakeCommand::class,
                 DomainConsoleMakeCommand::class,
-                DomainEnumMakeCommand::class,
                 DomainEventMakeCommand::class,
                 DomainExceptionMakeCommand::class,
                 DomainJobMakeCommand::class,
@@ -57,6 +56,11 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 DomainResourceMakeCommand::class,
                 DomainRuleMakeCommand::class,
             ]);
+
+        // Enum generator only in Laravel 11
+        if (app()->version() >= 11) {
+            $package->hasCommand(DomainEnumMakeCommand::class);
+        }
     }
 
     public function packageBooted()
