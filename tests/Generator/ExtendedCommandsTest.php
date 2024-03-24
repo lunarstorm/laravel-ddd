@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Support\Domain;
 
 it('can generate extended objects', function ($type, $objectName, $domainPath, $domainRoot) {
+    if (in_array($type, ['enum'])) {
+        skipOnLaravelVersionsBelow('11');
+    }
+
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 
