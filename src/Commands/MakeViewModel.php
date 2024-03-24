@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Symfony\Component\Console\Input\InputArgument;
 
 class MakeViewModel extends DomainGeneratorCommand
 {
@@ -33,7 +32,7 @@ class MakeViewModel extends DomainGeneratorCommand
         $baseName = $parts->last();
         $basePath = $this->getPath($baseViewModel);
 
-        if (!file_exists($basePath)) {
+        if (! file_exists($basePath)) {
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
             $this->call(MakeBaseViewModel::class, [

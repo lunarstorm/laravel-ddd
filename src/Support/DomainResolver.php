@@ -30,7 +30,7 @@ class DomainResolver
     {
         $domainNamespace = Str::finish(DomainResolver::getConfiguredDomainNamespace(), '\\');
 
-        if (!str($class)->startsWith($domainNamespace)) {
+        if (! str($class)->startsWith($domainNamespace)) {
             // Not a domain object
             return null;
         }

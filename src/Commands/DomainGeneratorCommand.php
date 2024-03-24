@@ -25,11 +25,11 @@ abstract class DomainGeneratorCommand extends GeneratorCommand
     {
         $path = ltrim($path, '/\\');
 
-        $publishedPath = resource_path('stubs/ddd/' . $path);
+        $publishedPath = resource_path('stubs/ddd/'.$path);
 
         return file_exists($publishedPath)
             ? $publishedPath
-            : __DIR__ . DIRECTORY_SEPARATOR . '../../stubs' . DIRECTORY_SEPARATOR . $path;
+            : __DIR__.DIRECTORY_SEPARATOR.'../../stubs'.DIRECTORY_SEPARATOR.$path;
     }
 
     protected function fillPlaceholder($stub, $placeholder, $value)

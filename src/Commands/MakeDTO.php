@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Symfony\Component\Console\Input\InputArgument;
 
 class MakeDTO extends DomainGeneratorCommand
 {
