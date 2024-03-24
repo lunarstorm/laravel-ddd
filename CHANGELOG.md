@@ -15,11 +15,17 @@ All notable changes to `laravel-ddd` will be documented in this file.
     - `ddd:listener {domain}:{name}`
     - `ddd:mail {domain}:{name}`
     - `ddd:notification {domain}:{name}`
+    - `ddd:observer {domain}:{name}`
     - `ddd:policy {domain}:{name}`
     - `ddd:provider {domain}:{name}`
     - `ddd:resource {domain}:{name}`
     - `ddd:rule {domain}:{name}`
     - `ddd:scope {domain}:{name}`
+
+### Changed
+- BREAKING: `ddd:*` commands no longer receive a dedicated domain argument (e.g., `ddd:action Invoicing CreateInvoice`). The domain is instead specified in two ways:
+    - As an option: `ddd:action CreateInvoice --domain=Invoicing` (this will take precedence).
+    - Shorthand prefix within the name: `ddd:action Invoicing:CreateInvoice`.
 
 ### Chore
 - Dropped Laravel 9 support.
