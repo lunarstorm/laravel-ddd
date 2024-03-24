@@ -81,7 +81,9 @@ trait ResolvesDomainFromInput
 
         // If the domain is not set, prompt for it
         if (! $this->domain) {
-            $this->domain = new Domain($this->ask('What is the domain?'));
+            $this->domain = new Domain(
+                $this->anticipate('What is the domain?', DomainResolver::domainChoices())
+            );
         }
 
         parent::handle();

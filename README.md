@@ -29,6 +29,10 @@ php artisan ddd:{object} {name} --domain={domain}
 
 # Specifying the domain as part of the name (short-hand syntax)
 php artisan ddd:{object} {domain}:{name}
+
+# Not specifying the domain at all, which will then prompt
+# you to enter the domain name (with auto-completion)
+php artisan ddd:{object} {name}
 ```
 
 The following generators are currently available, shown using short-hand syntax:
@@ -91,6 +95,12 @@ Subdomains (nested domains) can be specified with dot notation:
 php artisan ddd:model Invoicing.Customer:CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
 php artisan ddd:factory Invoicing.Customer:CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
 # (supported by all generator commands)
+```
+
+### Other Commands
+```bash
+# Show a summary of current domains in the domain folder
+php artisan ddd:list
 ```
 
 This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:

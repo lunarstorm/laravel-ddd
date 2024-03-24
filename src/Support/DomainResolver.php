@@ -6,6 +6,18 @@ use Illuminate\Support\Str;
 
 class DomainResolver
 {
+    public static function domainChoices(): array
+    {
+        $folders = glob(app()->basePath(static::domainPath().'/*'), GLOB_ONLYDIR);
+
+        return collect($folders)
+            ->map(function ($folder) {
+                return basename($folder);
+            })
+            ->sort()
+            ->toArray();
+    }
+
     public static function domainPath(): ?string
     {
         return config('ddd.domain_path');

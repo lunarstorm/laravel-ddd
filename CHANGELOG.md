@@ -4,6 +4,7 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ## [Unversioned]
 ### Added
+- `ddd:list` to show a summary of current domains in the domain folder.
 - Additional generator commands that extend Laravel's generators and funnel the generated objects into the domain layer:
     - `ddd:cast {domain}:{name}`
     - `ddd:channel {domain}:{name}`
