@@ -8,8 +8,6 @@ use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputOption;
 
-use function Laravel\Prompts\text;
-
 trait ResolvesDomainFromInput
 {
     protected ?Domain $domain = null;
@@ -83,10 +81,7 @@ trait ResolvesDomainFromInput
 
         // If the domain is not set, prompt for it
         if (! $this->domain) {
-            $this->domain = new Domain(text(
-                label: 'What is the domain?',
-                required: true,
-            ));
+            $this->domain = new Domain($this->ask('What is the domain?'));
         }
 
         parent::handle();
