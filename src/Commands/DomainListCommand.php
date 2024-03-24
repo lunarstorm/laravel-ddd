@@ -5,6 +5,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 use Illuminate\Console\Command;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Lunarstorm\LaravelDDD\Support\Path;
 
 class DomainListCommand extends Command
 {
@@ -23,7 +24,7 @@ class DomainListCommand extends Command
                 return [
                     $domain->domain,
                     $domain->namespace->root,
-                    $domain->path,
+                    Path::normalize($domain->path),
                 ];
             })
             ->toArray();

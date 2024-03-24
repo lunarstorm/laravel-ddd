@@ -1,5 +1,7 @@
 <?php
 
+use Lunarstorm\LaravelDDD\Support\Path;
+
 beforeEach(function () {
     $this->artisan('ddd:model', [
         'name' => 'Invoice',
@@ -24,7 +26,7 @@ it('can list domains', function () {
             return [
                 $name,
                 "Domain\\{$name}",
-                "src/Domain/{$name}",
+                Path::normalize("src/Domain/{$name}"),
             ];
         })
         ->toArray();
