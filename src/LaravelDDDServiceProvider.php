@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Lunarstorm\LaravelDDD\Commands\InstallCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainActionMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainBaseModelMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainBaseViewModelMakeCommand;
@@ -11,6 +10,7 @@ use Lunarstorm\LaravelDDD\Commands\DomainFactoryMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainModelMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainValueObjectMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\DomainViewModelMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

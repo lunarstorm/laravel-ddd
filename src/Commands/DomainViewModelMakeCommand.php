@@ -28,7 +28,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
         $baseName = $parts->last();
         $basePath = $this->getPath($baseViewModel);
 
-        if (!file_exists($basePath)) {
+        if (! file_exists($basePath)) {
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
             $this->call(DomainBaseViewModelMakeCommand::class, [
