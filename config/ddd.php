@@ -44,6 +44,16 @@ return [
         'view_models' => 'ViewModels',
         'value_objects' => 'ValueObjects',
         'actions' => 'Actions',
+        'casts' => 'Casts',
+        'commands' => 'Commands',
+        'enums' => 'Enums',
+        'events' => 'Events',
+        'exceptions' => 'Exceptions',
+        'jobs' => 'Jobs',
+        'mail' => 'Mail',
+        'notifications' => 'Notifications',
+        'resources' => 'Resources',
+        'rules' => 'Rules',
     ],
 
     /*

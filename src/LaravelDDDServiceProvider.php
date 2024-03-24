@@ -2,6 +2,16 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Lunarstorm\LaravelDDD\Commands\DomainCastMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainConsoleMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainEnumMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainEventMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainExceptionMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainJobMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainMailMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainNotificationMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainResourceMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\DomainRuleMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\InstallCommand;
 use Lunarstorm\LaravelDDD\Commands\MakeAction;
 use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
@@ -36,6 +46,16 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 MakeViewModel::class,
                 MakeBaseViewModel::class,
                 MakeAction::class,
+                DomainCastMakeCommand::class,
+                DomainConsoleMakeCommand::class,
+                DomainEnumMakeCommand::class,
+                DomainEventMakeCommand::class,
+                DomainExceptionMakeCommand::class,
+                DomainJobMakeCommand::class,
+                DomainMailMakeCommand::class,
+                DomainNotificationMakeCommand::class,
+                DomainResourceMakeCommand::class,
+                DomainRuleMakeCommand::class,
             ]);
     }
 

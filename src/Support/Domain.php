@@ -160,4 +160,124 @@ class Domain
             path: $this->path($this->namespace->actions.'\\'.$name),
         );
     }
+
+    public function cast(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->casts.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->casts,
+            fqn: $this->namespace->casts.'\\'.$name,
+            path: $this->path($this->namespace->casts.'\\'.$name),
+        );
+    }
+
+    public function command(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->commands.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->commands,
+            fqn: $this->namespace->commands.'\\'.$name,
+            path: $this->path($this->namespace->commands.'\\'.$name),
+        );
+    }
+
+    public function enum(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->enums.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->enums,
+            fqn: $this->namespace->enums.'\\'.$name,
+            path: $this->path($this->namespace->enums.'\\'.$name),
+        );
+    }
+
+    public function job(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->jobs.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->jobs,
+            fqn: $this->namespace->jobs.'\\'.$name,
+            path: $this->path($this->namespace->jobs.'\\'.$name),
+        );
+    }
+
+    public function mail(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->mail.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->mail,
+            fqn: $this->namespace->mail.'\\'.$name,
+            path: $this->path($this->namespace->mail.'\\'.$name),
+        );
+    }
+
+    public function notification(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->notifications.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->notifications,
+            fqn: $this->namespace->notifications.'\\'.$name,
+            path: $this->path($this->namespace->notifications.'\\'.$name),
+        );
+    }
+
+    public function resource(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->resources.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->resources,
+            fqn: $this->namespace->resources.'\\'.$name,
+            path: $this->path($this->namespace->resources.'\\'.$name),
+        );
+    }
+
+    public function rule(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->rules.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->rules,
+            fqn: $this->namespace->rules.'\\'.$name,
+            path: $this->path($this->namespace->rules.'\\'.$name),
+        );
+    }
+
+    public function event(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->events.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->events,
+            fqn: $this->namespace->events.'\\'.$name,
+            path: $this->path($this->namespace->events.'\\'.$name),
+        );
+    }
+
+    public function exception(string $name): DomainObject
+    {
+        $name = str_replace($this->namespace->exceptions.'\\', '', $name);
+
+        return new DomainObject(
+            name: $name,
+            namespace: $this->namespace->exceptions,
+            fqn: $this->namespace->exceptions.'\\'.$name,
+            path: $this->path($this->namespace->exceptions.'\\'.$name),
+        );
+    }
 }
