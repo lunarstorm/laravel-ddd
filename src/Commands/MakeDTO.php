@@ -2,8 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-
 class MakeDTO extends DomainGeneratorCommand
 {
     protected $name = 'ddd:dto';

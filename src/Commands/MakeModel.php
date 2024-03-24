@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -96,7 +95,7 @@ class MakeModel extends DomainGeneratorCommand
     protected function createFactory()
     {
         $this->call(MakeFactory::class, [
-            'name' => $this->getNameInput() . 'Factory',
+            'name' => $this->getNameInput().'Factory',
             '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);

@@ -33,7 +33,6 @@ it('[base model] prompts for missing input', function () {
         ->assertExitCode(0);
 });
 
-
 it('[value object] prompts for missing input', function () {
     $this->artisan('ddd:value')
         ->expectsQuestion('What should the value object be named?', 'Belt')

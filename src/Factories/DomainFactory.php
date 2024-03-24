@@ -33,7 +33,7 @@ abstract class DomainFactory extends Factory
             // Expected domain model FQN:
             // {DomainNamespace}\{Domain}\{ModelNamespace}\{Model}
 
-            if (!Str::startsWith($modelName, $domainNamespace)) {
+            if (! Str::startsWith($modelName, $domainNamespace)) {
                 // Not a domain model
                 return null;
             }
@@ -46,7 +46,7 @@ abstract class DomainFactory extends Factory
 
             $modelBaseName = class_basename($modelName);
 
-            return static::$namespace . "{$domain}\\{$modelBaseName}Factory";
+            return static::$namespace."{$domain}\\{$modelBaseName}Factory";
         };
 
         return $resolver($modelName);

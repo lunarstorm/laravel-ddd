@@ -106,8 +106,8 @@ class Domain
         return new DomainObject(
             name: $name,
             namespace: $namespace,
-            fqn: $namespace . '\\' . $name,
-            path: $this->path($namespace . '\\' . $name),
+            fqn: $namespace.'\\'.$name,
+            path: $this->path($namespace.'\\'.$name),
         );
     }
 
@@ -123,7 +123,7 @@ class Domain
         return new DomainObject(
             name: $name,
             namespace: $this->namespace->factories,
-            fqn: $this->namespace->factories . '\\' . $name,
+            fqn: $this->namespace->factories.'\\'.$name,
             path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
                 ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
                 ->toString()

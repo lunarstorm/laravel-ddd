@@ -2,8 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-
 class MakeValueObject extends DomainGeneratorCommand
 {
     protected $name = 'ddd:value';

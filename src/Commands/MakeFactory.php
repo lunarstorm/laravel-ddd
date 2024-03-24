@@ -2,8 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -107,6 +105,6 @@ class MakeFactory extends DomainGeneratorCommand
             $name = substr($name, 0, -7);
         }
 
-        return ($this->domain)->model($name)->name;
+        return $this->domain->model($name)->name;
     }
 }
