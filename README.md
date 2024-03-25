@@ -7,6 +7,14 @@
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus many more.
 
+## Version Compatibility
+ Laravel    | LaravelDDD 
+:-----------|:-----------
+ 9.x        | 0.x        
+ <10.25     | 0.x 
+ 10.25+     | 1.x 
+ 11.x       | 1.x
+
 ## Installation
 
 You can install the package via composer:
