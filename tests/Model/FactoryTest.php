@@ -15,7 +15,7 @@ it('can resolve the factory name of a domain model', function ($modelClass, $exp
 
 it('can instantiate a domain model factory', function ($domainParameter, $modelName, $modelClass) {
     Config::set('ddd.base_model', 'Lunarstorm\LaravelDDD\Models\DomainModel');
-    Artisan::call("ddd:model -f {$domainParameter} {$modelName}");
+    Artisan::call("ddd:model -f {$domainParameter}:{$modelName}");
     expect(class_exists($modelClass))->toBeTrue();
     expect($modelClass::factory())->toBeInstanceOf(Factory::class);
 })->with([

@@ -28,16 +28,37 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->name('laravel-ddd')
             ->hasConfigFile()
             ->hasCommands([
-                InstallCommand::class,
-                MakeModel::class,
-                MakeFactory::class,
-                MakeBaseModel::class,
-                MakeDTO::class,
-                MakeValueObject::class,
-                MakeViewModel::class,
-                MakeBaseViewModel::class,
-                MakeAction::class,
+                Commands\InstallCommand::class,
+                Commands\DomainListCommand::class,
+                Commands\DomainModelMakeCommand::class,
+                Commands\DomainFactoryMakeCommand::class,
+                Commands\DomainBaseModelMakeCommand::class,
+                Commands\DomainDtoMakeCommand::class,
+                Commands\DomainValueObjectMakeCommand::class,
+                Commands\DomainViewModelMakeCommand::class,
+                Commands\DomainBaseViewModelMakeCommand::class,
+                Commands\DomainActionMakeCommand::class,
+                Commands\DomainCastMakeCommand::class,
+                Commands\DomainChannelMakeCommand::class,
+                Commands\DomainConsoleMakeCommand::class,
+                Commands\DomainEventMakeCommand::class,
+                Commands\DomainExceptionMakeCommand::class,
+                Commands\DomainJobMakeCommand::class,
+                Commands\DomainListenerMakeCommand::class,
+                Commands\DomainMailMakeCommand::class,
+                Commands\DomainNotificationMakeCommand::class,
+                Commands\DomainObserverMakeCommand::class,
+                Commands\DomainPolicyMakeCommand::class,
+                Commands\DomainProviderMakeCommand::class,
+                Commands\DomainResourceMakeCommand::class,
+                Commands\DomainRuleMakeCommand::class,
+                Commands\DomainScopeMakeCommand::class,
             ]);
+
+        // Enum generator only in Laravel 11
+        if (app()->version() >= 11) {
+            $package->hasCommand(\Lunarstorm\LaravelDDD\Commands\DomainEnumMakeCommand::class);
+        }
     }
 
     public function packageBooted()

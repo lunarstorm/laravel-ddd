@@ -2,37 +2,48 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
 class DomainResolver
 {
-    public static function getConfiguredDomainPath(): ?string
+    public static function domainChoices(): array
     {
-        if (Config::has('ddd.paths.domains')) {
-            // Deprecated
-            return config('ddd.paths.domains');
-        }
+        $folders = glob(app()->basePath(static::domainPath().'/*'), GLOB_ONLYDIR);
 
+        return collect($folders)
+            ->map(function ($folder) {
+                return basename($folder);
+            })
+            ->sort()
+            ->toArray();
+    }
+
+    public static function domainPath(): ?string
+    {
         return config('ddd.domain_path');
     }
 
-    public static function getConfiguredDomainNamespace(): ?string
+    public static function domainRootNamespace(): ?string
     {
-        if (Config::has('ddd.paths.domains')) {
-            // Deprecated
-            return basename(config('ddd.paths.domains'));
-        }
-
         return config('ddd.domain_namespace');
+    }
+
+    public static function getRelativeObjectNamespace(string $type): string
+    {
+        return config("ddd.namespaces.{$type}", str($type)->plural()->studly()->toString());
+    }
+
+    public static function getDomainObjectNamespace(string $domain, string $type): string
+    {
+        return implode('\\', [static::domainRootNamespace(), $domain, static::getRelativeObjectNamespace($type)]);
     }
 
     public static function guessDomainFromClass(string $class): ?string
     {
-        $domainNamespace = Str::finish(DomainResolver::getConfiguredDomainNamespace(), '\\');
+        $domainNamespace = Str::finish(DomainResolver::domainRootNamespace(), '\\');
 
         if (! str($class)->startsWith($domainNamespace)) {
-            // Not a domain model
+            // Not a domain object
             return null;
         }
 
