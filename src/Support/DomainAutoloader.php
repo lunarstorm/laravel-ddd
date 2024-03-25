@@ -18,21 +18,23 @@ class DomainAutoloader
     public function __construct()
     {
         $this->config = config('ddd');
+        $this->cacheDirectory = $this->config['cache_directory'] ?? 'bootstrap/cache/ddd';
     }
 
     public function autoload(): void
     {
-        if(isset($this->config['autoload.service_providers'])) {
-            $this->registerDomainServiceProviders($this->config['autoload.service_providers']);
+        //dd('Autoloading domains', $this->config);
+        if(isset($this->config['autoload']['service_providers'])) {
+            $this->registerDomainServiceProviders($this->config['autoload']['service_providers']);
         }
-        if(isset($this->config['autoload.commands'])) {
-            $this->registerDomainCommands($this->config['autoload.commands']);
+        if(isset($this->config['autoload']['commands'])) {
+            $this->registerDomainCommands($this->config['autoload']['commands']);
         }
-        if(isset($this->config['autoload.policies'])) {
-            $this->registerPolicies($this->config['autoload.policies']);
+        if(isset($this->config['autoload']['policies'])) {
+            $this->registerPolicies($this->config['autoload']['policies']);
         }
-        if(isset($this->config['autoload.factories'])) {
-            $this->registerFactories($this->config['autoload.factories']);
+        if(isset($this->config['autoload']['factories'])) {
+            $this->registerFactories($this->config['autoload']['factories']);
         }
     }
 
