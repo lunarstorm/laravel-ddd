@@ -11,6 +11,7 @@ use Lunarstorm\LaravelDDD\Commands\MakeFactory;
 use Lunarstorm\LaravelDDD\Commands\MakeModel;
 use Lunarstorm\LaravelDDD\Commands\MakeValueObject;
 use Lunarstorm\LaravelDDD\Commands\MakeViewModel;
+use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -44,5 +45,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->publishes([
             $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
         ], "{$this->package->shortName()}-stubs");
+    }
+
+    public function packageRegistered()
+    {
+        (new DomainAutoloader())->autoload();
     }
 }

@@ -44,7 +44,42 @@ return [
         'view_models' => 'ViewModels',
         'value_objects' => 'ValueObjects',
         'actions' => 'Actions',
+        'factories' => 'Database\Factories',
     ],
+
+
+    'autoload' => [
+        /*
+         | Autoload service providers from the domain namespace.
+         | By default, it loads any file that ends with 'ServiceProvider.php' inside your domain.
+         | For example: Domain/Invoicing/Providers/InvoicingServiceProvider.php or Domain/Invoicing/InvoicingServiceProvider.php
+         */
+        // To customize the pattern, you can use a glob pattern like '*/Providers/*.php'
+        'service_providers' => '*/*ServiceProvider.php',
+
+        /*
+         | Autoload commands from the domain namespace.
+         | By default, it loads any file inside the /Commands folder that ends '.php', extends Illuminate\Console\Command and is not abstract.
+         | For example: Domain/Invoicing/Commands/CreateInvoiceCommand.php
+         */
+        // To customize the pattern, you can use a glob pattern like '*/Commands/*.php'
+        'commands' => '*/Commands/*.php',
+
+        /*
+         | Autoload policies from the domain namespace.
+         | By default, it loads any file inside the /Policies folder that ends 'Policy.php' and is not abstract.
+         | For example: Domain/Invoicing/Policies/InvoicePolicy.php
+         */
+        'policies' => 'Policies\\{model}Policy',
+
+        /*
+         | Autoload factories from the domain namespace.
+         | By default, it loads any file inside the /Database/Factories folder that ends 'Factory.php' and is not abstract.
+         | For example: Domain/Invoicing/Database/Factories/InvoiceFactory.php
+         */
+        'factories' => 'Database\\Factories\\{model}Factory',
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
