@@ -10,6 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 trait ResolvesDomainFromInput
 {
+    use CanPromptForDomain;
+
     protected ?Domain $domain = null;
 
     protected function getOptions()
@@ -81,9 +83,7 @@ trait ResolvesDomainFromInput
 
         // If the domain is not set, prompt for it
         if (! $this->domain) {
-            $this->domain = new Domain(
-                $this->anticipate('What is the domain?', DomainResolver::domainChoices())
-            );
+            $this->domain = new Domain($this->promptForDomainName());
         }
 
         parent::handle();
