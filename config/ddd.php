@@ -63,6 +63,7 @@ return [
         'factories' => 'Database\Factories',
     ],
 
+    'cache_folder' => 'bootstrap/cache/ddd/',
 
     'autoload' => [
         /*

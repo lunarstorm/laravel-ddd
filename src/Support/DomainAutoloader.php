@@ -42,14 +42,15 @@ class DomainAutoloader
     {
         $domainPath = is_string($domainPath) ? $domainPath : '*/*ServiceProvider.php';
 
-        $serviceProviders = Cache::rememberForever('ddd-domain-service-providers', static function () use ($domainPath){
+        $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($domainPath){
             return Arr::map(
-                glob(base_path(DomainResolver::getConfiguredDomainPath().'/'.$domainPath)),
+                glob(base_path(DomainResolver::domainPath().'/'.$domainPath)),
                 (static function ($serviceProvider) {
+
                 return Path::filePathToNamespace(
                     $serviceProvider,
-                    DomainResolver::getConfiguredDomainPath(),
-                    DomainResolver::getConfiguredDomainNamespace()
+                    DomainResolver::domainPath(),
+                    DomainResolver::domainRootNamespace()
                 );
             }));
         });
@@ -63,14 +64,14 @@ class DomainAutoloader
     protected function registerDomainCommands(bool|string $domainPath = null): void
     {
         $domainPath = is_string($domainPath) ? $domainPath : '*/Commands/*.php';
-        $commands = Cache::rememberForever('ddd-domain-commands', static function () use ($domainPath){
+        $commands = $this->remember('ddd-domain-commands', static function () use ($domainPath){
             $commands = Arr::map(
-                glob(base_path(DomainResolver::getConfiguredDomainPath().'/'.$domainPath)),
+                glob(base_path(DomainResolver::domainPath().'/'.$domainPath)),
                 static function ($command) {
                     return Path::filePathToNamespace(
                         $command,
-                        DomainResolver::getConfiguredDomainPath(),
-                        DomainResolver::getConfiguredDomainNamespace()
+                        DomainResolver::domainPath(),
+                        DomainResolver::domainRootNamespace()
                     );
             });
 
@@ -103,7 +104,7 @@ class DomainAutoloader
                 return null;
             }
 
-            $policy = DomainResolver::getConfiguredDomainNamespace().'\\'.$domain.'\\'.str_replace('{model}', $model, $domainPath);
+            $policy = DomainResolver::domainRootNamespace().'\\'.$domain.'\\'.str_replace('{model}', $model, $domainPath);
 
             return $policy;
         });
@@ -142,7 +143,7 @@ class DomainAutoloader
     {
         // Matches <DomainNamespace>\{domain}\<ModelNamespace>\{model} and extracts domain and model
         // For example: Domain\Invoicing\Models\Invoice gives ['domain' => 'Invoicing', 'model' => 'Invoice']
-        $regex = '/'.DomainResolver::getConfiguredDomainNamespace().'\\\\(?<domain>.+)\\\\'.$this->config['namespaces.models'].'\\\\(?<model>.+)/';
+        $regex = '/'.DomainResolver::domainRootNamespace().'\\\\(?<domain>.+)\\\\'.$this->config['namespaces.models'].'\\\\(?<model>.+)/';
 
         if (preg_match($regex, $modelName, $matches, PREG_OFFSET_CAPTURE, 0)) {
             return [
@@ -152,5 +153,23 @@ class DomainAutoloader
         }
 
         return [];
+    }
+
+    protected function remember($fileName, $callback)
+    {
+        $cacheFilePath =  base_path($this->cacheDirectory.'/'.$fileName.'.php');
+
+        $data = file_exists($cacheFilePath) ? include $cacheFilePath : null;
+
+        if (is_null($data)) {
+            $data = $callback();
+
+            file_put_contents(
+                $cacheFilePath,
+                '<?php ' . PHP_EOL . 'return ' . var_export($data, true) . ';'
+            );
+        }
+
+        return $data;
     }
 }
