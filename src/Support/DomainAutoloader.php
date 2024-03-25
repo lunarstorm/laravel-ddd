@@ -155,8 +155,10 @@ class DomainAutoloader
         return [];
     }
 
+
     protected function remember($fileName, $callback)
     {
+        // The cache is not available during booting, so we need to roll our own file based cache
         $cacheFilePath =  base_path($this->cacheDirectory.'/'.$fileName.'.php');
 
         $data = file_exists($cacheFilePath) ? include $cacheFilePath : null;

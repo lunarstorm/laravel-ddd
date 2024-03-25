@@ -63,7 +63,10 @@ return [
         'factories' => 'Database\Factories',
     ],
 
-    'cache_folder' => 'bootstrap/cache/ddd/',
+    /*
+     * The folder where the domain cache files will be stored.
+     */
+    'cache_directory' => 'bootstrap/cache',
 
     'autoload' => [
         /*
