@@ -29,6 +29,7 @@ All notable changes to `laravel-ddd` will be documented in this file.
     - `ddd:action CreateInvoice --domain=Invoicing` (this takes precedence).
     - Shorthand syntax: `ddd:action Invoicing:CreateInvoice`.
     - Or simply `ddd:action CreateInvoice` to be prompted for the domain.
+- Improve the reliability of generating base view models when `ddd.base_view_model` is something other than the default `Domain\Shared\ViewModels\ViewModel`.
 
 ### Chore
 - Dropped Laravel 9 support.

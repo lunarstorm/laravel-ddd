@@ -15,6 +15,16 @@ class DomainDtoMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'Data Transfer Object';
 
+    protected function configure()
+    {
+        $this->setAliases([
+            'ddd:data-transfer-object',
+            'ddd:datatransferobject',
+        ]);
+
+        parent::configure();
+    }
+
     protected function getStub()
     {
         return $this->resolveStubPath('dto.php.stub');

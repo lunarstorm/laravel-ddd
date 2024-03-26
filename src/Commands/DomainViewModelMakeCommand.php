@@ -2,6 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
+
 class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:view-model';
@@ -20,23 +23,57 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
         return $this->resolveStubPath('view-model.php.stub');
     }
 
+    protected function preparePlaceholders(): array
+    {
+        $baseClass = config('ddd.base_view_model');
+        $baseClassName = class_basename($baseClass);
+
+        return [
+            'extends' => filled($baseClass) ? " extends {$baseClassName}" : '',
+            'baseClassImport' => filled($baseClass) ? "use {$baseClass};" : '',
+        ];
+    }
+
     public function handle()
     {
-        $baseViewModel = config('ddd.base_view_model');
+        if ($this->shouldCreateBaseViewModel()) {
+            $baseViewModel = config('ddd.base_view_model');
 
-        $parts = str($baseViewModel)->explode('\\');
-        $baseName = $parts->last();
-        $basePath = $this->getPath($baseViewModel);
-
-        if (! file_exists($basePath)) {
             $this->warn("Base view model {$baseViewModel} doesn't exist, generating...");
 
+            $domain = DomainResolver::guessDomainFromClass($baseViewModel);
+
+            $name = Str::after($baseViewModel, "{$domain}\\");
+
             $this->call(DomainBaseViewModelMakeCommand::class, [
-                '--domain' => 'Shared',
-                'name' => $baseName,
+                '--domain' => $domain,
+                'name' => $name,
             ]);
         }
 
         parent::handle();
+    }
+
+    protected function shouldCreateBaseViewModel(): bool
+    {
+        $baseViewModel = config('ddd.base_view_model');
+
+        // If the class exists, we don't need to create it.
+        if (class_exists($baseViewModel)) {
+            return false;
+        }
+
+        // If the class is outside of the domain layer, we won't attempt to create it.
+        if (! DomainResolver::isDomainClass($baseViewModel)) {
+            return false;
+        }
+
+        // At this point the class is probably a domain object, but we should
+        // check if the expected path exists.
+        if (file_exists(app()->basePath(DomainResolver::guessPathFromClass($baseViewModel)))) {
+            return false;
+        }
+
+        return true;
     }
 }
