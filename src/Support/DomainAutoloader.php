@@ -23,7 +23,6 @@ class DomainAutoloader
 
     public function autoload(): void
     {
-        //dd('Autoloading domains', $this->config);
         if(isset($this->config['autoload']['service_providers'])) {
             $this->registerDomainServiceProviders($this->config['autoload']['service_providers']);
         }
@@ -154,7 +153,6 @@ class DomainAutoloader
 
         return [];
     }
-
 
     protected function remember($fileName, $callback)
     {

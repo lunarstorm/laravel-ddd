@@ -60,7 +60,7 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
-        'factories' => 'Database\Factories',
+        'factory' => 'Database\Factories',
     ],
 
     /*
