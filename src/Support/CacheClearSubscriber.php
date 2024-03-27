@@ -31,7 +31,7 @@ class CacheClearSubscriber
      * Register the listeners for the subscriber.
      *
      *
-     * @return array
+     * @return void
      */
     public function subscribe(Dispatcher $events): void
     {
