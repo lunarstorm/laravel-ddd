@@ -49,6 +49,16 @@ it('can generate view models', function ($domainPath, $domainRoot) {
         );
 })->with('domainPaths');
 
+it('recognizes command aliases', function ($commandName) {
+    $this->artisan($commandName, [
+        'name' => 'ShowInvoiceViewModel',
+        '--domain' => 'Invoicing',
+    ])->assertExitCode(0);
+})->with([
+    'ddd:view-model',
+    'ddd:viewmodel',
+]);
+
 it('normalizes generated view model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 

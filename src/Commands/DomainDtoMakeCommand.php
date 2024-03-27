@@ -20,6 +20,7 @@ class DomainDtoMakeCommand extends DomainGeneratorCommand
         $this->setAliases([
             'ddd:data-transfer-object',
             'ddd:datatransferobject',
+            'ddd:data',
         ]);
 
         parent::configure();

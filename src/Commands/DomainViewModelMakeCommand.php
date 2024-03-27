@@ -18,6 +18,15 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'View Model';
 
+    protected function configure()
+    {
+        $this->setAliases([
+            'ddd:viewmodel',
+        ]);
+
+        parent::configure();
+    }
+
     protected function getStub()
     {
         return $this->resolveStubPath('view-model.php.stub');
