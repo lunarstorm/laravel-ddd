@@ -110,4 +110,26 @@ return [
     |
     */
     'base_action' => null,
+
+
+    'make_domain_structure' => [
+        'Actions' => '',
+        'Commands' => '',
+        'Data' => '',
+        'Enums' => '',
+        'Exceptions' => '',
+        'Database' => [
+            'Factories' => '',
+            'Migrations' => '',
+            'Seeders' => '',
+        ],
+        'Jobs' => '',
+        'Models' => '',
+        'Policies' => '',
+        'Providers' => [
+            'files' => [
+                BaseServiceProvider::class, // How should we specify file you want created? Should use the logic the make commands
+            ]
+        ],
+    ]
 ];
