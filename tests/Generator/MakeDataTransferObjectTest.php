@@ -45,6 +45,18 @@ it('can generate data transfer objects', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
+it('recognizes command aliases', function ($commandName) {
+    $this->artisan($commandName, [
+        'name' => 'InvoicePayload',
+        '--domain' => 'Invoicing',
+    ])->assertExitCode(0);
+})->with([
+    'ddd:dto',
+    'ddd:data-transfer-object',
+    'ddd:datatransferobject',
+    'ddd:data',
+]);
+
 it('normalizes generated data transfer object to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 

@@ -45,6 +45,17 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
+it('recognizes command aliases', function ($commandName) {
+    $this->artisan($commandName, [
+        'name' => 'InvoiceTotalValue',
+        '--domain' => 'Invoicing',
+    ])->assertExitCode(0);
+})->with([
+    'ddd:value-object',
+    'ddd:valueobject',
+    'ddd:value',
+]);
+
 it('normalizes generated value object to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
 

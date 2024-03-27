@@ -7,8 +7,9 @@ use Illuminate\Support\Str;
 it('can generate view models', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
+    Config::set('ddd.base_view_model', 'Domain\Shared\ViewModels\MyBaseViewModel');
 
-    $viewModelName = Str::studly(fake()->word());
+    $viewModelName = Str::studly(fake()->word().'ViewModel');
     $domain = Str::studly(fake()->word());
 
     $relativePath = implode('/', [
@@ -38,8 +39,25 @@ it('can generate view models', function ($domainPath, $domainRoot) {
         config('ddd.namespaces.view_model'),
     ]);
 
-    expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
+    $fileContent = file_get_contents($expectedPath);
+
+    expect($fileContent)
+        ->toContain(
+            "namespace {$expectedNamespace};",
+            "use Domain\Shared\ViewModels\MyBaseViewModel;",
+            "class {$viewModelName} extends MyBaseViewModel",
+        );
 })->with('domainPaths');
+
+it('recognizes command aliases', function ($commandName) {
+    $this->artisan($commandName, [
+        'name' => 'ShowInvoiceViewModel',
+        '--domain' => 'Invoicing',
+    ])->assertExitCode(0);
+})->with([
+    'ddd:view-model',
+    'ddd:viewmodel',
+]);
 
 it('normalizes generated view model to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
@@ -56,9 +74,11 @@ it('normalizes generated view model to pascal case', function ($given, $normaliz
     expect(file_exists($expectedPath))->toBeTrue();
 })->with('makeViewModelInputs');
 
-it('generates the base view model if needed', function () {
-    $className = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+it('generates the base view model if needed', function ($baseViewModel, $baseViewModelPath) {
+    $className = 'ShowInvoiceViewModel';
+    $domain = 'Invoicing';
+
+    Config::set('ddd.base_view_model', $baseViewModel);
 
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
@@ -73,8 +93,7 @@ it('generates the base view model if needed', function () {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    // This currently only tests for the default base model
-    $expectedBaseViewModelPath = base_path(config('ddd.domain_path').'/Shared/ViewModels/ViewModel.php');
+    $expectedBaseViewModelPath = app()->basePath($baseViewModelPath);
 
     if (file_exists($expectedBaseViewModelPath)) {
         unlink($expectedBaseViewModelPath);
@@ -84,5 +103,40 @@ it('generates the base view model if needed', function () {
 
     Artisan::call("ddd:view-model {$domain}:{$className}");
 
+    expect(Artisan::output())->toContain("Base view model {$baseViewModel} doesn't exist, generating");
+
     expect(file_exists($expectedBaseViewModelPath))->toBeTrue();
-});
+
+    // Subsequent calls should not attempt to generate a base view model again
+    Artisan::call("ddd:view-model {$domain}:EditInvoiceViewModel");
+
+    expect(Artisan::output())->not->toContain("Base view model {$baseViewModel} doesn't exist, generating");
+})->with([
+    "Domain\Shared\ViewModels\ViewModel" => ["Domain\Shared\ViewModels\ViewModel", 'src/Domain/Shared/ViewModels/ViewModel.php'],
+    "Domain\SomewhereElse\ViewModels\BaseViewModel" => ["Domain\SomewhereElse\ViewModels\BaseViewModel", 'src/Domain/SomewhereElse/ViewModels/BaseViewModel.php'],
+]);
+
+it('does not attempt to generate base view models outside the domain layer', function ($baseViewModel) {
+    $className = 'ShowInvoiceViewModel';
+    $domain = 'Invoicing';
+
+    Config::set('ddd.base_view_model', $baseViewModel);
+
+    $expectedPath = base_path(implode('/', [
+        config('ddd.domain_path'),
+        $domain,
+        config('ddd.namespaces.view_model'),
+        "{$className}.php",
+    ]));
+
+    if (file_exists($expectedPath)) {
+        unlink($expectedPath);
+    }
+
+    Artisan::call("ddd:view-model {$domain}:{$className}");
+
+    expect(Artisan::output())->not->toContain("Base view model {$baseViewModel} doesn't exist, generating");
+})->with([
+    "Vendor\External\ViewModels\ViewModel" => ["Vendor\External\ViewModels\ViewModel"],
+    "Illuminate\Support\Str" => ["Illuminate\Support\Str"],
+]);

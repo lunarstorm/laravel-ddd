@@ -5,6 +5,11 @@ All notable changes to `laravel-ddd` will be documented in this file.
 ## [Unversioned]
 ### Added
 - `ddd:list` to show a summary of current domains in the domain folder.
+- For all generator commands, if a domain isn't specified, prompt for it with auto-completion suggestions based on the contents of the root domain folder.
+- Command aliases for some generators:
+    - Data Transfer Object: `ddd:dto`, `ddd:data`, `ddd:data-transfer-object`, `ddd:datatransferobject`
+    - Value Object: `ddd:value`, `ddd:valueobject`, `ddd:value-object`
+    - View Model: `ddd:view-model`, `ddd:viewmodel`
 - Additional generators that extend Laravel's generators and funnel the generated objects into the domain layer:
     - `ddd:cast {domain}:{name}`
     - `ddd:channel {domain}:{name}`
@@ -22,13 +27,13 @@ All notable changes to `laravel-ddd` will be documented in this file.
     - `ddd:resource {domain}:{name}`
     - `ddd:rule {domain}:{name}`
     - `ddd:scope {domain}:{name}`
-- For all `ddd:*` generator commands, if a domain wasn't specified, prompt for the domain with auto-completion (based on current domains in the domain folder).
 
 ### Changed
-- (BREAKING) `ddd:*` commands no longer receive a dedicated domain argument. Example: `ddd:action Invoicing CreateInvoice` can be one of:
-    - `ddd:action CreateInvoice --domain=Invoicing` (this takes precedence).
+- (BREAKING) Generator commands no longer receive a domain argument. Instead of `ddd:action Invoicing CreateInvoice`, one of the following would be used:
+    - Using the --domain option: `ddd:action CreateInvoice --domain=Invoicing` (this takes precedence).
     - Shorthand syntax: `ddd:action Invoicing:CreateInvoice`.
-    - Or simply `ddd:action CreateInvoice` to be prompted for the domain.
+    - Or simply `ddd:action CreateInvoice` to be prompted for the domain afterwards.
+- Improved the reliability of generating base view models when `ddd.base_view_model` is something other than the default `Domain\Shared\ViewModels\ViewModel`.
 
 ### Chore
 - Dropped Laravel 9 support.

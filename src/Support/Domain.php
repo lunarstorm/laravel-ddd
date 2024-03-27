@@ -61,10 +61,12 @@ class Domain
 
     protected function registerDomainObjects()
     {
+        // WIP
     }
 
     protected function registerDomainObject()
     {
+        // WIP
     }
 
     protected function getDomainBasePath()

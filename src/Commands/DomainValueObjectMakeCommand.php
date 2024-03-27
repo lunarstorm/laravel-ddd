@@ -15,6 +15,16 @@ class DomainValueObjectMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'Value Object';
 
+    protected function configure()
+    {
+        $this->setAliases([
+            'ddd:value-object',
+            'ddd:valueobject',
+        ]);
+
+        parent::configure();
+    }
+
     protected function getStub()
     {
         return $this->resolveStubPath('value-object.php.stub');
