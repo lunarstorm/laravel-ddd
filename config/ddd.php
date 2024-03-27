@@ -31,11 +31,11 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domain/Invoicing/Models/*
-    |       Domain/Invoicing/Data/*
-    |       Domain/Invoicing/ViewModels/*
-    |       Domain/Invoicing/ValueObjects/*
-    |       Domain/Invoicing/Actions/*
+    | e.g., Domain\Invoicing\Models\*
+    |       Domain\Invoicing\Data\*
+    |       Domain\Invoicing\ViewModels\*
+    |       Domain\Invoicing\ValueObjects\*
+    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [
@@ -50,6 +50,7 @@ return [
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
+        'factory' => 'Database\Factories',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -60,7 +61,6 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
-        'factory' => 'Database\Factories',
     ],
 
     /*
