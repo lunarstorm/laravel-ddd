@@ -13,6 +13,7 @@ class MakeDomainCommand extends Command implements PromptsForMissingInput
 
     protected $description = 'Create a new domain';
 
+    protected string $domain;
     protected mixed $domainStructure;
     protected ?string $domainPath;
     protected ?string $domainRootNamespace;
