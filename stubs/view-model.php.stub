@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use {{ rootNamespace }}\Shared\ViewModels\ViewModel;
+{{ baseClassImport }}
 
-class {{ class }} extends ViewModel
+class {{ class }}{{ extends }}
 {
     public function __construct()
     {

@@ -35,9 +35,9 @@ class InstallCommand extends Command
 
     public function registerDomainAutoload()
     {
-        $domainPath = DomainResolver::getConfiguredDomainPath();
+        $domainPath = DomainResolver::domainPath();
 
-        $domainRootNamespace = str(DomainResolver::getConfiguredDomainNamespace())
+        $domainRootNamespace = str(DomainResolver::domainRootNamespace())
             ->rtrim('/\\')
             ->toString();
 

@@ -2,6 +2,42 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- `ddd:list` to show a summary of current domains in the domain folder.
+- For all generator commands, if a domain isn't specified, prompt for it with auto-completion suggestions based on the contents of the root domain folder.
+- Command aliases for some generators:
+    - Data Transfer Object: `ddd:dto`, `ddd:data`, `ddd:data-transfer-object`, `ddd:datatransferobject`
+    - Value Object: `ddd:value`, `ddd:valueobject`, `ddd:value-object`
+    - View Model: `ddd:view-model`, `ddd:viewmodel`
+- Additional generators that extend Laravel's generators and funnel the generated objects into the domain layer:
+    - `ddd:cast {domain}:{name}`
+    - `ddd:channel {domain}:{name}`
+    - `ddd:command {domain}:{name}`
+    - `ddd:enum {domain}:{name}` (Laravel 11 only)
+    - `ddd:event {domain}:{name}`
+    - `ddd:exception {domain}:{name}`
+    - `ddd:job {domain}:{name}`
+    - `ddd:listener {domain}:{name}`
+    - `ddd:mail {domain}:{name}`
+    - `ddd:notification {domain}:{name}`
+    - `ddd:observer {domain}:{name}`
+    - `ddd:policy {domain}:{name}`
+    - `ddd:provider {domain}:{name}`
+    - `ddd:resource {domain}:{name}`
+    - `ddd:rule {domain}:{name}`
+    - `ddd:scope {domain}:{name}`
+
+### Changed
+- (BREAKING) Generator commands no longer receive a domain argument. Instead of `ddd:action Invoicing CreateInvoice`, one of the following would be used:
+    - Using the --domain option: `ddd:action CreateInvoice --domain=Invoicing` (this takes precedence).
+    - Shorthand syntax: `ddd:action Invoicing:CreateInvoice`.
+    - Or simply `ddd:action CreateInvoice` to be prompted for the domain afterwards.
+- Improved the reliability of generating base view models when `ddd.base_view_model` is something other than the default `Domain\Shared\ViewModels\ViewModel`.
+
+### Chore
+- Dropped Laravel 9 support.
+
 ## [0.10.0] - 2024-03-23
 ### Added
 - Add `ddd.domain_path` and `ddd.domain_namespace` to config, to specify the path to the domain layer and root domain namespace more explicitly (replaces the previous `ddd.paths.domains` config).

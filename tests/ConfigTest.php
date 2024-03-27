@@ -8,11 +8,11 @@ it('can customize the domain path via ddd.domain_path', function () {
 
     Config::set('ddd.domain_path', $path);
 
-    expect(DomainResolver::getConfiguredDomainPath())->toEqual($path);
+    expect(DomainResolver::domainPath())->toEqual($path);
 });
 
 it('can customize the domain root namespace via ddd.domain_namespace', function () {
     Config::set('ddd.domain_namespace', 'Doughmain');
 
-    expect(DomainResolver::getConfiguredDomainNamespace())->toEqual('Doughmain');
+    expect(DomainResolver::domainRootNamespace())->toEqual('Doughmain');
 });

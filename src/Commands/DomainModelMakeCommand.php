@@ -3,10 +3,9 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class MakeModel extends DomainGeneratorCommand
+class DomainModelMakeCommand extends DomainGeneratorCommand
 {
     protected $name = 'ddd:model';
 
@@ -19,22 +18,10 @@ class MakeModel extends DomainGeneratorCommand
 
     protected $type = 'Model';
 
-    protected function getArguments()
-    {
-        return [
-            ...parent::getArguments(),
-
-            new InputArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'The name of the model',
-            ),
-        ];
-    }
-
     protected function getOptions()
     {
         return [
+            ...parent::getOptions(),
             ['factory', 'f', InputOption::VALUE_NONE, 'Create a new factory for the domain model'],
         ];
     }
@@ -42,11 +29,6 @@ class MakeModel extends DomainGeneratorCommand
     protected function getStub()
     {
         return $this->resolveStubPath('model.php.stub');
-    }
-
-    protected function getRelativeDomainNamespace(): string
-    {
-        return config('ddd.namespaces.models', 'Models');
     }
 
     protected function preparePlaceholders(): array
@@ -103,8 +85,8 @@ class MakeModel extends DomainGeneratorCommand
         if (! file_exists($baseModelPath)) {
             $this->info("Generating {$baseModel}...");
 
-            $this->call(MakeBaseModel::class, [
-                'domain' => $domain,
+            $this->call(DomainBaseModelMakeCommand::class, [
+                '--domain' => $domain,
                 'name' => $baseModelName,
             ]);
         }
@@ -112,9 +94,9 @@ class MakeModel extends DomainGeneratorCommand
 
     protected function createFactory()
     {
-        $this->call(MakeFactory::class, [
-            'domain' => $this->getDomain(),
+        $this->call(DomainFactoryMakeCommand::class, [
             'name' => $this->getNameInput().'Factory',
+            '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }

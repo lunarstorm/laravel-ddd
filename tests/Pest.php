@@ -12,13 +12,3 @@ function skipOnLaravelVersionsBelow($minimumVersion)
         test()->markTestSkipped("Only relevant from Laravel {$minimumVersion} onwards (Current version: {$version}).");
     }
 }
-
-function ifSupportsPromptForMissingInput()
-{
-    return skipOnLaravelVersionsBelow('9.49.0');
-}
-
-function ifGeneratorCommandsOutputFilePath()
-{
-    return skipOnLaravelVersionsBelow('9.32.0');
-}

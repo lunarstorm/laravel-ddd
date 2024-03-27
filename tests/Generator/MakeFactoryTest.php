@@ -33,7 +33,7 @@ it('can generate domain factories', function ($domainPath, $domainRoot, $domain,
 
     expect(file_exists($expectedFactoryPath))->toBeFalse();
 
-    Artisan::call("ddd:factory {$domain->dotName} {$modelName}");
+    Artisan::call("ddd:factory {$domain->dotName}:{$modelName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
