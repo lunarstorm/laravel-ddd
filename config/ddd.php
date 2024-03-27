@@ -100,7 +100,6 @@ return [
         'factories' => 'Database\\Factories\\{model}Factory',
     ],
 
-
     /*
     |--------------------------------------------------------------------------
     | Base Model

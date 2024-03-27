@@ -1,4 +1,5 @@
 <?php
+
 namespace Lunarstorm\LaravelDDD\Support;
 
 use ErrorException;
@@ -29,7 +30,6 @@ class CacheClearSubscriber
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  Dispatcher  $events
      *
      * @return array
      */

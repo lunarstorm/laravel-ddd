@@ -3,15 +3,6 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Support\Facades\Event;
-use Lunarstorm\LaravelDDD\Commands\InstallCommand;
-use Lunarstorm\LaravelDDD\Commands\MakeAction;
-use Lunarstorm\LaravelDDD\Commands\MakeBaseModel;
-use Lunarstorm\LaravelDDD\Commands\MakeBaseViewModel;
-use Lunarstorm\LaravelDDD\Commands\MakeDTO;
-use Lunarstorm\LaravelDDD\Commands\MakeFactory;
-use Lunarstorm\LaravelDDD\Commands\MakeModel;
-use Lunarstorm\LaravelDDD\Commands\MakeValueObject;
-use Lunarstorm\LaravelDDD\Commands\MakeViewModel;
 use Lunarstorm\LaravelDDD\Support\CacheClearSubscriber;
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
