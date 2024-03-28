@@ -109,8 +109,8 @@ class Domain
             name: $name,
             domain: $this->domain,
             namespace: $namespace,
-            fqn: $namespace . '\\' . $name,
-            path: $this->path($namespace . '\\' . $name),
+            fqn: $namespace.'\\'.$name,
+            path: $this->path($namespace.'\\'.$name),
             type: $type
         );
     }
@@ -128,7 +128,7 @@ class Domain
             name: $name,
             domain: $this->domain,
             namespace: $this->namespace->factories,
-            fqn: $this->namespace->factories . '\\' . $name,
+            fqn: $this->namespace->factories.'\\'.$name,
             path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
                 ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
                 ->toString(),

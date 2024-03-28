@@ -37,7 +37,7 @@ class TestCase extends Orchestra
         $this->composerReload();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         $this->beforeApplicationDestroyed(function () {
@@ -82,8 +82,8 @@ class TestCase extends Orchestra
 
     public function setupTestApplication()
     {
-        File::copyDirectory(__DIR__ . '/resources/app', app_path());
-        File::copyDirectory(__DIR__ . '/resources/Domain', base_path('src/Domain'));
+        File::copyDirectory(__DIR__.'/resources/app', app_path());
+        File::copyDirectory(__DIR__.'/resources/Domain', base_path('src/Domain'));
 
         File::ensureDirectoryExists(app_path('Models'));
     }

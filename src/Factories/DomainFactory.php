@@ -30,7 +30,7 @@ abstract class DomainFactory extends Factory
         $resolver = function (string $modelName) {
             $model = DomainObject::fromClass($modelName, 'model');
 
-            if (!$model) {
+            if (! $model) {
                 // Not a domain model
                 return null;
             }
@@ -38,10 +38,10 @@ abstract class DomainFactory extends Factory
             // First try resolving as a factory class in the domain layer
             if (class_exists($factoryClass = DomainResolver::getDomainObjectNamespace($model->domain, 'factory', "{$model->name}Factory"))) {
                 return $factoryClass;
-            };
+            }
 
             // Otherwise, fallback to the the standard location under /database/factories
-            return static::$namespace . "{$model->domain}\\{$model->name}Factory";
+            return static::$namespace."{$model->domain}\\{$model->name}Factory";
         };
 
         return $resolver($modelName);

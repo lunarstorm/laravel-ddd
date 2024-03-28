@@ -2,9 +2,9 @@
 
 namespace Domain\Invoicing\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
-use Domain\Invoicing\Models\Invoice;
 use App\Models\User;
+use Domain\Invoicing\Models\Invoice;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InvoicePolicy
 {

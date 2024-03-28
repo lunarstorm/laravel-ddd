@@ -49,7 +49,7 @@ class DomainResolver
     {
         $namespace = implode('\\', [static::domainRootNamespace(), $domain, static::getRelativeObjectNamespace($type)]);
 
-        if($object){
+        if ($object) {
             $namespace .= "\\{$object}";
         }
 

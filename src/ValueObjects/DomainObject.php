@@ -21,7 +21,7 @@ class DomainObject
 
     public static function fromClass(string $fullyQualifiedClass, ?string $objectType = null): ?self
     {
-        if (!DomainResolver::isDomainClass($fullyQualifiedClass)) {
+        if (! DomainResolver::isDomainClass($fullyQualifiedClass)) {
             return null;
         }
 
@@ -41,7 +41,7 @@ class DomainObject
 
             $result = preg_match($pattern, $fullyQualifiedClass, $matches);
 
-            if (!$result) {
+            if (! $result) {
                 continue;
             }
 
@@ -52,7 +52,7 @@ class DomainObject
 
         // If there wasn't a recognized namespace, we'll assume it's a
         // domain object in an ad-hoc namespace.
-        if (!$objectNamespace) {
+        if (! $objectNamespace) {
             // e.g., Domain\Invoicing\AdHoc\Nested\Thing
             $objectNamespace = str($fullyQualifiedClass)
                 ->after(Str::finish(DomainResolver::domainRootNamespace(), '\\'))

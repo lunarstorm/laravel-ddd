@@ -16,7 +16,7 @@ it('can autoload domain factory', function ($modelClass, $expectedFactoryClass) 
     expect($modelClass::factory())->toBeInstanceOf($expectedFactoryClass);
 })->with([
     ['Domain\Invoicing\Models\VanillaModel', 'Domain\Invoicing\Database\Factories\VanillaModelFactory'],
-    ['Domain\Internal\Reporting\Models\Report', 'Domain\Internal\Reporting\Database\Factories\ReportFactory']
+    ['Domain\Internal\Reporting\Models\Report', 'Domain\Internal\Reporting\Database\Factories\ReportFactory'],
 ]);
 
 it('does not affect non-domain model factories', function () {

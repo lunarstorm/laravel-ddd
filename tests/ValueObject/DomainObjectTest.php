@@ -7,7 +7,7 @@ use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 it('can create a domain object from resolvable class names', function (string $class, $domain, $relativeNamespace, $objectName) {
     $domainObject = DomainObject::fromClass($class);
 
-    $expectedPath = Path::join(DomainResolver::domainPath(), $domain, $relativeNamespace, $objectName . '.php');
+    $expectedPath = Path::join(DomainResolver::domainPath(), $domain, $relativeNamespace, $objectName.'.php');
 
     expect($domainObject)
         ->name->toEqual($objectName)

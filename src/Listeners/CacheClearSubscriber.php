@@ -13,13 +13,13 @@ class CacheClearSubscriber
 
     public function handle(): void
     {
-        $files = glob(base_path(config('ddd.cache_directory') . '/ddd-*.php'));
+        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
 
         foreach ($files as $file) {
             try {
                 unlink($file);
             } catch (ErrorException $exception) {
-                if (!str_contains($exception->getMessage(), 'No such file or directory')) {
+                if (! str_contains($exception->getMessage(), 'No such file or directory')) {
                     dump($exception->getMessage());
                     throw $exception;
                 }
@@ -29,9 +29,6 @@ class CacheClearSubscriber
 
     /**
      * Register the listeners for the subscriber.
-     *
-     *
-     * @return void
      */
     public function subscribe(Dispatcher $events): void
     {

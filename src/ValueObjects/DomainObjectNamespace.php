@@ -23,7 +23,7 @@ class DomainObjectNamespace
 
         $domainNamespace = implode('\\', [$root, $domainWithSubdomain]);
 
-        $namespace = "{$domainNamespace}\\" . config("ddd.namespaces.{$key}", Str::studly($key));
+        $namespace = "{$domainNamespace}\\".config("ddd.namespaces.{$key}", Str::studly($key));
 
         return new self(type: $key, namespace: $namespace);
     }
