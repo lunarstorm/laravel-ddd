@@ -74,7 +74,7 @@ return [
          | By default, it loads any non-abstract class inside the domain layer extending Illuminate\Support\ServiceProvider.
          | For example: Domain/Invoicing/Providers/InvoicingServiceProvider.php or Domain/Invoicing/InvoicingServiceProvider.php
          */
-        'service_providers' => true,
+        'providers' => true,
 
         /*
          | Autoload commands from the domain namespace.

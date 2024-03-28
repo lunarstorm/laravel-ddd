@@ -38,7 +38,7 @@ class DomainAutoloader
 
     public function autoload(): void
     {
-        if ($value = $this->configValue('autoload.service_providers')) {
+        if ($value = $this->configValue('autoload.providers')) {
             $this->registerProviders($value);
         }
 
