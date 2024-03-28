@@ -31,11 +31,11 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domain/Invoicing/Models/*
-    |       Domain/Invoicing/Data/*
-    |       Domain/Invoicing/ViewModels/*
-    |       Domain/Invoicing/ValueObjects/*
-    |       Domain/Invoicing/Actions/*
+    | e.g., Domain\Invoicing\Models\*
+    |       Domain\Invoicing\Data\*
+    |       Domain\Invoicing\ViewModels\*
+    |       Domain\Invoicing\ValueObjects\*
+    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [
@@ -50,6 +50,7 @@ return [
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
+        'factory' => 'Database\Factories',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -60,6 +61,41 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+    ],
+
+    /*
+     * The folder where the domain cache files will be stored.
+     */
+    'cache_directory' => 'bootstrap/cache',
+
+    'autoload' => [
+        /*
+         | Autoload service providers from the domain namespace.
+         | By default, it loads any non-abstract class inside the domain layer extending Illuminate\Support\ServiceProvider.
+         | For example: Domain/Invoicing/Providers/InvoicingServiceProvider.php or Domain/Invoicing/InvoicingServiceProvider.php
+         */
+        'providers' => true,
+
+        /*
+         | Autoload commands from the domain namespace.
+         | By default, it loads any non-abstract class inside the domain layer extending Illuminate\Console\Command.
+         | For example: Domain/Invoicing/Commands/CreateInvoiceCommand.php
+         */
+        'commands' => true,
+
+        /*
+         | Autoload policies from the domain namespace.
+         | By default, it uses the configured `ddd.namespaces.policy` namespace to guess the policy name.
+         | For example: Domain/Invoicing/Policies/InvoicePolicy.php
+         */
+        'policies' => true,
+
+        /*
+         | Autoload factories from the domain namespace.
+         | By default, it uses the configured `ddd.namespaces.factory` namespace to guess the factory name.
+         | For example: Domain/Invoicing/Database/Factories/InvoiceFactory.php
+         */
+        'factories' => true,
     ],
 
     /*

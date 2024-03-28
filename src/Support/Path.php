@@ -17,4 +17,13 @@ class Path
 
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
+
+    public static function filePathToNamespace(string $path, string $namespacePath, string $namespace): string
+    {
+        return str_replace(
+            [base_path().'/'.$namespacePath, '/', '.php'],
+            [$namespace, '\\', ''],
+            $path
+        );
+    }
 }
