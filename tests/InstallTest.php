@@ -25,6 +25,13 @@ it('publishes config', function () {
 });
 
 it('can initialize composer.json', function ($domainPath, $domainRoot) {
+    $this->updateComposer(
+        forget: [
+            ['autoload', 'psr-4', 'Domains\\'],
+            ['autoload', 'psr-4', 'Domain\\'],
+        ]
+    );
+
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 
