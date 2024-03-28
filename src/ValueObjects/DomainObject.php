@@ -47,6 +47,8 @@ class DomainObject
             $objectNamespace = str(data_get($matches, 0))->beforeLast('\\')->toString();
 
             $objectType = $type;
+
+            break;
         }
 
         // If there wasn't a recognized namespace, we'll assume it's a
