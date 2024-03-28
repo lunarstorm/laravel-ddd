@@ -45,9 +45,15 @@ class DomainResolver
         return config("ddd.namespaces.{$type}", str($type)->plural()->studly()->toString());
     }
 
-    public static function getDomainObjectNamespace(string $domain, string $type): string
+    public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
     {
-        return implode('\\', [static::domainRootNamespace(), $domain, static::getRelativeObjectNamespace($type)]);
+        $namespace = implode('\\', [static::domainRootNamespace(), $domain, static::getRelativeObjectNamespace($type)]);
+
+        if($object){
+            $namespace .= "\\{$object}";
+        }
+
+        return $namespace;
     }
 
     /**

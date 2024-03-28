@@ -8,7 +8,7 @@ use Lunarstorm\LaravelDDD\Support\DomainResolver;
 class DomainObjectNamespace
 {
     public function __construct(
-        public readonly string $key,
+        public readonly string $type,
         public readonly string $namespace,
     ) {
     }
@@ -23,8 +23,8 @@ class DomainObjectNamespace
 
         $domainNamespace = implode('\\', [$root, $domainWithSubdomain]);
 
-        $namespace = "{$domainNamespace}\\".config("ddd.namespaces.{$key}", Str::studly($key));
+        $namespace = "{$domainNamespace}\\" . config("ddd.namespaces.{$key}", Str::studly($key));
 
-        return new self(key: $key, namespace: $namespace);
+        return new self(type: $key, namespace: $namespace);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Tests\Fixtures\Models;
+namespace Domain\Invoicing\Models;
 
 use Lunarstorm\LaravelDDD\Models\DomainModel;
 

@@ -46,7 +46,8 @@
             "App\\": "vendor/orchestra/testbench-core/laravel/app/",
             "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories/",
             "Database\\Seeders\\": "vendor/orchestra/testbench-core/laravel/database/seeders/",
-            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain/"
+            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain/",
+            "TestDomain\\": "tests/Fixtures/Domain"
         }
     },
     "scripts": {

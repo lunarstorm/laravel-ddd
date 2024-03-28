@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
+use Lunarstorm\LaravelDDD\Listeners\CacheClearSubscriber;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
@@ -16,6 +17,8 @@ class TestCase extends Orchestra
         parent::setUp();
 
         $this->cleanFilesAndFolders();
+
+        (new CacheClearSubscriber())->handle();
 
         $composerFile = base_path('composer.json');
         $data = json_decode(file_get_contents($composerFile), true);
@@ -34,7 +37,7 @@ class TestCase extends Orchestra
         $this->composerReload();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
 
         $this->beforeApplicationDestroyed(function () {
@@ -75,5 +78,13 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('Custom'));
         File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
+    }
+
+    public function setupTestApplication()
+    {
+        File::copyDirectory(__DIR__ . '/resources/app', app_path());
+        File::copyDirectory(__DIR__ . '/resources/Domain', base_path('src/Domain'));
+
+        File::ensureDirectoryExists(app_path('Models'));
     }
 }
