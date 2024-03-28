@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\ValueObjects;
 
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Lunarstorm\LaravelDDD\Support\Path;
 
