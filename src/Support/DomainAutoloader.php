@@ -10,11 +10,14 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Lorisleiva\Lody\Lody;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
-use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 use Throwable;
 
 class DomainAutoloader
@@ -53,65 +56,78 @@ class DomainAutoloader
         }
     }
 
-    protected function registerDomainServiceProviders(bool|string|null $domainPath = null): void
+    public function registerDomainServiceProviders(bool|string|null $domainPath = null): void
     {
-        $domainPath = is_string($domainPath) ? $domainPath : '*/*ServiceProvider.php';
+        // $domainPath = is_string($domainPath) ? $domainPath : '*/*ServiceProvider.php';
+
+        // $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($domainPath) {
+        //     return Arr::map(
+        //         glob(base_path(DomainResolver::domainPath() . '/' . $domainPath)),
+        //         (static function ($serviceProvider) {
+
+        //             return Path::filePathToNamespace(
+        //                 $serviceProvider,
+        //                 DomainResolver::domainPath(),
+        //                 DomainResolver::domainRootNamespace()
+        //             );
+        //         })
+        //     );
+        // });
+
+        $domainPath = app()->basePath(DomainResolver::domainPath());
+
+        if (! is_dir($domainPath)) {
+            return;
+        }
 
         $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($domainPath) {
-            return Arr::map(
-                glob(base_path(DomainResolver::domainPath().'/'.$domainPath)),
-                (static function ($serviceProvider) {
+            $finder = Finder::create()->files()->in($domainPath);
 
-                    return Path::filePathToNamespace(
-                        $serviceProvider,
-                        DomainResolver::domainPath(),
-                        DomainResolver::domainRootNamespace()
-                    );
-                })
-            );
+            return Lody::classesFromFinder($finder)
+                ->isNotAbstract()
+                ->isInstanceOf(ServiceProvider::class)
+                ->toArray();
         });
 
         $app = app();
+
         foreach ($serviceProviders as $serviceProvider) {
             $app->register($serviceProvider);
         }
     }
 
-    protected function registerDomainCommands(bool|string|null $domainPath = null): void
+    public function registerDomainCommands(bool|string|null $domainPath = null): void
     {
-        $domainPath = is_string($domainPath) ? $domainPath : '*/Commands/*.php';
-        $commands = $this->remember('ddd-domain-commands', static function () use ($domainPath) {
-            $commands = Arr::map(
-                glob(base_path(DomainResolver::domainPath().'/'.$domainPath)),
-                static function ($command) {
-                    return Path::filePathToNamespace(
-                        $command,
-                        DomainResolver::domainPath(),
-                        DomainResolver::domainRootNamespace()
-                    );
-                }
-            );
+        // $domainPath = is_string($domainPath) ? $domainPath : '*/Commands/*.php';
 
-            // Filter out invalid commands (Abstract classes and classes not extending Illuminate\Console\Command)
-            return Arr::where($commands, static function ($command) {
-                if (
-                    is_subclass_of($command, Command::class) &&
-                    ! (new ReflectionClass($command))->isAbstract()
-                ) {
-                    ConsoleApplication::starting(static function ($artisan) use ($command): void {
-                        $artisan->resolve($command);
-                    });
-                }
-            });
+        $domainPath = app()->basePath(DomainResolver::domainPath());
+
+        if (! is_dir($domainPath)) {
+            return;
+        }
+
+        $commands = $this->remember('ddd-domain-commands', static function () use ($domainPath) {
+            $finder = Finder::create()->files()->in($domainPath);
+
+            return Lody::classesFromFinder($finder)
+                ->isNotAbstract()
+                ->isInstanceOf(Command::class)
+                ->toArray();
         });
-        ConsoleApplication::starting(static function ($artisan) use ($commands): void {
-            foreach ($commands as $command) {
-                $artisan->resolve($command);
-            }
+
+        foreach ($commands as $class) {
+            $this->registerCommand($class);
+        }
+    }
+
+    public function registerCommand($class)
+    {
+        ConsoleApplication::starting(function ($artisan) use ($class) {
+            $artisan->resolve($class);
         });
     }
 
-    protected function registerPolicies(bool|string|null $domainPath = null): void
+    public function registerPolicies(bool|string|null $domainPath = null): void
     {
         $domainPath = is_string($domainPath) ? $domainPath : 'Policies\\{model}Policy';
 
@@ -136,7 +152,7 @@ class DomainAutoloader
         });
     }
 
-    protected function registerFactories(bool|string|null $domainPath = null): void
+    public function registerFactories(bool|string|null $domainPath = null): void
     {
         $domainPath = is_string($domainPath) ? $domainPath : 'Database\\Factories\\{model}Factory';
 
@@ -153,22 +169,6 @@ class DomainAutoloader
 
             return 'Database\\Factories\\'.$modelName.'Factory';
         });
-    }
-
-    protected function extractDomainAndModelFromModelNamespace(string $modelName): array
-    {
-        // Matches <DomainNamespace>\{domain}\<ModelNamespace>\{model} and extracts domain and model
-        // For example: Domain\Invoicing\Models\Invoice gives ['domain' => 'Invoicing', 'model' => 'Invoice']
-        $regex = '/'.DomainResolver::domainRootNamespace().'\\\\(?<domain>.+)\\\\'.$this->configValue('namespaces.models').'\\\\(?<model>.+)/';
-
-        if (preg_match($regex, $modelName, $matches, PREG_OFFSET_CAPTURE, 0)) {
-            return [
-                'domain' => $matches['domain'][0],
-                'model' => $matches['model'][0],
-            ];
-        }
-
-        return [];
     }
 
     protected function remember($fileName, $callback)
@@ -188,6 +188,13 @@ class DomainAutoloader
         }
 
         return $data;
+    }
+
+    public static function clearCache()
+    {
+        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
+
+        File::delete($files);
     }
 
     protected static function appNamespace()

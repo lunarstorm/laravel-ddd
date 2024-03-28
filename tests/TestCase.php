@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
-use Lunarstorm\LaravelDDD\Listeners\CacheClearSubscriber;
+use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
@@ -17,8 +17,6 @@ class TestCase extends Orchestra
         parent::setUp();
 
         $this->cleanFilesAndFolders();
-
-        (new CacheClearSubscriber())->handle();
 
         $composerFile = base_path('composer.json');
         $data = json_decode(file_get_contents($composerFile), true);
@@ -78,6 +76,8 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('Custom'));
         File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
+
+        DomainAutoloader::clearCache();
     }
 
     public function setupTestApplication()

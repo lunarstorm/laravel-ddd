@@ -9,7 +9,9 @@ beforeEach(function () {
 
     Config::set('ddd.domain_namespace', 'Domain');
 
-    (new DomainAutoloader())->autoload();
+    $this->afterApplicationCreated(function () {
+        (new DomainAutoloader())->autoload();
+    });
 });
 
 it('can autoload domain policy', function ($class, $expectedPolicy) {

@@ -2,8 +2,8 @@
 
 namespace Lunarstorm\LaravelDDD\Listeners;
 
-use ErrorException;
 use Illuminate\Events\Dispatcher;
+use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 
 class CacheClearSubscriber
 {
@@ -13,18 +13,7 @@ class CacheClearSubscriber
 
     public function handle(): void
     {
-        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
-
-        foreach ($files as $file) {
-            try {
-                unlink($file);
-            } catch (ErrorException $exception) {
-                if (! str_contains($exception->getMessage(), 'No such file or directory')) {
-                    dump($exception->getMessage());
-                    throw $exception;
-                }
-            }
-        }
+        DomainAutoloader::clearCache();
     }
 
     /**
