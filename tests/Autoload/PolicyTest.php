@@ -21,7 +21,7 @@ it('can autoload domain policy', function ($class, $expectedPolicy) {
     ['Domain\Invoicing\Models\Invoice', 'Domain\Invoicing\Policies\InvoicePolicy'],
 ]);
 
-it('can autoload non-domain policy', function ($class, $expectedPolicy) {
+it('gracefully falls back for non-domain policies', function ($class, $expectedPolicy) {
     expect(class_exists($class))->toBeTrue();
     expect(Gate::getPolicyFor($class))->toBeInstanceOf($expectedPolicy);
 })->with([

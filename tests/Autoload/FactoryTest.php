@@ -19,7 +19,7 @@ it('can autoload domain factory', function ($modelClass, $expectedFactoryClass) 
     ['Domain\Internal\Reporting\Models\Report', 'Domain\Internal\Reporting\Database\Factories\ReportFactory'],
 ]);
 
-it('does not affect non-domain model factories', function () {
+it('gracefully falls back for non-domain factories', function () {
     Artisan::call('make:model RegularModel -f');
 
     $modelClass = 'App\Models\RegularModel';

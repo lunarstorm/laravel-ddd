@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -40,48 +39,39 @@ class DomainAutoloader
     public function autoload(): void
     {
         if ($value = $this->configValue('autoload.service_providers')) {
-            $this->registerDomainServiceProviders($value);
+            $this->registerProviders($value);
         }
 
         if ($value = $this->configValue('autoload.commands')) {
-            $this->registerDomainCommands($value);
+            $this->registerCommands($value);
         }
 
-        if ($value = $this->configValue('autoload.policies')) {
-            $this->registerPolicies($value);
+        if ($this->configValue('autoload.policies') === true) {
+            $this->registerPolicies();
         }
 
-        if ($value = $this->configValue('autoload.factories')) {
-            $this->registerFactories($value);
+        if ($this->configValue('autoload.factories') === true) {
+            $this->registerFactories();
         }
     }
 
-    public function registerDomainServiceProviders(bool|string|null $domainPath = null): void
+    protected function normalizePaths($path): array
     {
-        // $domainPath = is_string($domainPath) ? $domainPath : '*/*ServiceProvider.php';
+        return collect($path)
+            ->filter(fn ($path) => is_dir($path))
+            ->toArray();
+    }
 
-        // $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($domainPath) {
-        //     return Arr::map(
-        //         glob(base_path(DomainResolver::domainPath() . '/' . $domainPath)),
-        //         (static function ($serviceProvider) {
+    protected function registerProviders(bool|string|array|null $path = null): void
+    {
+        $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
 
-        //             return Path::filePathToNamespace(
-        //                 $serviceProvider,
-        //                 DomainResolver::domainPath(),
-        //                 DomainResolver::domainRootNamespace()
-        //             );
-        //         })
-        //     );
-        // });
+        $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($paths) {
+            if(empty($paths)) {
+                return [];
+            }
 
-        $domainPath = app()->basePath(DomainResolver::domainPath());
-
-        if (! is_dir($domainPath)) {
-            return;
-        }
-
-        $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($domainPath) {
-            $finder = Finder::create()->files()->in($domainPath);
+            $finder = Finder::create()->files()->in($paths);
 
             return Lody::classesFromFinder($finder)
                 ->isNotAbstract()
@@ -96,18 +86,16 @@ class DomainAutoloader
         }
     }
 
-    public function registerDomainCommands(bool|string|null $domainPath = null): void
+    protected function registerCommands(bool|string|array|null $path = null): void
     {
-        // $domainPath = is_string($domainPath) ? $domainPath : '*/Commands/*.php';
+        $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
 
-        $domainPath = app()->basePath(DomainResolver::domainPath());
+        $commands = $this->remember('ddd-domain-commands', static function () use ($paths) {
+            if(empty($paths)) {
+                return [];
+            }
 
-        if (! is_dir($domainPath)) {
-            return;
-        }
-
-        $commands = $this->remember('ddd-domain-commands', static function () use ($domainPath) {
-            $finder = Finder::create()->files()->in($domainPath);
+            $finder = Finder::create()->files()->in($paths);
 
             return Lody::classesFromFinder($finder)
                 ->isNotAbstract()
@@ -120,18 +108,16 @@ class DomainAutoloader
         }
     }
 
-    public function registerCommand($class)
+    protected function registerCommand($class)
     {
         ConsoleApplication::starting(function ($artisan) use ($class) {
             $artisan->resolve($class);
         });
     }
 
-    public function registerPolicies(bool|string|null $domainPath = null): void
+    protected function registerPolicies(): void
     {
-        $domainPath = is_string($domainPath) ? $domainPath : 'Policies\\{model}Policy';
-
-        Gate::guessPolicyNamesUsing(static function (string $class): array|string|null {
+        Gate::guessPolicyNamesUsing(static function (string $class): array|string {
             if ($model = DomainObject::fromClass($class, 'model')) {
                 return (new Domain($model->domain))
                     ->object('policy', "{$model->name}Policy")
@@ -145,17 +131,15 @@ class DomainAutoloader
             return Arr::wrap(Collection::times(count($classDirnameSegments), function ($index) use ($class, $classDirnameSegments) {
                 $classDirname = implode('\\', array_slice($classDirnameSegments, 0, $index));
 
-                return $classDirname.'\\Policies\\'.class_basename($class).'Policy';
+                return $classDirname . '\\Policies\\' . class_basename($class) . 'Policy';
             })->reverse()->values()->first(function ($class) {
                 return class_exists($class);
-            }) ?: [$classDirname.'\\Policies\\'.class_basename($class).'Policy']);
+            }) ?: [$classDirname . '\\Policies\\' . class_basename($class) . 'Policy']);
         });
     }
 
-    public function registerFactories(bool|string|null $domainPath = null): void
+    protected function registerFactories(): void
     {
-        $domainPath = is_string($domainPath) ? $domainPath : 'Database\\Factories\\{model}Factory';
-
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             if (DomainResolver::isDomainClass($modelName)) {
                 return DomainFactory::factoryForModel($modelName);
@@ -163,18 +147,18 @@ class DomainAutoloader
 
             $appNamespace = static::appNamespace();
 
-            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
-                ? Str::after($modelName, $appNamespace.'Models\\')
+            $modelName = Str::startsWith($modelName, $appNamespace . 'Models\\')
+                ? Str::after($modelName, $appNamespace . 'Models\\')
                 : Str::after($modelName, $appNamespace);
 
-            return 'Database\\Factories\\'.$modelName.'Factory';
+            return 'Database\\Factories\\' . $modelName . 'Factory';
         });
     }
 
     protected function remember($fileName, $callback)
     {
         // The cache is not available during booting, so we need to roll our own file based cache
-        $cacheFilePath = base_path($this->cacheDirectory.'/'.$fileName.'.php');
+        $cacheFilePath = base_path($this->cacheDirectory . '/' . $fileName . '.php');
 
         $data = file_exists($cacheFilePath) ? include $cacheFilePath : null;
 
@@ -183,7 +167,7 @@ class DomainAutoloader
 
             file_put_contents(
                 $cacheFilePath,
-                '<?php '.PHP_EOL.'return '.var_export($data, true).';'
+                '<?php ' . PHP_EOL . 'return ' . var_export($data, true) . ';'
             );
         }
 
@@ -192,7 +176,7 @@ class DomainAutoloader
 
     public static function clearCache()
     {
-        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
+        $files = glob(base_path(config('ddd.cache_directory') . '/ddd-*.php'));
 
         File::delete($files);
     }

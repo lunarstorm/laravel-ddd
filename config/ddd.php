@@ -71,33 +71,31 @@ return [
     'autoload' => [
         /*
          | Autoload service providers from the domain namespace.
-         | By default, it loads any file that ends with 'ServiceProvider.php' inside your domain.
+         | By default, it loads any non-abstract class inside the domain layer extending Illuminate\Support\ServiceProvider.
          | For example: Domain/Invoicing/Providers/InvoicingServiceProvider.php or Domain/Invoicing/InvoicingServiceProvider.php
          */
-        // To customize the pattern, you can use a glob pattern like '*/Providers/*.php'
-        'service_providers' => '*/*ServiceProvider.php',
+        'service_providers' => true,
 
         /*
          | Autoload commands from the domain namespace.
-         | By default, it loads any file inside the /Commands folder that ends '.php', extends Illuminate\Console\Command and is not abstract.
+         | By default, it loads any non-abstract class inside the domain layer extending Illuminate\Console\Command.
          | For example: Domain/Invoicing/Commands/CreateInvoiceCommand.php
          */
-        // To customize the pattern, you can use a glob pattern like '*/Commands/*.php'
-        'commands' => '*/Commands/*.php',
+        'commands' => true,
 
         /*
          | Autoload policies from the domain namespace.
-         | By default, it loads any file inside the /Policies folder that ends 'Policy.php' and is not abstract.
+         | By default, it uses the configured `ddd.namespaces.policy` namespace to guess the policy name.
          | For example: Domain/Invoicing/Policies/InvoicePolicy.php
          */
-        'policies' => 'Policies\\{model}Policy',
+        'policies' => true,
 
         /*
          | Autoload factories from the domain namespace.
-         | By default, it loads any file inside the /Database/Factories folder that ends 'Factory.php' and is not abstract.
+         | By default, it uses the configured `ddd.namespaces.factory` namespace to guess the factory name.
          | For example: Domain/Invoicing/Database/Factories/InvoiceFactory.php
          */
-        'factories' => 'Database\\Factories\\{model}Factory',
+        'factories' => true,
     ],
 
     /*
