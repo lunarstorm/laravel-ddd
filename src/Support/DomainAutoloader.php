@@ -67,7 +67,7 @@ class DomainAutoloader
         $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
 
         $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($paths) {
-            if(empty($paths)) {
+            if (empty($paths)) {
                 return [];
             }
 
@@ -91,7 +91,7 @@ class DomainAutoloader
         $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
 
         $commands = $this->remember('ddd-domain-commands', static function () use ($paths) {
-            if(empty($paths)) {
+            if (empty($paths)) {
                 return [];
             }
 
@@ -131,10 +131,10 @@ class DomainAutoloader
             return Arr::wrap(Collection::times(count($classDirnameSegments), function ($index) use ($class, $classDirnameSegments) {
                 $classDirname = implode('\\', array_slice($classDirnameSegments, 0, $index));
 
-                return $classDirname . '\\Policies\\' . class_basename($class) . 'Policy';
+                return $classDirname.'\\Policies\\'.class_basename($class).'Policy';
             })->reverse()->values()->first(function ($class) {
                 return class_exists($class);
-            }) ?: [$classDirname . '\\Policies\\' . class_basename($class) . 'Policy']);
+            }) ?: [$classDirname.'\\Policies\\'.class_basename($class).'Policy']);
         });
     }
 
@@ -147,18 +147,18 @@ class DomainAutoloader
 
             $appNamespace = static::appNamespace();
 
-            $modelName = Str::startsWith($modelName, $appNamespace . 'Models\\')
-                ? Str::after($modelName, $appNamespace . 'Models\\')
+            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
+                ? Str::after($modelName, $appNamespace.'Models\\')
                 : Str::after($modelName, $appNamespace);
 
-            return 'Database\\Factories\\' . $modelName . 'Factory';
+            return 'Database\\Factories\\'.$modelName.'Factory';
         });
     }
 
     protected function remember($fileName, $callback)
     {
         // The cache is not available during booting, so we need to roll our own file based cache
-        $cacheFilePath = base_path($this->cacheDirectory . '/' . $fileName . '.php');
+        $cacheFilePath = base_path($this->cacheDirectory.'/'.$fileName.'.php');
 
         $data = file_exists($cacheFilePath) ? include $cacheFilePath : null;
 
@@ -167,7 +167,7 @@ class DomainAutoloader
 
             file_put_contents(
                 $cacheFilePath,
-                '<?php ' . PHP_EOL . 'return ' . var_export($data, true) . ';'
+                '<?php '.PHP_EOL.'return '.var_export($data, true).';'
             );
         }
 
@@ -176,7 +176,7 @@ class DomainAutoloader
 
     public static function clearCache()
     {
-        $files = glob(base_path(config('ddd.cache_directory') . '/ddd-*.php'));
+        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
 
         File::delete($files);
     }
