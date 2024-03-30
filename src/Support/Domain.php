@@ -122,18 +122,7 @@ class Domain
 
     public function factory(string $name): DomainObject
     {
-        $name = str($name)->replace($this->namespace->root, '')->toString();
-
-        return new DomainObject(
-            name: $name,
-            domain: $this->domain,
-            namespace: $this->namespace->factories,
-            fullyQualifiedName: $this->namespace->factories.'\\'.$name,
-            path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
-                ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
-                ->toString(),
-            type: 'factory'
-        );
+        return $this->object('factory', $name);
     }
 
     public function dataTransferObject(string $name): DomainObject

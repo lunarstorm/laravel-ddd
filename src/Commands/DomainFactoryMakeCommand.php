@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputOption;
 
 class DomainFactoryMakeCommand extends DomainGeneratorCommand
@@ -31,37 +30,13 @@ class DomainFactoryMakeCommand extends DomainGeneratorCommand
         return $this->resolveStubPath('factory.php.stub');
     }
 
-    protected function rootNamespace()
-    {
-        return 'Database\\Factories\\';
-    }
-
-    protected function getDefaultNamespace($rootNamespace)
-    {
-        $domain = $this->domain?->domainWithSubdomain;
-
-        return $rootNamespace.'\\'.$domain;
-    }
-
-    protected function getRelativeDomainNamespace(): string
-    {
-        return '';
-    }
-
     protected function getPath($name)
     {
         if (! str_ends_with($name, 'Factory')) {
             $name .= 'Factory';
         }
 
-        $name = str($name)
-            ->replaceFirst($this->rootNamespace(), '')
-            ->replace('\\', '/')
-            ->ltrim('/')
-            ->append('.php')
-            ->toString();
-
-        return Path::normalize(base_path('database/factories/'.$name));
+        return parent::getPath($name);
     }
 
     protected function getFactoryName()
