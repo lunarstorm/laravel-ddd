@@ -107,9 +107,11 @@ class Domain
 
         return new DomainObject(
             name: $name,
+            domain: $this->domain,
             namespace: $namespace,
-            fqn: $namespace.'\\'.$name,
+            fullyQualifiedName: $namespace.'\\'.$name,
             path: $this->path($namespace.'\\'.$name),
+            type: $type
         );
     }
 
@@ -124,11 +126,13 @@ class Domain
 
         return new DomainObject(
             name: $name,
+            domain: $this->domain,
             namespace: $this->namespace->factories,
-            fqn: $this->namespace->factories.'\\'.$name,
+            fullyQualifiedName: $this->namespace->factories.'\\'.$name,
             path: str("database/factories/{$this->domainWithSubdomain}/{$name}.php")
                 ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
-                ->toString()
+                ->toString(),
+            type: 'factory'
         );
     }
 

@@ -21,14 +21,15 @@
         "php": "^8.1|^8.2|^8.3",
         "illuminate/contracts": "^10.25|^11.0",
         "laravel/prompts": "^0.1.16",
+        "lorisleiva/lody": "^0.5.0",
         "spatie/laravel-package-tools": "^1.13.0"
     },
     "require-dev": {
+        "larastan/larastan": "^2.0.1",
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^7.0|^8.1",
-        "larastan/larastan": "^2.0.1",
         "orchestra/testbench": "^8|^9.0",
-        "pestphp/pest": "^2.0",
+        "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-laravel": "^2.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
@@ -43,10 +44,10 @@
     "autoload-dev": {
         "psr-4": {
             "Lunarstorm\\LaravelDDD\\Tests\\": "tests",
-            "App\\": "vendor/orchestra/testbench-core/laravel/app/",
-            "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories/",
-            "Database\\Seeders\\": "vendor/orchestra/testbench-core/laravel/database/seeders/",
-            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain/"
+            "App\\": "vendor/orchestra/testbench-core/laravel/app",
+            "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories",
+            "Database\\Seeders\\": "vendor/orchestra/testbench-core/laravel/database/seeders",
+            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain"
         }
     },
     "scripts": {

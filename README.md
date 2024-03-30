@@ -7,16 +7,7 @@
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus many more.
 
-## Version Compatibility
- Laravel    | LaravelDDD 
-:-----------|:-----------
- 9.x        | 0.x        
- <10.25     | 0.x 
- 10.25+     | 1.x 
- 11.x       | 1.x
-
 ## Installation
-
 You can install the package via composer:
 
 ```bash
@@ -28,9 +19,20 @@ You may then initialize the package using the `ddd:install` artisan command. Thi
 php artisan ddd:install
 ```
 
-## Usage
+### Version Compatibility
+ Laravel        | LaravelDDD 
+:---------------|:-----------
+ 9.x - 10.24.x  | 0.x        
+ 10.25.x        | 1.x 
+ 11.x           | 1.x
 
-Command syntax:
+> 
+> 0.x is no longer supported. For 0.x usage, please refer to the [README for the latest 0.x release](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md).
+>
+
+## Usage
+### Syntax
+All `ddd:*` generator commands use the following syntax:
 ```bash
 # Specifying the domain as an option
 php artisan ddd:{object} {name} --domain={domain}
@@ -39,79 +41,84 @@ php artisan ddd:{object} {name} --domain={domain}
 php artisan ddd:{object} {domain}:{name}
 
 # Not specifying the domain at all, which will then prompt
-# you to enter the domain name (with auto-completion)
+# prompt for it (with auto-completion)
 php artisan ddd:{object} {name}
 ```
 
+## Available Commands
+### Generators
 The following generators are currently available, shown using short-hand syntax:
 ```bash
 # Generate a domain model
-php artisan ddd:model {domain}:{name}
+php artisan ddd:model Invoicing:Invoice
 
 # Generate a domain model with factory
-php artisan ddd:model {domain}:{name} -f
-php artisan ddd:model {domain}:{name} --factory
+php artisan ddd:model Invoicing:Invoice -f
+php artisan ddd:model Invoicing:Invoice --factory
 
 # Generate a domain factory
-php artisan ddd:factory {domain}:{name} [--model={model}]
+php artisan ddd:factory Invoicing:InvoiceFactory
+php artisan ddd:factory Invoicing:InvoiceFactory --model=Invoice # optionally specifying the model
 
 # Generate a data transfer object
-php artisan ddd:dto {domain}:{name}
+php artisan ddd:dto Invoicing:LineItemPayload
 
 # Generates a value object
-php artisan ddd:value {domain}:{name}
+php artisan ddd:value Shared:DollarAmount
 
 # Generates a view model
-php artisan ddd:view-model {domain}:{name}
+php artisan ddd:view-model Invoicing:ShowInvoiceViewModel
 
 # Generates an action
-php artisan ddd:action {domain}:{name}
+php artisan ddd:action Invoicing:SendInvoiceToCustomer
 
 # Extended Commands 
-# (extends Laravel's make:* generators and funnels the objects into the domain layer)
-php artisan ddd:cast {domain}:{name}
-php artisan ddd:channel {domain}:{name}
-php artisan ddd:command {domain}:{name}
-php artisan ddd:enum {domain}:{name} # Requires Laravel 11+
-php artisan ddd:event {domain}:{name}
-php artisan ddd:exception {domain}:{name}
-php artisan ddd:job {domain}:{name}
-php artisan ddd:listener {domain}:{name}
-php artisan ddd:mail {domain}:{name}
-php artisan ddd:notification {domain}:{name}
-php artisan ddd:observer {domain}:{name}
-php artisan ddd:policy {domain}:{name}
-php artisan ddd:provider {domain}:{name}
-php artisan ddd:resource {domain}:{name}
-php artisan ddd:rule {domain}:{name}
-php artisan ddd:scope {domain}:{name}
+# These extend Laravel's respective make:* commands and places the objects into the domain layer
+php artisan ddd:cast Invoicing:MoneyCast
+php artisan ddd:channel Invoicing:InvoiceChannel
+php artisan ddd:command Invoicing:InvoiceDeliver
+php artisan ddd:enum Customer:CustomerType # Laravel 11+ only
+php artisan ddd:event Invoicing:PaymentWasReceived
+php artisan ddd:exception Invoicing:InvoiceNotFoundException
+php artisan ddd:job Invoicing:GenerateInvoicePdf
+php artisan ddd:listener Invoicing:HandlePaymentReceived
+php artisan ddd:mail Invoicing:OverduePaymentReminderEmail
+php artisan ddd:notification Invoicing:YourPaymentWasReceived
+php artisan ddd:observer Invoicing:InvoiceObserver
+php artisan ddd:policy Invoicing:InvoicePolicy
+php artisan ddd:provider Invoicing:InvoiceServiceProvider
+php artisan ddd:resource Invoicing:InvoiceResource
+php artisan ddd:rule Invoicing:ValidPaymentMethod
+php artisan ddd:scope Invoicing:ArchivedInvoicesScope
 ```
-
-Examples:
-```bash
-php artisan ddd:model Invoicing:LineItem # Domain/Invoicing/Models/LineItem
-php artisan ddd:model Invoicing:LineItem -f # Domain/Invoicing/Models/LineItem + Database/Factories/Invoicing/LineItemFactory
-php artisan ddd:factory Invoicing:LineItemFactory # Database/Factories/Invoicing/LineItemFactory
-php artisan ddd:dto Invoicing:LinePayload # Domain/Invoicing/Data/LinePayload
-php artisan ddd:value Shared:Percentage # Domain/Shared/ValueObjects/Percentage
-php artisan ddd:view-model Invoicing:ShowInvoiceViewModel # Domain/Invoicing/ViewModels/ShowInvoiceViewModel
-php artisan ddd:action Invoicing:SendInvoiceToCustomer # Domain/Invoicing/Actions/SendInvoiceToCustomer
-```
-
-Subdomains (nested domains) can be specified with dot notation:
-```bash
-php artisan ddd:model Invoicing.Customer:CustomerInvoice # Domain/Invoicing/Customer/Models/CustomerInvoice
-php artisan ddd:factory Invoicing.Customer:CustomerInvoice # Database/Factories/Invoicing/Customer/CustomerInvoiceFactory
-# (supported by all generator commands)
-```
+Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the configuration file.
 
 ### Other Commands
 ```bash
 # Show a summary of current domains in the domain folder
 php artisan ddd:list
+
+# Cache domain manifests (used for autoloading)
+php artisan ddd:cache
+
+# Clear the domain cache
+php artisan ddd:clear
 ```
 
-This package ships with opinionated (but sensible) configuration defaults. If you need to customize, you may do so by publishing the config file and generator stubs as needed:
+### Subdomains (nested domains)
+Subdomains can be specified with dot notation wherever a domain option is accepted.
+```bash
+# Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Internal:MonthlyInvoicesReportViewModel
+
+# Domain/Reporting/Customer/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
+
+# (supported by all commands where a domain option is accepted)
+```
+
+### Customization
+This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the config file and generator stubs as needed:
 
 ```bash
 php artisan vendor:publish --tag="ddd-config"
@@ -119,9 +126,49 @@ php artisan vendor:publish --tag="ddd-stubs"
 ```
 Note that the extended commands do not publish ddd-specific stubs, and inherit the respective application-level stubs published by Laravel.
 
+## Domain Autoloading and Discovery
+Autoloading behaviour can be configured with the `ddd.autoload` configuration option. By default, domain providers, commands, policies, and factories are auto-discovered and registered.
+
+```php
+'autoload' => [
+    'providers' => true,
+    'commands' => true,
+    'policies' => true,
+    'factories' => true,
+],
+```
+### Service Providers
+When `ddd.autoload.providers` is enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider` will be auto-registered as a service provider.
+
+### Console Commands
+When `ddd.autoload.commands` is enabled, any class within the domain layer extending `Illuminate\Console\Command` will be auto-registered as a command when running in console.
+
+### Policies
+When `ddd.autoload.policies` is enabled, the package will register a custom policy discovery callback to resolve policy names for domain models, and fallback to Laravel's default for all other cases. If your application implements its own policy discovery using `Gate::guessPolicyNamesUsing()`, you should set `ddd.autoload.policies` to `false` to ensure it is not overridden.
+
+### Factories
+When `ddd.autoload.factories` is enabled, the package will register a custom factory discovery callback to resolve factory names for domain models, and fallback to Laravel's default for all other cases. Note that this does not affect domain models using the `Lunarstorm\LaravelDDD\Factories\HasDomainFactory` trait. Where this is useful is with regular models in the domain layer that use the standard `Illuminate\Database\Eloquent\Factories\HasFactory` trait.
+
+If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
+
+### Disabling Autoloading
+You may disable autoloading by setting the respective autoload options to `false` in the configuration file as needed, or by commenting out the autoload configuration entirely.
+```php
+// 'autoload' => [
+//     'providers' => true,
+//     'commands' => true,
+//     'policies' => true,
+//     'factories' => true,
+// ],
+```
+## Autoloading in Production
+In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
+
+## Configuration File
 This is the content of the published config file (`ddd.php`):
 
 ```php
+
 return [
 
     /*
@@ -153,11 +200,11 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domain/Invoicing/Models/*
-    |       Domain/Invoicing/Data/*
-    |       Domain/Invoicing/ViewModels/*
-    |       Domain/Invoicing/ValueObjects/*
-    |       Domain/Invoicing/Actions/*
+    | e.g., Domain\Invoicing\Models\*
+    |       Domain\Invoicing\Data\*
+    |       Domain\Invoicing\ViewModels\*
+    |       Domain\Invoicing\ValueObjects\*
+    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [
@@ -172,6 +219,7 @@ return [
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
+        'factory' => 'Database\Factories',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -232,6 +280,52 @@ return [
     |
     */
     'base_action' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloading
+    |--------------------------------------------------------------------------
+    |
+    | Configure whether domain providers, commands, policies, and factories
+    | should be auto-discovered and registered.
+    |
+    */
+    'autoload' => [
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
+         * will be auto-registered as a service provider
+         */
+        'providers' => true,
+
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
+         * will be auto-registered as a command when running in console.
+         */
+        'commands' => true,
+
+        /**
+         * When enabled, the package will register a custom policy discovery callback to resolve policy names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
+        'policies' => true,
+
+        /**
+         * When enabled, the package will register a custom factory discovery callback to resolve factory names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
+        'factories' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Caching
+    |--------------------------------------------------------------------------
+    |
+    | The folder where the domain cache files will be stored. Used for domain
+    | autoloading.
+    |
+    */
+    'cache_directory' => 'bootstrap/cache/ddd',
 ];
 ```
 

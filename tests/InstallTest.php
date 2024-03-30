@@ -18,13 +18,19 @@ it('publishes config', function () {
     $command->execute();
 
     expect(file_exists($path))->toBeTrue();
-    expect(file_get_contents($path))
-        ->toEqual(file_get_contents(__DIR__.'/../config/ddd.php'));
+    expect(file_get_contents($path))->toEqual(file_get_contents(__DIR__.'/../config/ddd.php'));
 
     unlink($path);
 });
 
 it('can initialize composer.json', function ($domainPath, $domainRoot) {
+    $this->updateComposer(
+        forget: [
+            ['autoload', 'psr-4', 'Domains\\'],
+            ['autoload', 'psr-4', 'Domain\\'],
+        ]
+    );
+
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 

@@ -92,8 +92,8 @@ class DomainFactoryMakeCommand extends DomainGeneratorCommand
         // ]);
 
         return [
-            'namespacedModel' => $domainModel->fqn,
-            'model' => class_basename($domainModel->fqn),
+            'namespacedModel' => $domainModel->fullyQualifiedName,
+            'model' => class_basename($domainModel->fullyQualifiedName),
             'factory' => $this->getFactoryName(),
             'namespace' => $domainFactory->namespace,
         ];

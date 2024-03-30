@@ -31,11 +31,11 @@ return [
     | objects relative to the domain namespace of which the object
     | belongs to.
     |
-    | e.g., Domain/Invoicing/Models/*
-    |       Domain/Invoicing/Data/*
-    |       Domain/Invoicing/ViewModels/*
-    |       Domain/Invoicing/ValueObjects/*
-    |       Domain/Invoicing/Actions/*
+    | e.g., Domain\Invoicing\Models\*
+    |       Domain\Invoicing\Data\*
+    |       Domain\Invoicing\ViewModels\*
+    |       Domain\Invoicing\ValueObjects\*
+    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [
@@ -50,6 +50,7 @@ return [
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
+        'factory' => 'Database\Factories',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -110,4 +111,50 @@ return [
     |
     */
     'base_action' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloading
+    |--------------------------------------------------------------------------
+    |
+    | Configure whether domain providers, commands, policies, and factories
+    | should be auto-discovered and registered.
+    |
+    */
+    'autoload' => [
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
+         * will be auto-registered as a service provider
+         */
+        'providers' => true,
+
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
+         * will be auto-registered as a command when running in console.
+         */
+        'commands' => true,
+
+        /**
+         * When enabled, the package will register a custom policy discovery callback to resolve policy names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
+        'policies' => true,
+
+        /**
+         * When enabled, the package will register a custom factory discovery callback to resolve factory names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
+        'factories' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Caching
+    |--------------------------------------------------------------------------
+    |
+    | The folder where the domain cache files will be stored. Used for domain
+    | autoloading.
+    |
+    */
+    'cache_directory' => 'bootstrap/cache/ddd',
 ];

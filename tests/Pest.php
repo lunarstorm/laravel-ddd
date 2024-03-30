@@ -12,3 +12,8 @@ function skipOnLaravelVersionsBelow($minimumVersion)
         test()->markTestSkipped("Only relevant from Laravel {$minimumVersion} onwards (Current version: {$version}).");
     }
 }
+
+function setConfigValues(array $values)
+{
+    TestCase::configValues($values);
+}

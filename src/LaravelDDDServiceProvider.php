@@ -2,6 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Illuminate\Support\Facades\Event;
+use Lunarstorm\LaravelDDD\Listeners\CacheClearSubscriber;
+use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,6 +22,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 Commands\InstallCommand::class,
+                Commands\CacheCommand::class,
+                Commands\CacheClearCommand::class,
                 Commands\DomainListCommand::class,
                 Commands\DomainModelMakeCommand::class,
                 Commands\DomainFactoryMakeCommand::class,
@@ -56,5 +61,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->publishes([
             $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
         ], "{$this->package->shortName()}-stubs");
+    }
+
+    public function packageRegistered()
+    {
+        (new DomainAutoloader())->autoload();
+
+        Event::subscribe(CacheClearSubscriber::class);
     }
 }

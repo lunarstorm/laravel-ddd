@@ -84,7 +84,7 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
     expect(file_exists($expectedFactoryPath))->toBeTrue("Expecting factory file to be generated at {$expectedFactoryPath}");
 
     expect(file_get_contents($expectedFactoryPath))
-        ->toContain("use {$domainModel->fqn};")
+        ->toContain("use {$domainModel->fullyQualifiedName};")
         ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths')->with('domainSubdomain');
 
