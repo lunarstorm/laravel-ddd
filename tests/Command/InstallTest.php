@@ -18,7 +18,7 @@ it('publishes config', function () {
     $command->execute();
 
     expect(file_exists($path))->toBeTrue();
-    expect(file_get_contents($path))->toEqual(file_get_contents(__DIR__.'/../config/ddd.php'));
+    expect(file_get_contents($path))->toEqual(file_get_contents(__DIR__.'/../../config/ddd.php'));
 
     unlink($path);
 });

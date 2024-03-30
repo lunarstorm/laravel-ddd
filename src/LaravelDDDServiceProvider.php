@@ -22,6 +22,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 Commands\InstallCommand::class,
+                Commands\UpgradeCommand::class,
                 Commands\CacheCommand::class,
                 Commands\CacheClearCommand::class,
                 Commands\DomainListCommand::class,
