@@ -15,8 +15,8 @@ it('can cache discovered domain providers and commands', function () {
 
     $this
         ->artisan('ddd:cache')
-        ->expectsOutput('Cached domain providers.')
-        ->expectsOutput('Cached domain commands.')
+        ->expectsOutputToContain('Domain providers cached successfully.')
+        ->expectsOutputToContain('Domain commands cached successfully.')
         ->execute();
 
     expect(DomainCache::get('domain-providers'))
@@ -34,7 +34,7 @@ it('can clear the cache', function () {
 
     $this
         ->artisan('ddd:clear')
-        ->expectsOutput('Domain cache cleared.')
+        ->expectsOutputToContain('Domain cache cleared successfully.')
         ->execute();
 
     expect(DomainCache::get('domain-providers'))->toBeNull();
