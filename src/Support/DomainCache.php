@@ -10,6 +10,8 @@ class DomainCache
     {
         $cacheDirectory = config('ddd.cache_directory', 'bootstrap/cache/ddd');
 
+        File::ensureDirectoryExists(base_path($cacheDirectory));
+
         $cacheFilePath = base_path("{$cacheDirectory}/ddd-{$key}.php");
 
         file_put_contents(
