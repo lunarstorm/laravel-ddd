@@ -15,10 +15,10 @@ class CacheCommand extends Command
     {
         DomainAutoloader::cacheProviders();
 
-        $this->info('Cached domain providers.');
+        $this->components->info('Domain providers cached successfully.');
 
         DomainAutoloader::cacheCommands();
 
-        $this->info('Cached domain commands.');
+        $this->components->info('Domain commands cached successfully.');
     }
 }

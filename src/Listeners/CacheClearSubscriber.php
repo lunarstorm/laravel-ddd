@@ -3,7 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Listeners;
 
 use Illuminate\Events\Dispatcher;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Lunarstorm\LaravelDDD\Support\DomainCache;
 
 class CacheClearSubscriber
 {
@@ -13,7 +13,7 @@ class CacheClearSubscriber
 
     public function handle(): void
     {
-        DomainAutoloader::clearCache();
+        DomainCache::clear();
     }
 
     /**

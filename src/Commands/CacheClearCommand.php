@@ -15,6 +15,6 @@ class CacheClearCommand extends Command
     {
         DomainCache::clear();
 
-        $this->info('Domain cache cleared.');
+        $this->components->info('Domain cache cleared successfully.');
     }
 }
