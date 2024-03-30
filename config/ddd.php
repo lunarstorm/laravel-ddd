@@ -122,9 +122,28 @@ return [
     |
     */
     'autoload' => [
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
+         * will be auto-registered as a service provider
+         */
         'providers' => true,
+
+        /**
+         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
+         * will be auto-registered as a command when running in console.
+         */
         'commands' => true,
+
+        /**
+         * When enabled, the package will register a custom policy discovery callback to resolve policy names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
         'policies' => true,
+
+        /**
+         * When enabled, the package will register a custom factory discovery callback to resolve factory names
+         * for domain models, and fallback to Laravel's default for all other cases.
+         */
         'factories' => true,
     ],
 
@@ -137,5 +156,5 @@ return [
     | autoloading.
     |
     */
-    'cache_directory' => 'bootstrap/cache',
+    'cache_directory' => 'bootstrap/cache/ddd',
 ];
