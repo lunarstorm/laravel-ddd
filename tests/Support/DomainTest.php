@@ -36,8 +36,8 @@ it('can describe a domain factory', function ($domainName, $name, $expectedFQN, 
         ->fullyQualifiedName->toBe($expectedFQN)
         ->path->toBe(Path::normalize($expectedPath));
 })->with([
-    ['Reporting', 'InvoiceReportFactory', 'Database\\Factories\\Reporting\\InvoiceReportFactory', 'database/factories/Reporting/InvoiceReportFactory.php'],
-    ['Reporting.Internal', 'InvoiceReportFactory', 'Database\\Factories\\Reporting\\Internal\\InvoiceReportFactory', 'database/factories/Reporting/Internal/InvoiceReportFactory.php'],
+    ['Reporting', 'InvoiceReportFactory', 'Domain\\Reporting\\Database\\Factories\\InvoiceReportFactory', 'src/Domain/Reporting/Database/Factories/InvoiceReportFactory.php'],
+    ['Reporting.Internal', 'InvoiceReportFactory', 'Domain\\Reporting\\Internal\\Database\\Factories\\InvoiceReportFactory', 'src/Domain/Reporting/Internal/Database/Factories/InvoiceReportFactory.php'],
 ]);
 
 it('can describe a data transfer object', function ($domainName, $name, $expectedFQN, $expectedPath) {
