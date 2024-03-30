@@ -48,7 +48,7 @@ it('can generate domain factories', function ($domainPath, $domainRoot, $domain,
 
     expect($contents)
         ->toContain("namespace {$domainFactory->namespace};")
-        ->toContain("use {$domainModel->fqn};")
+        ->toContain("use {$domainModel->fullyQualifiedName};")
         ->toContain("class {$domainFactory->name} extends Factory")
         ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths')->with('domainSubdomain');

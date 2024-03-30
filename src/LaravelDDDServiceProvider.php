@@ -22,6 +22,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 Commands\InstallCommand::class,
+                Commands\CacheCommand::class,
+                Commands\CacheClearCommand::class,
                 Commands\DomainListCommand::class,
                 Commands\DomainModelMakeCommand::class,
                 Commands\DomainFactoryMakeCommand::class,
@@ -64,6 +66,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         (new DomainAutoloader())->autoload();
+
         Event::subscribe(CacheClearSubscriber::class);
     }
 }

@@ -8,6 +8,7 @@ beforeEach(function () {
     $this->setupTestApplication();
 
     Config::set('ddd.domain_namespace', 'Domain');
+    Config::set('ddd.autoload.factories', true);
 
     $this->afterApplicationCreated(function () {
         (new DomainAutoloader())->autoload();

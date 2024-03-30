@@ -57,8 +57,8 @@ describe('autoload disabled', function () {
     });
 
     it('cannot resolve factories that rely on autoloading', function ($modelClass) {
-        $modelClass::factory();
-    })->throws(\Error::class)->with([
+        expect(fn () => $modelClass::factory())->toThrow(Error::class);
+    })->with([
         ['Domain\Invoicing\Models\VanillaModel'],
         ['Domain\Internal\Reporting\Models\Report'],
     ]);

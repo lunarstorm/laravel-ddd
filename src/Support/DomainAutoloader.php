@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -21,90 +20,58 @@ use Throwable;
 
 class DomainAutoloader
 {
-    protected string $cacheDirectory;
-
-    protected mixed $config;
-
     public function __construct()
     {
-        $this->config = config('ddd');
-        $this->cacheDirectory = $this->configValue('cache_directory') ?? 'bootstrap/cache/ddd';
-    }
-
-    protected function configValue($path)
-    {
-        return data_get($this->config, $path);
+        //
     }
 
     public function autoload(): void
     {
-        if ($value = $this->configValue('autoload.providers')) {
-            $this->registerProviders($value);
+        if (! config()->has('ddd.autoload')) {
+            return;
         }
 
-        if ($value = $this->configValue('autoload.commands')) {
-            $this->registerCommands($value);
+        $this->handleProviders();
+
+        if (app()->runningInConsole()) {
+            $this->handleCommands();
         }
 
-        if ($this->configValue('autoload.policies') === true) {
-            $this->registerPolicies();
+        if (config('ddd.autoload.policies') === true) {
+            $this->handlePolicies();
         }
 
-        if ($this->configValue('autoload.factories') === true) {
-            $this->registerFactories();
+        if (config('ddd.autoload.factories') === true) {
+            $this->handleFactories();
         }
     }
 
-    protected function normalizePaths($path): array
+    protected static function normalizePaths($path): array
     {
         return collect($path)
             ->filter(fn ($path) => is_dir($path))
             ->toArray();
     }
 
-    protected function registerProviders(bool|string|array|null $path = null): void
+    protected function handleProviders(): void
     {
-        $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
+        $providers = DomainCache::has('domain-providers')
+            ? DomainCache::get('domain-providers')
+            : static::discoverProviders();
 
-        $serviceProviders = $this->remember('ddd-domain-service-providers', static function () use ($paths) {
-            if (empty($paths)) {
-                return [];
-            }
-
-            $finder = Finder::create()->files()->in($paths);
-
-            return Lody::classesFromFinder($finder)
-                ->isNotAbstract()
-                ->isInstanceOf(ServiceProvider::class)
-                ->toArray();
-        });
-
-        $app = app();
-
-        foreach ($serviceProviders as $serviceProvider) {
-            $app->register($serviceProvider);
+        foreach ($providers as $provider) {
+            app()->register($provider);
         }
     }
 
-    protected function registerCommands(bool|string|array|null $path = null): void
+    protected function handleCommands(): void
     {
-        $paths = $this->normalizePaths($path === true ? app()->basePath(DomainResolver::domainPath()) : $path);
+        $commands = DomainCache::has('domain-commands')
+            ? DomainCache::get('domain-commands')
+            : static::discoverCommands();
 
-        $commands = $this->remember('ddd-domain-commands', static function () use ($paths) {
-            if (empty($paths)) {
-                return [];
-            }
-
-            $finder = Finder::create()->files()->in($paths);
-
-            return Lody::classesFromFinder($finder)
-                ->isNotAbstract()
-                ->isInstanceOf(Command::class)
-                ->toArray();
-        });
-
-        foreach ($commands as $class) {
-            $this->registerCommand($class);
+        foreach ($commands as $command) {
+            $this->registerCommand($command);
         }
     }
 
@@ -115,13 +82,13 @@ class DomainAutoloader
         });
     }
 
-    protected function registerPolicies(): void
+    protected function handlePolicies(): void
     {
         Gate::guessPolicyNamesUsing(static function (string $class): array|string {
             if ($model = DomainObject::fromClass($class, 'model')) {
                 return (new Domain($model->domain))
                     ->object('policy', "{$model->name}Policy")
-                    ->fqn;
+                    ->fullyQualifiedName;
             }
 
             $classDirname = str_replace('/', '\\', dirname(str_replace('\\', '/', $class)));
@@ -138,7 +105,7 @@ class DomainAutoloader
         });
     }
 
-    protected function registerFactories(): void
+    protected function handleFactories(): void
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             if (DomainResolver::isDomainClass($modelName)) {
@@ -155,30 +122,60 @@ class DomainAutoloader
         });
     }
 
-    protected function remember($fileName, $callback)
+    protected static function discoverProviders(): array
     {
-        // The cache is not available during booting, so we need to roll our own file based cache
-        $cacheFilePath = base_path($this->cacheDirectory.'/'.$fileName.'.php');
+        $configValue = config('ddd.autoload.providers');
 
-        $data = file_exists($cacheFilePath) ? include $cacheFilePath : null;
-
-        if (is_null($data)) {
-            $data = $callback();
-
-            file_put_contents(
-                $cacheFilePath,
-                '<?php '.PHP_EOL.'return '.var_export($data, true).';'
-            );
+        if ($configValue === false) {
+            return [];
         }
 
-        return $data;
+        $paths = static::normalizePaths(
+            $configValue === true ? app()->basePath(DomainResolver::domainPath()) : $configValue
+        );
+
+        if (empty($paths)) {
+            return [];
+        }
+
+        return Lody::classesFromFinder(Finder::create()->files()->in($paths))
+            ->isNotAbstract()
+            ->isInstanceOf(ServiceProvider::class)
+            ->toArray();
     }
 
-    public static function clearCache()
+    protected static function discoverCommands(): array
     {
-        $files = glob(base_path(config('ddd.cache_directory').'/ddd-*.php'));
+        $configValue = config('ddd.autoload.commands');
 
-        File::delete($files);
+        if ($configValue === false) {
+            return [];
+        }
+
+        $paths = static::normalizePaths(
+            $configValue === true ?
+                app()->basePath(DomainResolver::domainPath())
+                : $configValue
+        );
+
+        if (empty($paths)) {
+            return [];
+        }
+
+        return Lody::classesFromFinder(Finder::create()->files()->in($paths))
+            ->isNotAbstract()
+            ->isInstanceOf(Command::class)
+            ->toArray();
+    }
+
+    public static function cacheProviders(): void
+    {
+        DomainCache::set('domain-providers', static::discoverProviders());
+    }
+
+    public static function cacheCommands(): void
+    {
+        DomainCache::set('domain-commands', static::discoverCommands());
     }
 
     protected static function appNamespace()

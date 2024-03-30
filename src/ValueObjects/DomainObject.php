@@ -12,7 +12,7 @@ class DomainObject
         public readonly string $name,
         public readonly string $domain,
         public readonly string $namespace,
-        public readonly string $fqn,
+        public readonly string $fullyQualifiedName,
         public readonly string $path,
         public readonly ?string $type = null,
     ) {
@@ -80,7 +80,7 @@ class DomainObject
             name: $objectName,
             domain: $domainName,
             namespace: $objectNamespace,
-            fqn: $fullyQualifiedClass,
+            fullyQualifiedName: $fullyQualifiedClass,
             path: $path,
             type: $objectType,
         );
