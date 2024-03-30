@@ -27,8 +27,11 @@ All notable changes to `laravel-ddd` will be documented in this file.
     - `ddd:resource {domain}:{name}`
     - `ddd:rule {domain}:{name}`
     - `ddd:scope {domain}:{name}`
+- Support for autoloading and discovery of domain service providers, commands, policies, and factories.
 
 ### Changed
+- Minimum supported Laravel version is now 10.25.
+- (BREAKING) For applications that published the config prior to this release, config should be removed, re-published, and re-configured.
 - (BREAKING) Generator commands no longer receive a domain argument. Instead of `ddd:action Invoicing CreateInvoice`, one of the following would be used:
     - Using the --domain option: `ddd:action CreateInvoice --domain=Invoicing` (this takes precedence).
     - Shorthand syntax: `ddd:action Invoicing:CreateInvoice`.
