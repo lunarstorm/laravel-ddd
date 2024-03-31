@@ -3,8 +3,8 @@
 dataset('domainPaths', [
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],
+    ['src/Domains', 'Domain'],
     ['Custom/PathTo/Domain', 'Domain'],
-    ['Custom/PathTo/Domains', 'Domains'],
 ]);
 
 dataset('domainSubdomain', [

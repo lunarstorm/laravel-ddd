@@ -13,12 +13,7 @@ function skipOnLaravelVersionsBelow($minimumVersion)
     }
 }
 
-function ifSupportsPromptForMissingInput()
+function setConfigValues(array $values)
 {
-    return skipOnLaravelVersionsBelow('9.49.0');
-}
-
-function ifGeneratorCommandsOutputFilePath()
-{
-    return skipOnLaravelVersionsBelow('9.32.0');
+    TestCase::configValues($values);
 }

@@ -9,13 +9,13 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
     Config::set('ddd.domain_namespace', $domainRoot);
 
-    $valueObjectName = Str::studly(fake()->word());
-    $domain = Str::studly(fake()->word());
+    $domain = 'Mission';
+    $valueObjectName = 'ImpossibleValue';
 
     $relativePath = implode('/', [
         $domainPath,
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
         "{$valueObjectName}.php",
     ]);
 
@@ -27,7 +27,7 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:value {$domain} {$valueObjectName}");
+    Artisan::call("ddd:value {$domain}:{$valueObjectName}");
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
@@ -39,11 +39,22 @@ it('can generate value objects', function ($domainPath, $domainRoot) {
     $expectedNamespace = implode('\\', [
         $domainRoot,
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
     ]);
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
+
+it('recognizes command aliases', function ($commandName) {
+    $this->artisan($commandName, [
+        'name' => 'InvoiceTotalValue',
+        '--domain' => 'Invoicing',
+    ])->assertExitCode(0);
+})->with([
+    'ddd:value-object',
+    'ddd:valueobject',
+    'ddd:value',
+]);
 
 it('normalizes generated value object to pascal case', function ($given, $normalized) {
     $domain = Str::studly(fake()->word());
@@ -51,11 +62,11 @@ it('normalizes generated value object to pascal case', function ($given, $normal
     $expectedPath = base_path(implode('/', [
         config('ddd.domain_path'),
         $domain,
-        config('ddd.namespaces.value_objects'),
+        config('ddd.namespaces.value_object'),
         "{$normalized}.php",
     ]));
 
-    Artisan::call("ddd:value {$domain} {$given}");
+    Artisan::call("ddd:value {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue();
 })->with([
@@ -65,10 +76,3 @@ it('normalizes generated value object to pascal case', function ($given, $normal
     'LargeNumber' => ['LargeNumber', 'LargeNumber'],
     'large-number' => ['large-number', 'LargeNumber'],
 ]);
-
-it('shows meaningful hints when prompting for missing input', function () {
-    $this->artisan('ddd:value')
-        ->expectsQuestion('What is the domain?', 'Utility')
-        ->expectsQuestion('What should the value object be named?', 'Belt')
-        ->assertExitCode(0);
-})->ifSupportsPromptForMissingInput();
