@@ -26,13 +26,18 @@ php artisan ddd:install
  10.25.x        | 1.x 
  11.x           | 1.x
 
-> 
-> 0.x is no longer supported. For 0.x usage, please refer to the [README for the latest 0.x release](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md).
+> This documentation is for 1.x. For 0.x usage, please refer to the [0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md).
 >
+
+### Upgrading from 0.x
+Things to be aware of when upgrading from 0.x:
+- If the config file was published, it should be removed, re-published, and re-configured according to the latest format. A helper command `ddd:upgrade` is available to assist with this.
+- If stubs were published, they should also be re-published and updated to ensure everything is up-to-date.
+- In production, `ddd:cache` should be run during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
 
 ## Usage
 ### Syntax
-All `ddd:*` generator commands use the following syntax:
+All domain generator commands use the following syntax:
 ```bash
 # Specifying the domain as an option
 php artisan ddd:{object} {name} --domain={domain}
@@ -161,9 +166,11 @@ You may disable autoloading by setting the respective autoload options to `false
 //     'factories' => true,
 // ],
 ```
+<a name="autoloading-in-production"></a>
 ## Autoloading in Production
 In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
 
+<a name="config-file"></a>
 ## Configuration File
 This is the content of the published config file (`ddd.php`):
 
