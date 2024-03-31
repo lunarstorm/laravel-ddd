@@ -26,13 +26,13 @@ php artisan ddd:install
  10.25.x        | 1.x 
  11.x           | 1.x
 
-> This documentation is for 1.x. For 0.x usage, please refer to the [0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md).
+> For 0.x usage, please refer to the **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**.
 >
 
 ### Upgrading from 0.x
 Things to be aware of when upgrading from 0.x:
 - If the config file was published, it should be removed, re-published, and re-configured according to the latest format. A helper command `ddd:upgrade` is available to assist with this.
-- If stubs were published, they should also be re-published and updated to ensure everything is up-to-date.
+- If stubs were published, they should also be re-published and inspected to ensure everything is up-to-date.
 - In production, `ddd:cache` should be run during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
 
 ## Usage

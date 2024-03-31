@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [1.0.0] - 2024-03-31
 ### Added
 - `ddd:list` to show a summary of current domains in the domain folder.
 - For all generator commands, if a domain isn't specified, prompt for it with auto-completion suggestions based on the contents of the root domain folder.
