@@ -26,17 +26,16 @@ php artisan ddd:cache
 ```
 
 ### Version Compatibility
- Laravel        | LaravelDDD |  Notes                                                                               |
+ Laravel        | LaravelDDD |                                                                                      |
 :---------------|:-----------|:-------------------------------------------------------------------------------------|
  9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**   |
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
 
 ### Upgrading from 0.x
-Things to be aware of when upgrading from 0.x:
-- Re-publish and update config. A helper command `ddd:upgrade` is available to assist with this.
+- Update config to the [latest format](#config-file). A helper command `ddd:upgrade` is available to assist with this.
 - Remove and re-publish stubs if applicable.
-- In production, `ddd:cache` should be run during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
+- In production, `ddd:cache` should be run during the deployment process. See the [Autoloading in Production](#autoloading-in-production) section for more details.
 
 ## Usage
 ### Syntax
@@ -178,7 +177,6 @@ In production, you should cache the autoload manifests using the `ddd:cache` com
 This is the content of the published config file (`ddd.php`):
 
 ```php
-
 return [
 
     /*
@@ -224,12 +222,14 @@ return [
         'value_object' => 'ValueObjects',
         'action' => 'Actions',
         'cast' => 'Casts',
+        'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
         'factory' => 'Database\Factories',
+        'interface' => '',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -240,6 +240,7 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'trait' => '',
     ],
 
     /*
@@ -302,26 +303,30 @@ return [
     */
     'autoload' => [
         /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
+         * When enabled, any class in the domain layer extending 
+         * `Illuminate\Support\ServiceProvider` will be 
+         * auto-registered as a service provider
          */
         'providers' => true,
 
         /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
+         * When enabled, any class in the domain layer extending 
+         * `Illuminate\Console\Command` will be auto-registered 
+         * as a command when running in console.
          */
         'commands' => true,
 
         /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
+         * When enabled, a custom policy discovery callback will be
+         * registered to resolve policy names for domain models, 
+         * or fallback to Laravel's default otherwise.
          */
         'policies' => true,
 
         /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
+         * When enabled, a custom policy discovery callback will be
+         * registered to resolve factory names for domain models, 
+         * or fallback to Laravel's default otherwise.
          */
         'factories' => true,
     ],
