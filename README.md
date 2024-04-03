@@ -20,7 +20,7 @@ php artisan ddd:install
 ```
 
 ### Deployment
-In production, run `ddd:cache` during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
+In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
 ```bash
 php artisan ddd:cache
 ```
