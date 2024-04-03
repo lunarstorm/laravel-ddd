@@ -14,25 +14,28 @@ You can install the package via composer:
 composer require lunarstorm/laravel-ddd
 ```
 
-You may then initialize the package using the `ddd:install` artisan command. This command will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
+You may initialize the package using the `ddd:install` artisan command. This will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
 ```bash
 php artisan ddd:install
 ```
 
-### Version Compatibility
- Laravel        | LaravelDDD 
-:---------------|:-----------
- 9.x - 10.24.x  | 0.x        
- 10.25.x        | 1.x 
- 11.x           | 1.x
+### Deployment
+In production, run `ddd:cache` during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
+```bash
+php artisan ddd:cache
+```
 
-> For 0.x usage, please refer to the **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**.
->
+### Version Compatibility
+ Laravel        | LaravelDDD |  Notes                                                                               |
+:---------------|:-----------|:-------------------------------------------------------------------------------------|
+ 9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**   |
+ 10.25.x        | 1.x        |  
+ 11.x           | 1.x        |
 
 ### Upgrading from 0.x
 Things to be aware of when upgrading from 0.x:
-- If the config file was published, it should be removed, re-published, and re-configured according to the latest format. A helper command `ddd:upgrade` is available to assist with this.
-- If stubs were published, they should also be re-published and inspected to ensure everything is up-to-date.
+- Re-publish and update config. A helper command `ddd:upgrade` is available to assist with this.
+- Remove and re-publish stubs if applicable.
 - In production, `ddd:cache` should be run during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
 
 ## Usage
@@ -110,7 +113,7 @@ php artisan ddd:cache
 php artisan ddd:clear
 ```
 
-### Subdomains (nested domains)
+## Subdomains (nested domains)
 Subdomains can be specified with dot notation wherever a domain option is accepted.
 ```bash
 # Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
@@ -122,7 +125,7 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 # (supported by all commands where a domain option is accepted)
 ```
 
-### Customization
+## Customization
 This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the config file and generator stubs as needed:
 
 ```bash

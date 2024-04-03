@@ -51,9 +51,11 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainScopeMakeCommand::class,
             ]);
 
-        // Enum generator only in Laravel 11
         if (app()->version() >= 11) {
-            $package->hasCommand(\Lunarstorm\LaravelDDD\Commands\DomainEnumMakeCommand::class);
+            $package->hasCommand(Commands\DomainClassMakeCommand::class);
+            $package->hasCommand(Commands\DomainEnumMakeCommand::class);
+            $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
+            $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
     }
 
