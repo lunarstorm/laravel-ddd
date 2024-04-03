@@ -84,7 +84,6 @@ php artisan ddd:action Invoicing:SendInvoiceToCustomer
 php artisan ddd:cast Invoicing:MoneyCast
 php artisan ddd:channel Invoicing:InvoiceChannel
 php artisan ddd:command Invoicing:InvoiceDeliver
-php artisan ddd:enum Customer:CustomerType # Laravel 11+ only
 php artisan ddd:event Invoicing:PaymentWasReceived
 php artisan ddd:exception Invoicing:InvoiceNotFoundException
 php artisan ddd:job Invoicing:GenerateInvoicePdf
@@ -97,6 +96,12 @@ php artisan ddd:provider Invoicing:InvoiceServiceProvider
 php artisan ddd:resource Invoicing:InvoiceResource
 php artisan ddd:rule Invoicing:ValidPaymentMethod
 php artisan ddd:scope Invoicing:ArchivedInvoicesScope
+
+# Laravel 11+ only
+php artisan ddd:class Invoicing:Support\InvoiceBuilder
+php artisan ddd:enum Customer:CustomerType
+php artisan ddd:interface Customer:Contracts\Invoiceable
+php artisan ddd:trait Customer:Concerns\HasInvoices
 ```
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the configuration file.
 
