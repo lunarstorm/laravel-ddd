@@ -14,7 +14,7 @@ You can install the package via composer:
 composer require lunarstorm/laravel-ddd
 ```
 
-You may initialize the package using the `ddd:install` artisan command. This will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
+You may initialize the package using the `ddd:install` artisan command. This will publish the [config file](#config-file), register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
 ```bash
 php artisan ddd:install
 ```
@@ -103,7 +103,7 @@ php artisan ddd:enum Customer:CustomerType
 php artisan ddd:interface Customer:Contracts/Invoiceable
 php artisan ddd:trait Customer:Concerns/HasInvoices
 ```
-Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the configuration file.
+Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
 ### Other Commands
 ```bash
@@ -119,7 +119,7 @@ php artisan ddd:clear
 
 ## Advanced Usage
 ### Nested Objects
-When specifying object names for any `ddd:*` generator command, nested objects can be specified with forward slashes.
+For any `ddd:*` generator command, nested objects can be specified with forward slashes.
 ```bash
 php artisan ddd:model Invoicing:Payment/Transaction
 # -> Domain\Invoicing\Models\Payment\Transaction
@@ -178,7 +178,7 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 ```
 
 ## Customization
-This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the config file and generator stubs as needed:
+This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the [config file](#config-file) and generator stubs as needed:
 
 ```bash
 php artisan vendor:publish --tag="ddd-config"
