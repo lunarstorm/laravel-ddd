@@ -156,9 +156,9 @@ php artisan ddd:provider Invoicing:InvoiceServiceProvider
 php artisan ddd:provider Invoicing:/InvoiceServiceProvider
 # -> Domain\Invoicing\InvoiceServiceProvider
 
-# Generate 
-php artisan ddd:provider Invoicing:/InvoiceServiceProvider
-# -> Domain\Invoicing\InvoiceServiceProvider
+# Generate an event inside the Models namespace (hypothetical)
+php artisan ddd:event Invoicing:/Models/EventDoesNotBelongHere
+# -> Domain\Invoicing\Models\EventDoesNotBelongHere
 
 # Deep nesting is supported
 php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
