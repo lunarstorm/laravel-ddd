@@ -12,6 +12,8 @@ trait ResolvesDomainFromInput
 {
     use CanPromptForDomain;
 
+    protected $nameIsAbsolute = false;
+
     protected ?Domain $domain = null;
 
     protected function getOptions()
@@ -41,7 +43,9 @@ trait ResolvesDomainFromInput
     protected function getDefaultNamespace($rootNamespace)
     {
         if ($this->domain) {
-            return $this->domain->namespaceFor($this->guessObjectType());
+            return $this->nameIsAbsolute
+                ? $this->domain->namespace->root
+                : $this->domain->namespaceFor($this->guessObjectType());
         }
 
         return parent::getDefaultNamespace($rootNamespace);
@@ -51,7 +55,11 @@ trait ResolvesDomainFromInput
     {
         if ($this->domain) {
             return Path::normalize($this->laravel->basePath(
-                $this->domain->object($this->guessObjectType(), class_basename($name))->path
+                $this->domain->object(
+                    type: $this->guessObjectType(),
+                    name: $name,
+                    absolute: $this->nameIsAbsolute
+                )->path
             ));
         }
 
@@ -68,7 +76,7 @@ trait ResolvesDomainFromInput
 
         if (Str::contains($nameInput, ':')) {
             $domainExtractedFromName = Str::before($nameInput, ':');
-            $this->input->setArgument('name', Str::after($nameInput, ':'));
+            $nameInput = Str::after($nameInput, ':');
         }
 
         $this->domain = match (true) {
@@ -85,6 +93,18 @@ trait ResolvesDomainFromInput
         if (! $this->domain) {
             $this->domain = new Domain($this->promptForDomainName());
         }
+
+        // Now that the domain part is handled,
+        // we will deal with the name portion.
+
+        // Normalize slash and dot separators
+        $nameInput = Str::replace(['.', '\\', '/'], '/', $nameInput);
+
+        if ($this->nameIsAbsolute = Str::startsWith($nameInput, ['/'])) {
+            // $nameInput = Str::after($nameInput, '/');
+        }
+
+        $this->input->setArgument('name', $nameInput);
 
         parent::handle();
     }

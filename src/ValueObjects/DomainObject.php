@@ -34,6 +34,10 @@ class DomainObject
             : config('ddd.namespaces', []);
 
         foreach ($possibleObjectNamespaces as $type => $namespace) {
+            if (blank($namespace)) {
+                continue;
+            }
+
             $rootObjectNamespace = preg_quote($namespace);
 
             $pattern = "/({$rootObjectNamespace})(.*)$/";
@@ -44,21 +48,27 @@ class DomainObject
                 continue;
             }
 
-            $objectNamespace = str(data_get($matches, 0))->beforeLast('\\')->toString();
+            $objectNamespace = str(data_get($matches, 1))->toString();
+
+            $objectName = str(data_get($matches, 2))
+                ->trim('\\')
+                ->toString();
 
             $objectType = $type;
 
             break;
         }
 
-        // If there wasn't a recognized namespace, we'll assume it's a
-        // domain object in an ad-hoc namespace.
+        // If there wasn't a resolvable namespace, we'll treat it
+        // as a root-level domain object.
         if (! $objectNamespace) {
-            // e.g., Domain\Invoicing\AdHoc\Nested\Thing
-            $objectNamespace = str($fullyQualifiedClass)
+            // Examples:
+            // - Domain\Invoicing\[Nested\Thing]
+            // - Domain\Invoicing\[Deeply\Nested\Thing]
+            // - Domain\Invoicing\[Thing]
+            $objectName = str($fullyQualifiedClass)
                 ->after(Str::finish(DomainResolver::domainRootNamespace(), '\\'))
                 ->after('\\')
-                ->before("\\{$objectName}")
                 ->toString();
         }
 
@@ -68,6 +78,14 @@ class DomainObject
             ->before("\\{$objectNamespace}")
             ->toString();
 
+        // Edge case to handle root-level domain objects
+        if (
+            $objectName === $objectNamespace
+            && ! str($fullyQualifiedClass)->endsWith("{$objectNamespace}\\{$objectName}")
+        ) {
+            $objectNamespace = '';
+        }
+
         // Reconstruct the path
         $path = Path::join(
             DomainResolver::domainPath(),
@@ -75,6 +93,15 @@ class DomainObject
             $objectNamespace,
             "{$objectName}.php",
         );
+
+        // dump([
+        //     'fullyQualifiedClass' => $fullyQualifiedClass,
+        //     'fullNamespace' => $fullNamespace,
+        //     'domainName' => $domainName,
+        //     'objectNamespace' => $objectNamespace,
+        //     'objectName' => $objectName,
+        //     'objectType' => $objectType,
+        // ]);
 
         return new self(
             name: $objectName,

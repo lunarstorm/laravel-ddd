@@ -149,6 +149,7 @@ it('generates the base model when possible', function ($baseModelClass, $baseMod
 })->with([
     ['Domain\Shared\Models\CustomBaseModel', 'src/Domain/Shared/Models/CustomBaseModel.php'],
     ['Domain\Core\Models\CustomBaseModel', 'src/Domain/Core/Models/CustomBaseModel.php'],
+    ['Domain\Core\BaseModels\CustomBaseModel', 'src/Domain/Core/BaseModels/CustomBaseModel.php'],
 ]);
 
 it('will not generate a base model if the configured base model is out of scope', function ($baseModel) {
@@ -158,9 +159,7 @@ it('will not generate a base model if the configured base model is out of scope'
 
     Artisan::call('ddd:model Fruits:Lemon');
 
-    expect(Artisan::output())
-        ->toContain("Configured base model {$baseModel} doesn't exist.")
-        ->not->toContain("Generating {$baseModel}");
+    expect(Artisan::output())->not->toContain("Configured base model {$baseModel} doesn't exist, generating...");
 
     expect(class_exists($baseModel))->toBeFalse();
 })->with([
@@ -175,9 +174,7 @@ it('skips base model creation if configured base model already exists', function
 
     Artisan::call('ddd:model Fruits:Lemon');
 
-    expect(Artisan::output())
-        ->not->toContain("Configured base model {$baseModel} doesn't exist.")
-        ->not->toContain("Generating {$baseModel}");
+    expect(Artisan::output())->not->toContain("Configured base model {$baseModel} doesn't exist, generating...");
 })->with([
     ['Illuminate\Database\Eloquent\Model'],
     ['Lunarstorm\LaravelDDD\Models\DomainModel'],

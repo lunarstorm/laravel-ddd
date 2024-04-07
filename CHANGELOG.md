@@ -2,6 +2,33 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Added
+- Add `ddd:class` generator extending Laravel's `make:class` (Laravel 11 only).
+- Add `ddd:interface` generator extending Laravel's `make:interface` (Laravel 11 only).
+- Add `ddd:trait` generator extending Laravel's `make:trait` (Laravel 11 only).
+- Allow overriding configured namespaces at runtime by specifying an absolute name starting with /:
+```bash
+# The usual: generate a provider in the configured provider namespace
+php artisan ddd:provider Invoicing:InvoiceServiceProvider 
+# -> Domain\Invoicing\Providers\InvoiceServiceProvider
+
+# Override the configured namespace at runtime
+php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
+
+# Generate an event inside the Models namespace (hypothetical)
+php artisan ddd:event Invoicing:/Models/EventDoesNotBelongHere
+# -> Domain\Invoicing\Models\EventDoesNotBelongHere
+
+# Deep nesting is supported
+php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
+# -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
+```
+
+### Fixed
+- Internals: Handle a variety of additional edge cases when generating base models and base view models.
+
 ## [1.0.0] - 2024-03-31
 ### Added
 - `ddd:list` to show a summary of current domains in the domain folder.

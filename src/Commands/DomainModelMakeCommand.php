@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -55,41 +56,45 @@ class DomainModelMakeCommand extends DomainGeneratorCommand
 
     protected function createBaseModelIfNeeded()
     {
+        if (! $this->shouldCreateModel()) {
+            return;
+        }
+
         $baseModel = config('ddd.base_model');
 
-        if (class_exists($baseModel)) {
-            return;
-        }
-
-        $this->warn("Configured base model {$baseModel} doesn't exist.");
-
-        // If the base model is out of scope, we won't attempt to create it
-        // because we don't want to interfere with external folders.
-        $allowedNamespacePrefixes = [
-            $this->rootNamespace(),
-        ];
-
-        if (! str($baseModel)->startsWith($allowedNamespacePrefixes)) {
-            return;
-        }
+        $this->warn("Base model {$baseModel} doesn't exist, generating...");
 
         $domain = DomainResolver::guessDomainFromClass($baseModel);
 
-        if (! $domain) {
-            return;
+        $name = Str::after($baseModel, $domain);
+
+        $this->call(DomainBaseModelMakeCommand::class, [
+            '--domain' => $domain,
+            'name' => $name,
+        ]);
+    }
+
+    protected function shouldCreateModel(): bool
+    {
+        $baseModel = config('ddd.base_model');
+
+        // If the class exists, we don't need to create it.
+        if (class_exists($baseModel)) {
+            return false;
         }
 
-        $baseModelName = class_basename($baseModel);
-        $baseModelPath = $this->getPath($baseModel);
-
-        if (! file_exists($baseModelPath)) {
-            $this->info("Generating {$baseModel}...");
-
-            $this->call(DomainBaseModelMakeCommand::class, [
-                '--domain' => $domain,
-                'name' => $baseModelName,
-            ]);
+        // If the class is outside of the domain layer, we won't attempt to create it.
+        if (! DomainResolver::isDomainClass($baseModel)) {
+            return false;
         }
+
+        // At this point the class is probably a domain object, but we should
+        // check if the expected path exists.
+        if (file_exists(app()->basePath(DomainResolver::guessPathFromClass($baseModel)))) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function createFactory()

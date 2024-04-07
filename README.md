@@ -14,26 +14,28 @@ You can install the package via composer:
 composer require lunarstorm/laravel-ddd
 ```
 
-You may then initialize the package using the `ddd:install` artisan command. This command will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
+You may initialize the package using the `ddd:install` artisan command. This will publish the config file, register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
 ```bash
 php artisan ddd:install
 ```
 
-### Version Compatibility
- Laravel        | LaravelDDD 
-:---------------|:-----------
- 9.x - 10.24.x  | 0.x        
- 10.25.x        | 1.x 
- 11.x           | 1.x
+### Deployment
+In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
+```bash
+php artisan ddd:cache
+```
 
-> For 0.x usage, please refer to the **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**.
->
+### Version Compatibility
+ Laravel        | LaravelDDD |                                                                                      |
+:---------------|:-----------|:-------------------------------------------------------------------------------------|
+ 9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**   |
+ 10.25.x        | 1.x        |  
+ 11.x           | 1.x        |
 
 ### Upgrading from 0.x
-Things to be aware of when upgrading from 0.x:
-- If the config file was published, it should be removed, re-published, and re-configured according to the latest format. A helper command `ddd:upgrade` is available to assist with this.
-- If stubs were published, they should also be re-published and inspected to ensure everything is up-to-date.
-- In production, `ddd:cache` should be run during the deployment process to optimize autoloading. See the [Autoloading in Production](#autoloading-in-production) section for more details.
+- Update config to the [latest format](#config-file). A helper command `ddd:upgrade` is available to assist with this.
+- Remove and re-publish stubs if applicable.
+- In production, `ddd:cache` should be run during the deployment process. See the [Autoloading in Production](#autoloading-in-production) section for more details.
 
 ## Usage
 ### Syntax
@@ -82,7 +84,6 @@ php artisan ddd:action Invoicing:SendInvoiceToCustomer
 php artisan ddd:cast Invoicing:MoneyCast
 php artisan ddd:channel Invoicing:InvoiceChannel
 php artisan ddd:command Invoicing:InvoiceDeliver
-php artisan ddd:enum Customer:CustomerType # Laravel 11+ only
 php artisan ddd:event Invoicing:PaymentWasReceived
 php artisan ddd:exception Invoicing:InvoiceNotFoundException
 php artisan ddd:job Invoicing:GenerateInvoicePdf
@@ -95,6 +96,12 @@ php artisan ddd:provider Invoicing:InvoiceServiceProvider
 php artisan ddd:resource Invoicing:InvoiceResource
 php artisan ddd:rule Invoicing:ValidPaymentMethod
 php artisan ddd:scope Invoicing:ArchivedInvoicesScope
+
+# Laravel 11+ only
+php artisan ddd:class Invoicing:Support/InvoiceBuilder
+php artisan ddd:enum Customer:CustomerType
+php artisan ddd:interface Customer:Contracts/Invoiceable
+php artisan ddd:trait Customer:Concerns/HasInvoices
 ```
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the configuration file.
 
@@ -110,6 +117,54 @@ php artisan ddd:cache
 php artisan ddd:clear
 ```
 
+## Advanced Usage
+### Nested Objects
+When specifying object names for any `ddd:*` generator command, nested objects can be specified with forward slashes.
+```bash
+php artisan ddd:model Invoicing:Payment/Transaction
+# -> Domain\Invoicing\Models\Payment\Transaction
+
+php artisan ddd:action Invoicing:Payment/ProcessTransaction
+# -> Domain\Invoicing\Actions\Payment\ProcessTransaction
+
+php artisan ddd:exception Invoicing:Payment/PaymentFailedException
+# -> Domain\Invoicing\Exceptions\Payment\PaymentFailedException
+```
+This is essential for objects without a fixed namespace such as `class`, `interface`, `trait`, 
+each of which have a blank namespace by default. In other words, these objects originate 
+from the root of the domain.
+```bash
+php artisan ddd:class Invoicing:Support/InvoiceBuilder
+# -> Domain\Invoicing\Support\InvoiceBuilder
+
+php artisan ddd:interface Invoicing:Contracts/PayableByCreditCard
+# -> Domain\Invoicing\Contracts\PayableByCreditCard
+
+php artisan ddd:interface Invoicing:Models/Concerns/HasLineItems
+# -> Domain\Invoicing\Models\Concerns\HasLineItems
+```
+
+### Overriding Configured Namespaces at Runtime
+If for some reason you need to generate a domain object under a namespace different to what is configured in `ddd.namespaces.*`,
+you may do so using an absolute name starting with `/`. This will generate the object from the root of the domain.
+```bash
+# The usual: generate a provider in the configured provider namespace
+php artisan ddd:provider Invoicing:InvoiceServiceProvider 
+# -> Domain\Invoicing\Providers\InvoiceServiceProvider
+
+# Override the configured namespace at runtime
+php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
+
+# Generate an event inside the Models namespace (hypothetical)
+php artisan ddd:event Invoicing:/Models/EventDoesNotBelongHere
+# -> Domain\Invoicing\Models\EventDoesNotBelongHere
+
+# Deep nesting is supported
+php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
+# -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
+```
+
 ### Subdomains (nested domains)
 Subdomains can be specified with dot notation wherever a domain option is accepted.
 ```bash
@@ -122,7 +177,7 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 # (supported by all commands where a domain option is accepted)
 ```
 
-### Customization
+## Customization
 This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the config file and generator stubs as needed:
 
 ```bash
@@ -175,7 +230,6 @@ In production, you should cache the autoload manifests using the `ddd:cache` com
 This is the content of the published config file (`ddd.php`):
 
 ```php
-
 return [
 
     /*
@@ -221,12 +275,14 @@ return [
         'value_object' => 'ValueObjects',
         'action' => 'Actions',
         'cast' => 'Casts',
+        'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
         'factory' => 'Database\Factories',
+        'interface' => '',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -237,6 +293,7 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'trait' => '',
     ],
 
     /*
@@ -299,26 +356,30 @@ return [
     */
     'autoload' => [
         /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
+         * When enabled, any class in the domain layer extending 
+         * `Illuminate\Support\ServiceProvider` will be 
+         * auto-registered as a service provider
          */
         'providers' => true,
 
         /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
+         * When enabled, any class in the domain layer extending 
+         * `Illuminate\Console\Command` will be auto-registered 
+         * as a command when running in console.
          */
         'commands' => true,
 
         /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
+         * When enabled, a custom policy discovery callback will be
+         * registered to resolve policy names for domain models, 
+         * or fallback to Laravel's default otherwise.
          */
         'policies' => true,
 
         /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
+         * When enabled, a custom policy discovery callback will be
+         * registered to resolve factory names for domain models, 
+         * or fallback to Laravel's default otherwise.
          */
         'factories' => true,
     ],

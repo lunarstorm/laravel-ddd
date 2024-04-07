@@ -59,16 +59,6 @@ class Domain
         $this->path = Path::join(DomainResolver::domainPath(), $this->domainWithSubdomain);
     }
 
-    protected function registerDomainObjects()
-    {
-        // WIP
-    }
-
-    protected function registerDomainObject()
-    {
-        // WIP
-    }
-
     protected function getDomainBasePath()
     {
         return app()->basePath(DomainResolver::domainPath());
@@ -99,18 +89,33 @@ class Domain
         return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type);
     }
 
-    public function object(string $type, string $name): DomainObject
+    public function guessNamespaceFromName(string $name): string
     {
-        $namespace = $this->namespaceFor($type);
+        $baseName = class_basename($name);
 
-        $name = str($name)->replace("{$namespace}\\", '')->toString();
+        return str($name)
+            ->before($baseName)
+            ->trim('\\')
+            ->prepend(DomainResolver::domainRootNamespace().'\\'.$this->domainWithSubdomain.'\\')
+            ->toString();
+    }
+
+    public function object(string $type, string $name, bool $absolute = false): DomainObject
+    {
+        $namespace = match (true) {
+            $absolute => $this->namespace->root,
+            str($name)->startsWith('\\') => $this->guessNamespaceFromName($name),
+            default => $this->namespaceFor($type),
+        };
+
+        $baseName = str($name)->replace($namespace, '')->trim('\\')->toString();
 
         return new DomainObject(
-            name: $name,
+            name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace.'\\'.$name,
-            path: $this->path($namespace.'\\'.$name),
+            fullyQualifiedName: $namespace.'\\'.$baseName,
+            path: $this->path($namespace.'\\'.$baseName),
             type: $type
         );
     }
