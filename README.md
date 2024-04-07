@@ -98,10 +98,10 @@ php artisan ddd:rule Invoicing:ValidPaymentMethod
 php artisan ddd:scope Invoicing:ArchivedInvoicesScope
 
 # Laravel 11+ only
-php artisan ddd:class Invoicing:Support\InvoiceBuilder
+php artisan ddd:class Invoicing:Support/InvoiceBuilder
 php artisan ddd:enum Customer:CustomerType
-php artisan ddd:interface Customer:Contracts\Invoiceable
-php artisan ddd:trait Customer:Concerns\HasInvoices
+php artisan ddd:interface Customer:Contracts/Invoiceable
+php artisan ddd:trait Customer:Concerns/HasInvoices
 ```
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the configuration file.
 
@@ -117,7 +117,55 @@ php artisan ddd:cache
 php artisan ddd:clear
 ```
 
-## Subdomains (nested domains)
+## Advanced Usage
+### Nested Objects
+When specifying object names for any `ddd:*` generator command, nested objects can be specified with forward slashes.
+```bash
+php artisan ddd:model Invoicing:Payment/Transaction
+# -> Domain\Invoicing\Models\Payment\Transaction
+
+php artisan ddd:action Invoicing:Payment/ProcessTransaction
+# -> Domain\Invoicing\Actions\Payment\ProcessTransaction
+
+php artisan ddd:exception Invoicing:Payment/PaymentFailedException
+# -> Domain\Invoicing\Exceptions\Payment\PaymentFailedException
+```
+This is essential for objects without a fixed namespace such as `class`, `interface`, `trait`, 
+each of which have a blank namespace by default. In other words, these objects originate 
+from the root of the domain.
+```bash
+php artisan ddd:class Invoicing:Support/InvoiceBuilder
+# -> Domain\Invoicing\Support\InvoiceBuilder
+
+php artisan ddd:interface Invoicing:Contracts/PayableByCreditCard
+# -> Domain\Invoicing\Contracts\PayableByCreditCard
+
+php artisan ddd:interface Invoicing:Models/Concerns/HasLineItems
+# -> Domain\Invoicing\Models\Concerns\HasLineItems
+```
+
+### Overriding Configured Namespaces at Runtime
+If for some reason you need to generate a domain object under a namespace different to what is configured in `ddd.namespaces.*`,
+you may do so using an absolute name starting with `/`. This will generate the object from the root of the domain.
+```bash
+# The usual: generate a provider in the configured provider namespace
+php artisan ddd:provider Invoicing:InvoiceServiceProvider 
+# -> Domain\Invoicing\Providers\InvoiceServiceProvider
+
+# Override the configured namespace at runtime
+php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
+
+# Generate 
+php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
+
+# Deep nesting is supported
+php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
+# -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
+```
+
+### Subdomains (nested domains)
 Subdomains can be specified with dot notation wherever a domain option is accepted.
 ```bash
 # Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
