@@ -45,12 +45,14 @@ return [
         'value_object' => {{namespaces.value_object}},
         'action' => {{namespaces.action}},
         'cast' => 'Casts',
+        'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
         'factory' => 'Database\Factories',
+        'interface' => '',
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
@@ -61,6 +63,7 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'trait' => '',
     ],
 
     /*
