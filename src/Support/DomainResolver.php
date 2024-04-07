@@ -47,7 +47,11 @@ class DomainResolver
 
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
     {
-        $namespace = implode('\\', [static::domainRootNamespace(), $domain, static::getRelativeObjectNamespace($type)]);
+        $namespace = collect([
+            static::domainRootNamespace(),
+            $domain,
+            static::getRelativeObjectNamespace($type),
+        ])->filter()->implode('\\');
 
         if ($object) {
             $namespace .= "\\{$object}";

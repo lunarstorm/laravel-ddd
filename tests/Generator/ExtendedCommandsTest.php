@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Support\Domain;
 
 it('can generate extended objects', function ($type, $objectName, $domainPath, $domainRoot) {
-    if (in_array($type, ['enum'])) {
+    if (in_array($type, ['class', 'enum', 'interface', 'trait'])) {
         skipOnLaravelVersionsBelow('11');
     }
 
@@ -38,7 +38,6 @@ it('can generate extended objects', function ($type, $objectName, $domainPath, $
     'cast' => ['cast', 'SomeCast'],
     'channel' => ['channel', 'SomeChannel'],
     'command' => ['command', 'SomeCommand'],
-    'enum' => ['enum', 'SomeEnum'],
     'event' => ['event', 'SomeEvent'],
     'exception' => ['exception', 'SomeException'],
     'job' => ['job', 'SomeJob'],
@@ -51,4 +50,8 @@ it('can generate extended objects', function ($type, $objectName, $domainPath, $
     'resource' => ['resource', 'SomeResource'],
     'rule' => ['rule', 'SomeRule'],
     'scope' => ['scope', 'SomeScope'],
+    'class' => ['class', 'SomeClass'],
+    'enum' => ['enum', 'SomeEnum'],
+    'interface' => ['interface', 'SomeInterface'],
+    'trait' => ['trait', 'SomeTrait'],
 ])->with('domainPaths');

@@ -52,7 +52,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
             $domain = DomainResolver::guessDomainFromClass($baseViewModel);
 
-            $name = Str::after($baseViewModel, "{$domain}\\");
+            $name = Str::after($baseViewModel, $domain);
 
             $this->call(DomainBaseViewModelMakeCommand::class, [
                 '--domain' => $domain,

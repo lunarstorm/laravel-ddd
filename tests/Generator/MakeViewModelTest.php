@@ -103,7 +103,11 @@ it('generates the base view model if needed', function ($baseViewModel, $baseVie
 
     Artisan::call("ddd:view-model {$domain}:{$className}");
 
-    expect(Artisan::output())->toContain("Base view model {$baseViewModel} doesn't exist, generating");
+    $output = Artisan::output();
+
+    dump($output);
+
+    expect($output)->toContain("Base view model {$baseViewModel} doesn't exist, generating");
 
     expect(file_exists($expectedBaseViewModelPath))->toBeTrue();
 
