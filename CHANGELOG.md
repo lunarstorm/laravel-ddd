@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unversioned]
+## [1.1.0] - 2024-04-07
 ### Added
 - Add `ddd:class` generator extending Laravel's `make:class` (Laravel 11 only).
 - Add `ddd:interface` generator extending Laravel's `make:interface` (Laravel 11 only).
