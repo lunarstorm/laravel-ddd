@@ -9,20 +9,24 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Add `ddd:trait` generator extending Laravel's `make:trait` (Laravel 11 only).
 - Allow overriding configured namespaces at runtime by specifying an absolute name starting with /:
 ```bash
-# Generate a provider in the default configured namespace
-# -> Domain\Invoicing\Providers\InvoiceServiceProvider
+# The usual: generate a provider in the configured provider namespace
 php artisan ddd:provider Invoicing:InvoiceServiceProvider 
+# -> Domain\Invoicing\Providers\InvoiceServiceProvider
 
 # Override the configured namespace at runtime
-# -> Domain\Invoicing\InvoiceServiceProvider
 php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
 
-# Can be deeply nested if desired
-# -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
+# Generate 
+php artisan ddd:provider Invoicing:/InvoiceServiceProvider
+# -> Domain\Invoicing\InvoiceServiceProvider
+
+# Deep nesting is supported
 php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
+# -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
 ```
 
-### Changed
+### Fixed
 - Internals: Handle a variety of additional edge cases when generating base models and base view models.
 
 ## [1.0.0] - 2024-03-31
