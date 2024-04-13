@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unversioned]
+### Changed
+- Internal: Domain cache is no longer quietly cleared on laravel's `cache:clearing` event, so that `ddd:cache` yields consistent results regardless of being executed before or after `cache:clear` or `optimize:clear` commands.
+
 ## [1.1.0] - 2024-04-07
 ### Added
 - Add `ddd:class` generator extending Laravel's `make:class` (Laravel 11 only).

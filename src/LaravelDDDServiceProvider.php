@@ -69,7 +69,5 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         (new DomainAutoloader())->autoload();
-
-        Event::subscribe(CacheClearSubscriber::class);
     }
 }

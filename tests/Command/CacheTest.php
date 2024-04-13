@@ -40,3 +40,23 @@ it('can clear the cache', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
 });
+
+it('will not be cleared by laravel cache clearing', function () {
+    expect(DomainCache::get('domain-providers'))->toBeNull();
+    expect(DomainCache::get('domain-commands'))->toBeNull();
+
+    $this->artisan('ddd:cache')->execute();
+
+    expect(DomainCache::get('domain-providers'))->not->toBeNull();
+    expect(DomainCache::get('domain-commands'))->not->toBeNull();
+
+    $this->artisan('cache:clear')->execute();
+
+    expect(DomainCache::get('domain-providers'))->not->toBeNull();
+    expect(DomainCache::get('domain-commands'))->not->toBeNull();
+
+    $this->artisan('optimize:clear')->execute();
+
+    expect(DomainCache::get('domain-providers'))->not->toBeNull();
+    expect(DomainCache::get('domain-commands'))->not->toBeNull();
+});
