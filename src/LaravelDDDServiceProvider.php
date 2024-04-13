@@ -2,8 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Illuminate\Support\Facades\Event;
-use Lunarstorm\LaravelDDD\Listeners\CacheClearSubscriber;
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
