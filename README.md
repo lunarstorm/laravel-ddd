@@ -211,16 +211,16 @@ When `ddd.autoload.factories` is enabled, the package will register a custom fac
 
 If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
 
-### Ignoring Folders During Autoloading
-To specify folders that should be skipped during autoloading discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
+### Ignoring Paths During Autoloading
+To specify folders or paths that should be skipped during autoloading discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
 ```php
 'autoload_ignore' => [
     'Tests',
-    'Migrations',
+    'Database/Migrations',
 ],
 ```
 
-Folders specified here are relative to the root of each domain. e.g., src/Domain/Invoicing/<folder-to-ignore>. If more advanced filtering is needed, a callback can be registered using the `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
+Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using the `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
 ```php
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Symfony\Component\Finder\SplFileInfo;
