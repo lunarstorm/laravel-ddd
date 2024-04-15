@@ -10,6 +10,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
+        $this->app->scoped(DomainManager::class, function () {
+            return new DomainManager();
+        });
+
+        $this->app->bind('ddd', DomainManager::class);
+
         /*
          * This class is a Package Service Provider
          *

@@ -42,6 +42,8 @@ it('can clear the cache', function () {
 });
 
 it('will not be cleared by laravel cache clearing', function () {
+    config(['cache.default' => 'file']);
+
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
 
