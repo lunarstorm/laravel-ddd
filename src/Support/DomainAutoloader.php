@@ -28,7 +28,7 @@ class DomainAutoloader
 
     public function autoload(): void
     {
-        if (! config()->has('ddd.autoload')) {
+        if (!config()->has('ddd.autoload')) {
             return;
         }
 
@@ -99,10 +99,10 @@ class DomainAutoloader
             return Arr::wrap(Collection::times(count($classDirnameSegments), function ($index) use ($class, $classDirnameSegments) {
                 $classDirname = implode('\\', array_slice($classDirnameSegments, 0, $index));
 
-                return $classDirname.'\\Policies\\'.class_basename($class).'Policy';
+                return $classDirname . '\\Policies\\' . class_basename($class) . 'Policy';
             })->reverse()->values()->first(function ($class) {
                 return class_exists($class);
-            }) ?: [$classDirname.'\\Policies\\'.class_basename($class).'Policy']);
+            }) ?: [$classDirname . '\\Policies\\' . class_basename($class) . 'Policy']);
         });
     }
 
@@ -115,18 +115,21 @@ class DomainAutoloader
 
             $appNamespace = static::appNamespace();
 
-            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
-                ? Str::after($modelName, $appNamespace.'Models\\')
+            $modelName = Str::startsWith($modelName, $appNamespace . 'Models\\')
+                ? Str::after($modelName, $appNamespace . 'Models\\')
                 : Str::after($modelName, $appNamespace);
 
-            return 'Database\\Factories\\'.$modelName.'Factory';
+            return 'Database\\Factories\\' . $modelName . 'Factory';
         });
     }
 
     protected static function finder($paths)
     {
         $filter = app('ddd')->getAutoloadFilter() ?? function (SplFileInfo $file) {
-            $pathAfterDomain = str($file->getRelativePath())->after('/')->finish('/');
+            $pathAfterDomain = str($file->getRelativePath())
+                ->replace('\\', '/')
+                ->after('/')
+                ->finish('/');
 
             $ignoredFolders = collect(config('ddd.autoload.ignore', []))
                 ->map(fn ($path) => Str::finish($path, '/'));
