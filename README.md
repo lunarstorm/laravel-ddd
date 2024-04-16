@@ -421,7 +421,7 @@ return [
     */
     'autoload_ignore' => [
         'Tests',
-        'Migrations',
+        'Database/Migrations',
     ],
 
     /*
