@@ -7,7 +7,7 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Ability to ignore folders during autoloading via config(`ddd.autoload_ignore`), or register a custom filter callback via `DDD::filterAutoloadPathsUsing(callable $filter)`.
 
 ### Changed
-- Internal: Domain cache is no longer quietly cleared on laravel's `cache:clearing` event, so that `ddd:cache` yields consistent results no matter what order runs in production (before or after `cache:clear` or `optimize:clear` commands).
+- Internal: Domain cache is no longer quietly cleared on laravel's `cache:clearing` event, so that `ddd:cache` yields consistent results no matter which order it runs in production (before or after `cache:clear` or `optimize:clear` commands).
 
 ## [1.1.0] - 2024-04-07
 ### Added
