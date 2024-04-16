@@ -28,7 +28,7 @@ it('can ignore folders when autoloading', function () {
 
     expect($cached)->toEqual($expected);
 
-    Config::set('ddd.autoload.ignore', ['Commands']);
+    Config::set('ddd.autoload_ignore', ['Commands']);
 
     Artisan::call('ddd:cache');
 
@@ -43,7 +43,7 @@ it('can ignore folders when autoloading', function () {
 
     expect($cached)->toEqual($expected);
 
-    Config::set('ddd.autoload.ignore', ['Providers']);
+    Config::set('ddd.autoload_ignore', ['Providers']);
 
     Artisan::call('ddd:cache');
 
