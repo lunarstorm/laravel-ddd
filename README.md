@@ -220,7 +220,7 @@ To specify folders or paths that should be skipped during autoloading discovery,
 ],
 ```
 
-Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using the `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
+Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
 ```php
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Symfony\Component\Finder\SplFileInfo;

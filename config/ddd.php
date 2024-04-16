@@ -161,7 +161,7 @@ return [
     | e.g., src/Domain/Invoicing/<folder-to-ignore>
     |
     | If more advanced filtering is needed, a callback can be registered
-    | using the `DDD::filterAutoloadPathsUsing(callback $filter)` in
+    | using `DDD::filterAutoloadPathsUsing(callback $filter)` in
     | the AppServiceProvider's boot method.
     |
     */
