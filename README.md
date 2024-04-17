@@ -230,7 +230,7 @@ DDD::filterAutoloadPathsUsing(function (SplFileInfo $file) {
     }
 });
 ```
-The filter callback is based on the Symfony's [Finder Component](https://symfony.com/doc/current/components/finder.html#custom-filtering).
+The filter callback is based on Symfony's [Finder Component](https://symfony.com/doc/current/components/finder.html#custom-filtering).
 
 ### Disabling Autoloading
 You may disable autoloading by setting the respective autoload options to `false` in the configuration file as needed, or by commenting out the autoload configuration entirely.
