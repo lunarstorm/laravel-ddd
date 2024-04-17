@@ -16,6 +16,7 @@ use Lorisleiva\Lody\Lody;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 class DomainAutoloader
@@ -122,6 +123,28 @@ class DomainAutoloader
         });
     }
 
+    protected static function finder($paths)
+    {
+        $filter = app('ddd')->getAutoloadFilter() ?? function (SplFileInfo $file) {
+            $pathAfterDomain = str($file->getRelativePath())
+                ->replace('\\', '/')
+                ->after('/')
+                ->finish('/');
+
+            $ignoredFolders = collect(config('ddd.autoload_ignore', []))
+                ->map(fn ($path) => Str::finish($path, '/'));
+
+            if ($pathAfterDomain->startsWith($ignoredFolders)) {
+                return false;
+            }
+        };
+
+        return Finder::create()
+            ->files()
+            ->in($paths)
+            ->filter($filter);
+    }
+
     protected static function discoverProviders(): array
     {
         $configValue = config('ddd.autoload.providers');
@@ -138,7 +161,7 @@ class DomainAutoloader
             return [];
         }
 
-        return Lody::classesFromFinder(Finder::create()->files()->in($paths))
+        return Lody::classesFromFinder(static::finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(ServiceProvider::class)
             ->toArray();
@@ -162,7 +185,7 @@ class DomainAutoloader
             return [];
         }
 
-        return Lody::classesFromFinder(Finder::create()->files()->in($paths))
+        return Lody::classesFromFinder(static::finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(Command::class)
             ->toArray();

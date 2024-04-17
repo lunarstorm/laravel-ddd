@@ -152,6 +152,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Autoload Ignore Folders
+    |--------------------------------------------------------------------------
+    |
+    | Folders that should be skipped during autoloading discovery,
+    | relative to the root of each domain.
+    |
+    | e.g., src/Domain/Invoicing/<folder-to-ignore>
+    |
+    | If more advanced filtering is needed, a callback can be registered
+    | using `DDD::filterAutoloadPathsUsing(callback $filter)` in
+    | the AppServiceProvider's boot method.
+    |
+    */
+    'autoload_ignore' => [
+        'Tests',
+        'Database/Migrations',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Caching
     |--------------------------------------------------------------------------
     |

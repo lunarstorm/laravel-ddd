@@ -211,6 +211,27 @@ When `ddd.autoload.factories` is enabled, the package will register a custom fac
 
 If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
 
+### Ignoring Paths During Autoloading
+To specify folders or paths that should be skipped during autoloading discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
+```php
+'autoload_ignore' => [
+    'Tests',
+    'Database/Migrations',
+],
+```
+
+Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
+```php
+use Lunarstorm\LaravelDDD\Facades\DDD;
+use Symfony\Component\Finder\SplFileInfo;
+
+DDD::filterAutoloadPathsUsing(function (SplFileInfo $file) {
+    if (basename($file->getRelativePathname()) === 'functions.php') {
+        return false;
+    }
+});
+```
+
 ### Disabling Autoloading
 You may disable autoloading by setting the respective autoload options to `false` in the configuration file as needed, or by commenting out the autoload configuration entirely.
 ```php
@@ -221,11 +242,14 @@ You may disable autoloading by setting the respective autoload options to `false
 //     'factories' => true,
 // ],
 ```
+
 <a name="autoloading-in-production"></a>
+
 ## Autoloading in Production
 In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
 
 <a name="config-file"></a>
+
 ## Configuration File
 This is the content of the published config file (`ddd.php`):
 
@@ -356,32 +380,48 @@ return [
     */
     'autoload' => [
         /**
-         * When enabled, any class in the domain layer extending 
-         * `Illuminate\Support\ServiceProvider` will be 
-         * auto-registered as a service provider
+         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
+         * will be auto-registered as a service provider
          */
         'providers' => true,
 
         /**
-         * When enabled, any class in the domain layer extending 
-         * `Illuminate\Console\Command` will be auto-registered 
-         * as a command when running in console.
+         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
+         * will be auto-registered as a command when running in console.
          */
         'commands' => true,
 
         /**
-         * When enabled, a custom policy discovery callback will be
-         * registered to resolve policy names for domain models, 
-         * or fallback to Laravel's default otherwise.
+         * When enabled, the package will register a custom policy discovery callback to resolve policy names
+         * for domain models, and fallback to Laravel's default for all other cases.
          */
         'policies' => true,
 
         /**
-         * When enabled, a custom policy discovery callback will be
-         * registered to resolve factory names for domain models, 
-         * or fallback to Laravel's default otherwise.
+         * When enabled, the package will register a custom factory discovery callback to resolve factory names
+         * for domain models, and fallback to Laravel's default for all other cases.
          */
         'factories' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoload Ignore Folders
+    |--------------------------------------------------------------------------
+    |
+    | Folders that should be skipped during autoloading discovery,
+    | relative to the root of each domain.
+    |
+    | e.g., src/Domain/Invoicing/<folder-to-ignore>
+    |
+    | If more advanced filtering is needed, a callback can be registered
+    | using the `DDD::filterAutoloadPathsUsing(callback $filter)` in
+    | the AppServiceProvider's boot method.
+    |
+    */
+    'autoload_ignore' => [
+        'Tests',
+        'Database/Migrations',
     ],
 
     /*

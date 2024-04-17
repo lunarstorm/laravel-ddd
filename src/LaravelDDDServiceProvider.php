@@ -2,8 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Illuminate\Support\Facades\Event;
-use Lunarstorm\LaravelDDD\Listeners\CacheClearSubscriber;
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -12,6 +10,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
+        $this->app->scoped(DomainManager::class, function () {
+            return new DomainManager();
+        });
+
+        $this->app->bind('ddd', DomainManager::class);
+
         /*
          * This class is a Package Service Provider
          *
@@ -69,7 +73,5 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         (new DomainAutoloader())->autoload();
-
-        Event::subscribe(CacheClearSubscriber::class);
     }
 }
