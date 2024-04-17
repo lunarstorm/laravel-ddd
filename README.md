@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 
-Laravel-DDD is a toolkit to support domain driven design (DDD) patterns in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make:model` artisan command to properly generate domain models, since domain models are not intended to be stored in the `App/Models/*` namespace. This package aims to fill the gaps by providing an equivalent command, `ddd:model`, plus many more.
+Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate domain objects since they are typically stored outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
 
 ## Installation
 You can install the package via composer:
@@ -32,10 +32,9 @@ php artisan ddd:cache
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
 
-### Upgrading from 0.x
-- Update config to the [latest format](#config-file). A helper command `ddd:upgrade` is available to assist with this.
-- Remove and re-publish stubs if applicable.
-- In production, `ddd:cache` should be run during the deployment process. See the [Autoloading in Production](#autoloading-in-production) section for more details.
+See **[UPGRADING](UPGRADING.md)** for more details about upgrading from 0.x.
+
+<a name="usage"></a>
 
 ## Usage
 ### Syntax
@@ -231,6 +230,7 @@ DDD::filterAutoloadPathsUsing(function (SplFileInfo $file) {
     }
 });
 ```
+The filter callback is based on the Symfony's [Finder Component](https://symfony.com/doc/current/components/finder.html#custom-filtering).
 
 ### Disabling Autoloading
 You may disable autoloading by setting the respective autoload options to `false` in the configuration file as needed, or by commenting out the autoload configuration entirely.
