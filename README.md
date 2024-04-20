@@ -46,7 +46,7 @@ php artisan ddd:{object} {name} --domain={domain}
 # Specifying the domain as part of the name (short-hand syntax)
 php artisan ddd:{object} {domain}:{name}
 
-# Not specifying the domain at all, which will then prompt
+# Not specifying the domain at all, which will then 
 # prompt for it (with auto-completion)
 php artisan ddd:{object} {name}
 ```
