@@ -2,12 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
-use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesStubPath;
-use Symfony\Component\Console\Input\InputOption;
 
 class DomainSeederMakeCommand extends SeederMakeCommand
 {

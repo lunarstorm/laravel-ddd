@@ -4,7 +4,6 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Symfony\Component\Console\Input\InputOption;
 
 class DomainMigrationMakeCommand extends MigrateMakeCommand
 {
@@ -29,10 +28,8 @@ class DomainMigrationMakeCommand extends MigrateMakeCommand
         return $this->getDomainPath($name);
     }
 
-
     protected function guessObjectType(): string
     {
         return 'migration';
     }
-
 }
