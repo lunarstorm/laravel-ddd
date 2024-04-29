@@ -29,7 +29,7 @@ return [
     |
     | This value contains the default namespaces of generated domain
     | objects relative to the domain namespace of which the object
-    | belongs to.
+    | belongs to. Empty strings for domain root.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*
@@ -56,14 +56,33 @@ return [
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
+        'migration' => 'Database\Migrations',
         'notification' => 'Notifications',
         'observer' => 'Observers',
         'policy' => 'Policies',
         'provider' => 'Providers',
         'resource' => 'Resources',
         'rule' => 'Rules',
+        'seed' => 'Database\Seeders',
         'scope' => 'Scopes',
         'trait' => '',
+    ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generate All
+    |--------------------------------------------------------------------------
+    |
+    | What should be generated when running `ddd:model` with the --all flag.
+    | Supports any of: 'factory','seed','migration','policy',
+    |
+    */
+    'model_generate_all' => [
+        'factory',
+        'seed',
+        'migration',
+        'policy',
     ],
 
     /*
