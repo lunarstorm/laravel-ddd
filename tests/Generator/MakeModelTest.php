@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
-
 function expectGeneratedDomainFile($output, $fileName, $domain, $type)
 {
     $domainObject = $domain->$type($fileName);
@@ -118,7 +117,7 @@ it('can generate a domain model with seeder', function ($domainPath, $domainRoot
 
     expect(file_get_contents($expectedSeederPath))
         ->toContain("class {$modelName}Seeder extends Seeder")
-        ->toContain("public function run(): void");
+        ->toContain('public function run(): void');
 })->with('domainPaths')->with('domainSubdomain');
 
 it('can generate a domain model with migration', function ($domainPath, $domainRoot, $domainName, $subdomain) {
@@ -166,8 +165,6 @@ it('can generate a domain model with migration', function ($domainPath, $domainR
         ->toContain("use {$domainModel->fullyQualifiedName};")
         ->toContain("protected \$model = {$modelName}::class;");
 })->with('domainPaths')->with('domainSubdomain');
-
-
 
 it('can generate a domain model with all', function ($domainPath, $domainRoot, $domainName, $subdomain) {
     Config::set('ddd.domain_path', $domainPath);

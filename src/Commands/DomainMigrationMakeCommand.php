@@ -14,7 +14,6 @@ class DomainMigrationMakeCommand extends MigrateMakeCommand
     */
     use ResolvesDomainFromInput;
 
-
     protected $signature = 'ddd:migration {name : The name of the migration}
         {--domain= : test}
         {--create= : The table to be created}
@@ -30,11 +29,10 @@ class DomainMigrationMakeCommand extends MigrateMakeCommand
         //dd(dirname($this->getPath('test')));
         return dirname($this->getPath('test'));
 
+        dump('mmmm', $this->getDomainPath(''), dirname($this->getDomainPath('')));
 
-        dump('mmmm', $this->getDomainPath(''),  dirname($this->getDomainPath('')));
+        dump('mmmm', $this->getDomainPath(''), dirname($this->getDomainPath('')));
 
-
-        dump('mmmm', $this->getDomainPath(''),  dirname($this->getDomainPath('')));
         return dirname($this->getDomainPath(''));
     }
 
