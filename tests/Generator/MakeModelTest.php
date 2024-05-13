@@ -2,8 +2,26 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+
+
+function expectGeneratedDomainFile($output, $fileName, $domain, $type)
+{
+    $domainObject = $domain->$type($fileName);
+    $expectedFilePath = base_path($domainObject->path);
+
+    if (file_exists($expectedFilePath)) {
+        unlink($expectedFilePath);
+    }
+
+    expect($output)->toContainFilepath($expectedFilePath);
+
+    expect(file_exists($expectedFilePath))->toBeTrue("Expecting file to be generated at {$expectedFilePath}");
+
+    return $expectedFilePath;
+}
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
@@ -52,23 +70,7 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
 
     $domain = new Domain($domainName, $subdomain);
 
-    $factoryName = "{$modelName}Factory";
-
     $domainModel = $domain->model($modelName);
-
-    $domainFactory = $domain->factory($factoryName);
-
-    $expectedModelPath = base_path($domainModel->path);
-
-    if (file_exists($expectedModelPath)) {
-        unlink($expectedModelPath);
-    }
-
-    $expectedFactoryPath = base_path($domainFactory->path);
-
-    if (file_exists($expectedFactoryPath)) {
-        unlink($expectedFactoryPath);
-    }
 
     Artisan::call('ddd:model', [
         'name' => $modelName,
@@ -77,6 +79,116 @@ it('can generate a domain model with factory', function ($domainPath, $domainRoo
     ]);
 
     $output = Artisan::output();
+
+    $expectedModelPath = expectGeneratedDomainFile($output, $modelName, $domain, 'model');
+    $expectedFactoryPath = expectGeneratedDomainFile($output, "{$modelName}Factory", $domain, 'factory');
+
+    expect($output)->toContainFilepath($domainModel->path);
+
+    expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
+
+    expect(file_get_contents($expectedFactoryPath))
+        ->toContain("use {$domainModel->fullyQualifiedName};")
+        ->toContain("protected \$model = {$modelName}::class;");
+
+})->with('domainPaths')->with('domainSubdomain');
+
+it('can generate a domain model with seeder', function ($domainPath, $domainRoot, $domainName, $subdomain) {
+    Config::set('ddd.domain_path', $domainPath);
+
+    $modelName = 'Record';
+
+    $domain = new Domain($domainName, $subdomain);
+
+    $domainModel = $domain->model($modelName);
+
+    Artisan::call('ddd:model', [
+        'name' => $modelName,
+        '--domain' => $domain->dotName,
+        '--seed' => true,
+    ]);
+
+    $output = Artisan::output();
+
+    $expectedModelPath = expectGeneratedDomainFile($output, $modelName, $domain, 'model');
+    $expectedSeederPath = expectGeneratedDomainFile($output, "{$modelName}Seeder", $domain, 'seeder');
+
+    expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
+    expect(file_exists($expectedSeederPath))->toBeTrue("Expecting seeder file to be generated at {$expectedSeederPath}");
+
+    expect(file_get_contents($expectedSeederPath))
+        ->toContain("class {$modelName}Seeder extends Seeder")
+        ->toContain("public function run(): void");
+})->with('domainPaths')->with('domainSubdomain');
+
+it('can generate a domain model with migration', function ($domainPath, $domainRoot, $domainName, $subdomain) {
+    Config::set('ddd.domain_path', $domainPath);
+
+    $modelName = 'Record';
+
+    $domain = new Domain($domainName, $subdomain);
+
+    $migrationName = Str::snake(Str::pluralStudly(class_basename($modelName)));
+    //$migrationName = "{$modelName}Factory";
+
+    $domainModel = $domain->model($modelName);
+
+    $domainMigration = $domain->migration($migrationName);
+
+    $expectedModelPath = base_path($domainModel->path);
+
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
+
+    $expectedMigrationPath = base_path($domainMigration->path);
+
+    if (file_exists($expectedMigrationPath)) {
+        unlink($expectedMigrationPath);
+    }
+
+    Artisan::call('ddd:model', [
+        'name' => $modelName,
+        '--domain' => $domain->dotName,
+        '--migration' => true,
+    ]);
+
+    $output = Artisan::output();
+
+    //dd(scandir(dirname(base_path($expectedMigrationPath))));
+
+    expect($output)->toContainFilepath($domainModel->path);
+
+    expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
+    expect(file_exists($expectedMigrationPath))->toBeTrue("Expecting factory file to be generated at {$expectedMigrationPath}");
+
+    expect(file_get_contents($expectedMigrationPath))
+        ->toContain("use {$domainModel->fullyQualifiedName};")
+        ->toContain("protected \$model = {$modelName}::class;");
+})->with('domainPaths')->with('domainSubdomain');
+
+
+
+it('can generate a domain model with all', function ($domainPath, $domainRoot, $domainName, $subdomain) {
+    Config::set('ddd.domain_path', $domainPath);
+
+    $modelName = 'Record';
+
+    $domain = new Domain($domainName, $subdomain);
+
+    $domainModel = $domain->model($modelName);
+
+    Artisan::call('ddd:model', [
+        'name' => $modelName,
+        '--domain' => $domain->dotName,
+        '--all' => true,
+    ]);
+
+    $output = Artisan::output();
+
+    $expectedModelPath = expectGeneratedDomainFile($output, $modelName, $domain, 'model');
+    $expectedFactoryPath = expectGeneratedDomainFile($output, "{$modelName}Factory", $domain, 'factory');
+    $expectedSeederPath = expectGeneratedDomainFile($output, "{$modelName}Seeder", $domain, 'seeder');
 
     expect($output)->toContainFilepath($domainModel->path);
 

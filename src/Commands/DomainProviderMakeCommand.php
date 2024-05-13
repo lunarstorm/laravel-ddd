@@ -10,4 +10,9 @@ class DomainProviderMakeCommand extends ProviderMakeCommand
     use ResolvesDomainFromInput;
 
     protected $name = 'ddd:provider';
+
+    protected function getStub()
+    {
+        return $this->resolveStubPath('/stubs/provider.stub');
+    }
 }

@@ -7,9 +7,13 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 class DomainMigrationMakeCommand extends MigrateMakeCommand
 {
+    /*
     use ResolvesDomainFromInput {
         ResolvesDomainFromInput::getPath as getDomainPath;
     }
+    */
+    use ResolvesDomainFromInput;
+
 
     protected $signature = 'ddd:migration {name : The name of the migration}
         {--domain= : test}
@@ -23,9 +27,15 @@ class DomainMigrationMakeCommand extends MigrateMakeCommand
 
     protected function getMigrationPath()
     {
-        $name = $this->input->getArgument('name');
+        //dd(dirname($this->getPath('test')));
+        return dirname($this->getPath('test'));
 
-        return $this->getDomainPath($name);
+
+        dump('mmmm', $this->getDomainPath(''),  dirname($this->getDomainPath('')));
+
+
+        dump('mmmm', $this->getDomainPath(''),  dirname($this->getDomainPath('')));
+        return dirname($this->getDomainPath(''));
     }
 
     protected function guessObjectType(): string

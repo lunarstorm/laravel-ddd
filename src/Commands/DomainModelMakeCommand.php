@@ -27,10 +27,9 @@ class DomainModelMakeCommand extends DomainGeneratorCommand
             ['migration', 'm', InputOption::VALUE_NONE, 'Create a new migration for the domain model'],
             ['test', 't', InputOption::VALUE_NONE, 'Generate an accompanying PHPUnit test for the model'], // TDOD
             ['pest', 'tpa', InputOption::VALUE_NONE, 'Generate an accompanying Pest test for the model'], // TDOD
-            ['seed', 's', InputOption::VALUE_NONE, 'Create a new seeder for the model'], // TDOD
-            ['policy', 'p', InputOption::VALUE_NONE, 'Create a new seeder for the model'], // TDOD
-            ['all', 'a', InputOption::VALUE_NONE, 'Generate a migration, seeder, factory, and policy classes for the model'], // TDOD
-
+            ['seed', 's', InputOption::VALUE_NONE, 'Create a new seeder for the model'],
+            ['policy', 'p', InputOption::VALUE_NONE, 'Create a new seeder for the model'],
+            ['all', 'a', InputOption::VALUE_NONE, 'Generate a migration, seeder, factory, and policy classes for the model'],
         ];
     }
 
