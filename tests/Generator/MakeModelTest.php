@@ -9,7 +9,8 @@ use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 function expectGeneratedDomainFile($output, $fileName, $domain, $type)
 {
     $domainObject = $domain->$type($fileName);
-    $expectedFilePath = base_path($domainObject->path);
+    //$expectedFilePath = base_path($domainObject->path);
+    $expectedFilePath = $domainObject->path;
 
     if (file_exists($expectedFilePath)) {
         unlink($expectedFilePath);
@@ -17,9 +18,11 @@ function expectGeneratedDomainFile($output, $fileName, $domain, $type)
 
     expect($output)->toContainFilepath($expectedFilePath);
 
-    expect(file_exists($expectedFilePath))->toBeTrue("Expecting file to be generated at {$expectedFilePath}");
+    $expectedAbsoluteFilePath = base_path($expectedFilePath);
 
-    return $expectedFilePath;
+    expect(file_exists($expectedAbsoluteFilePath))->toBeTrue("Expecting file to be generated at {$expectedFilePath}");
+
+    return $expectedAbsoluteFilePath;
 }
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
@@ -159,7 +162,7 @@ it('can generate a domain model with migration', function ($domainPath, $domainR
     expect($output)->toContainFilepath($domainModel->path);
 
     expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
-    expect(file_exists($expectedMigrationPath))->toBeTrue("Expecting factory file to be generated at {$expectedMigrationPath}");
+    expect(file_exists($expectedMigrationPath))->toBeTrue("Expecting migration file to be generated at {$expectedMigrationPath}");
 
     expect(file_get_contents($expectedMigrationPath))
         ->toContain("use {$domainModel->fullyQualifiedName};")
