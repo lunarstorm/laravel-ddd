@@ -3,10 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Foundation\Console\ModelMakeCommand;
-use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Symfony\Component\Console\Input\InputOption;
 
 class DomainModelMakeCommand extends ModelMakeCommand
 {
