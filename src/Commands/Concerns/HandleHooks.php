@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Commands\Concerns;
 
-trait OverridesHandle
+trait HandleHooks
 {
     protected function beforeHandle()
     {
