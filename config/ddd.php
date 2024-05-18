@@ -56,6 +56,7 @@ return [
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
+        'migration' => 'Database\Migrations',
         'notification' => 'Notifications',
         'observer' => 'Observers',
         'policy' => 'Policies',
@@ -63,6 +64,7 @@ return [
         'resource' => 'Resources',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'seeder' => 'Database\Seeders',
         'trait' => '',
     ],
 

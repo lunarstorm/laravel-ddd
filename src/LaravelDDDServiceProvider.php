@@ -41,11 +41,13 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainCastMakeCommand::class,
                 Commands\DomainChannelMakeCommand::class,
                 Commands\DomainConsoleMakeCommand::class,
+                Commands\DomainControllerMakeCommand::class,
                 Commands\DomainEventMakeCommand::class,
                 Commands\DomainExceptionMakeCommand::class,
                 Commands\DomainJobMakeCommand::class,
                 Commands\DomainListenerMakeCommand::class,
                 Commands\DomainMailMakeCommand::class,
+                // Commands\DomainMigrateMakeCommand::class,
                 Commands\DomainNotificationMakeCommand::class,
                 Commands\DomainObserverMakeCommand::class,
                 Commands\DomainPolicyMakeCommand::class,
@@ -53,6 +55,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainResourceMakeCommand::class,
                 Commands\DomainRuleMakeCommand::class,
                 Commands\DomainScopeMakeCommand::class,
+                Commands\DomainSeederMakeCommand::class,
             ]);
 
         if (app()->version() >= 11) {
