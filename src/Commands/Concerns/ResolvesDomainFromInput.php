@@ -40,12 +40,12 @@ trait ResolvesDomainFromInput
         };
     }
 
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace, $objectType = null)
     {
         if ($this->domain) {
             return $this->nameIsAbsolute
                 ? $this->domain->namespace->root
-                : $this->domain->namespaceFor($this->guessObjectType());
+                : $this->domain->namespaceFor($objectType ?? $this->guessObjectType());
         }
 
         return parent::getDefaultNamespace($rootNamespace);
@@ -68,7 +68,7 @@ trait ResolvesDomainFromInput
 
     public function handle()
     {
-        $nameInput = $this->getNameInput();
+        $nameInput = Str::studly($this->argument('name'));
 
         // If the name contains a domain prefix, extract it
         // and strip it from the name argument.

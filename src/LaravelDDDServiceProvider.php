@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Illuminate\Database\Migrations\MigrationCreator;
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -53,6 +54,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainResourceMakeCommand::class,
                 Commands\DomainRuleMakeCommand::class,
                 Commands\DomainScopeMakeCommand::class,
+                Commands\DomainMigrationMakeCommand::class,
+                Commands\DomainSeederMakeCommand::class,
             ]);
 
         if (app()->version() >= 11) {
@@ -73,5 +76,9 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         (new DomainAutoloader())->autoload();
+
+        $this->app->singleton(\Illuminate\Database\Migrations\MigrationCreator::class, function ($app) {
+            return new MigrationCreator($app['files'], resource_path("stubs/{$this->package->shortName()}"));
+        });
     }
 }

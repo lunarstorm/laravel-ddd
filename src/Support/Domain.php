@@ -204,4 +204,14 @@ class Domain
     {
         return $this->object('exception', $name);
     }
+
+    public function seeder(string $name): DomainObject
+    {
+        return $this->object('seed', $name);
+    }
+
+    public function migration(string $name): DomainObject
+    {
+        return $this->object('migration', $name);
+    }
 }
