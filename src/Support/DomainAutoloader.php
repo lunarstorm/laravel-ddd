@@ -110,7 +110,7 @@ class DomainAutoloader
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             if (DomainResolver::isDomainClass($modelName)) {
-                return DomainFactory::factoryForModel($modelName);
+                return DomainFactory::resolveFactoryName($modelName);
             }
 
             $appNamespace = static::appNamespace();
