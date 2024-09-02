@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
 class TestCase extends Orchestra
 {
-    protected $enablesPackageDiscoveries = true;
-
     public static $configValues = [];
 
     protected function setUp(): void
@@ -156,9 +153,7 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('src/Domains'));
         File::deleteDirectory(app_path('Models'));
 
-        DomainCache::clear();
-
-        $this->composerReload();
+        File::deleteDirectory(base_path('bootstrap/cache/ddd'));
     }
 
     protected function setupTestApplication()
@@ -166,6 +161,7 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/app', app_path());
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
+        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
         File::ensureDirectoryExists(app_path('Models'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
