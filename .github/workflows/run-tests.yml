@@ -54,6 +54,4 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: |
-          composer dump-autoload
-          vendor/bin/pest
+        run: vendor/bin/pest
