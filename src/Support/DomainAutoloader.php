@@ -50,7 +50,7 @@ class DomainAutoloader
     protected static function normalizePaths($path): array
     {
         return collect($path)
-            ->filter(fn ($path) => is_dir($path))
+            ->filter(fn($path) => is_dir($path))
             ->toArray();
     }
 
@@ -99,27 +99,27 @@ class DomainAutoloader
             return Arr::wrap(Collection::times(count($classDirnameSegments), function ($index) use ($class, $classDirnameSegments) {
                 $classDirname = implode('\\', array_slice($classDirnameSegments, 0, $index));
 
-                return $classDirname.'\\Policies\\'.class_basename($class).'Policy';
+                return $classDirname . '\\Policies\\' . class_basename($class) . 'Policy';
             })->reverse()->values()->first(function ($class) {
                 return class_exists($class);
-            }) ?: [$classDirname.'\\Policies\\'.class_basename($class).'Policy']);
+            }) ?: [$classDirname . '\\Policies\\' . class_basename($class) . 'Policy']);
         });
     }
 
     protected function handleFactories(): void
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
-            if (DomainResolver::isDomainClass($modelName)) {
-                return DomainFactory::factoryForModel($modelName);
+            if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
+                return $factoryName;
             }
 
             $appNamespace = static::appNamespace();
 
-            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
-                ? Str::after($modelName, $appNamespace.'Models\\')
+            $modelName = Str::startsWith($modelName, $appNamespace . 'Models\\')
+                ? Str::after($modelName, $appNamespace . 'Models\\')
                 : Str::after($modelName, $appNamespace);
 
-            return 'Database\\Factories\\'.$modelName.'Factory';
+            return 'Database\\Factories\\' . $modelName . 'Factory';
         });
     }
 
@@ -132,7 +132,7 @@ class DomainAutoloader
                 ->finish('/');
 
             $ignoredFolders = collect(config('ddd.autoload_ignore', []))
-                ->map(fn ($path) => Str::finish($path, '/'));
+                ->map(fn($path) => Str::finish($path, '/'));
 
             if ($pathAfterDomain->startsWith($ignoredFolders)) {
                 return false;
