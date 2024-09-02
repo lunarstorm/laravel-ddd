@@ -51,8 +51,11 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
     expect($after)->toEqual(config('ddd.domain_path'));
 
     unlink(config_path('ddd.php'));
+
+    // Reset composer back to the factory state
+    $this->setDomainPathInComposer('Domain', 'src/Domain', reload: true);
 })->with([
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],
     ['src/CustomDomainRoot', 'CustomDomainRoot'],
-])->skip('Causes issues with autoload tests executed after this test');
+]);

@@ -167,13 +167,17 @@ class TestCase extends Orchestra
         $this->setDomainPathInComposer('Domain', 'src/Domain');
     }
 
-    protected function setDomainPathInComposer($domainNamespace, $domainPath)
+    protected function setDomainPathInComposer($domainNamespace, $domainPath, bool $reload = true)
     {
         $this->updateComposer(
             set: [
                 [['autoload', 'psr-4', $domainNamespace.'\\'], $domainPath],
             ],
         );
+
+        if ($reload) {
+            $this->composerReload();
+        }
 
         return $this;
     }
