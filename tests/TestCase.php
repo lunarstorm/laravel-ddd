@@ -13,6 +13,8 @@ use Symfony\Component\Process\Process;
 
 class TestCase extends Orchestra
 {
+    protected $enablesPackageDiscoveries = true;
+
     public static $configValues = [];
 
     protected function setUp(): void
@@ -155,6 +157,8 @@ class TestCase extends Orchestra
         File::deleteDirectory(app_path('Models'));
 
         DomainCache::clear();
+
+        $this->composerReload();
     }
 
     protected function setupTestApplication()
