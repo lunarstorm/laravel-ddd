@@ -7,7 +7,7 @@ beforeEach(function () {
 });
 
 it('can run', function () {
-    $autoloader = new DomainAutoloader();
+    $autoloader = new DomainAutoloader;
 
     $autoloader->autoload();
 })->throwsNoExceptions();

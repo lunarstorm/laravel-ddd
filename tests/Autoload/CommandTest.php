@@ -18,7 +18,7 @@ describe('without autoload', function () {
         $this->setupTestApplication();
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 
@@ -35,7 +35,7 @@ describe('with autoload', function () {
         $this->setupTestApplication();
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 
@@ -82,7 +82,7 @@ describe('caching', function () {
         DomainCache::set('domain-commands', []);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
 
         // command should not be recognized due to cached empty-state
@@ -94,7 +94,7 @@ describe('caching', function () {
         DomainCache::clear();
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
 
         $this->artisan('invoice:deliver')->assertSuccessful();

@@ -136,8 +136,7 @@ class TestCase extends Orchestra
 
         (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
             ->setTimeout(null)
-            ->run(function ($type, $output) {
-            });
+            ->run(function ($type, $output) {});
     }
 
     protected function cleanSlate()

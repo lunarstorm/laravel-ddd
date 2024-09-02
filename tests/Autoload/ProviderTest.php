@@ -18,7 +18,7 @@ describe('without autoload', function () {
         ]);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 
@@ -34,7 +34,7 @@ describe('with autoload', function () {
         ]);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 
@@ -57,7 +57,7 @@ describe('caching', function () {
         DomainCache::set('domain-providers', []);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
 
         expect(fn () => app('invoicing'))->toThrow(Exception::class);
@@ -68,7 +68,7 @@ describe('caching', function () {
         DomainCache::clear();
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
 
         expect(app('invoicing'))->toEqual('invoicing-singleton');

@@ -15,8 +15,7 @@ class DomainObject
         public readonly string $fullyQualifiedName,
         public readonly string $path,
         public readonly ?string $type = null,
-    ) {
-    }
+    ) {}
 
     public static function fromClass(string $fullyQualifiedClass, ?string $objectType = null): ?self
     {
