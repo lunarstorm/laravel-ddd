@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Config;
 
-beforeEach()->skip('Seems to cause autoload tests to fail if this is run before them');
+beforeEach(function () {
+    $this->setupTestApplication();
+});
 
 it('publishes config', function () {
     $path = config_path('ddd.php');
@@ -53,4 +55,4 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],
     ['src/CustomDomainRoot', 'CustomDomainRoot'],
-]);
+])->skip('Causes issues with autoload tests executed after this test');
