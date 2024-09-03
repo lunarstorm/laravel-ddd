@@ -15,7 +15,7 @@ describe('autoload enabled', function () {
         Config::set('ddd.autoload.factories', true);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 
@@ -52,7 +52,7 @@ describe('autoload disabled', function () {
         Config::set('ddd.autoload.factories', false);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader())->autoload();
+            (new DomainAutoloader)->autoload();
         });
     });
 

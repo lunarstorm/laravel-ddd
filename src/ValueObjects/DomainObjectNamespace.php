@@ -10,8 +10,7 @@ class DomainObjectNamespace
     public function __construct(
         public readonly string $type,
         public readonly string $namespace,
-    ) {
-    }
+    ) {}
 
     public static function make(string $key, string $domain, ?string $subdomain = null): self
     {

@@ -11,7 +11,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $this->app->scoped(DomainManager::class, function () {
-            return new DomainManager();
+            return new DomainManager;
         });
 
         $this->app->bind('ddd', DomainManager::class);
@@ -72,6 +72,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        (new DomainAutoloader())->autoload();
+        (new DomainAutoloader)->autoload();
     }
 }
