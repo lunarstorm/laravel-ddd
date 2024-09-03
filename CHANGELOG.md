@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [1.1.2] - 2024-09-02
+### Fixed
+- During domain factory autoloading, ensure that `guessFactoryNamesUsing` returns a string when a domain factory is resolved.
+- Resolve issues with failing tests caused by mutations to `composer.json` that weren't rolled back.
+
 ## [1.1.1] - 2024-04-17
 ### Added
 - Ability to ignore folders during autoloading via `config('ddd.autoload_ignore')`, or register a custom filter callback via `DDD::filterAutoloadPathsUsing(callable $filter)`.
