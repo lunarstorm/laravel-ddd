@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
@@ -154,7 +153,7 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('src/Domains'));
         File::deleteDirectory(app_path('Models'));
 
-        DomainCache::clear();
+        File::deleteDirectory(base_path('bootstrap/cache/ddd'));
     }
 
     protected function setupTestApplication()
@@ -162,18 +161,23 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/app', app_path());
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
+        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
         File::ensureDirectoryExists(app_path('Models'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
     }
 
-    protected function setDomainPathInComposer($domainNamespace, $domainPath)
+    protected function setDomainPathInComposer($domainNamespace, $domainPath, bool $reload = true)
     {
         $this->updateComposer(
             set: [
                 [['autoload', 'psr-4', $domainNamespace.'\\'], $domainPath],
             ],
         );
+
+        if ($reload) {
+            $this->composerReload();
+        }
 
         return $this;
     }

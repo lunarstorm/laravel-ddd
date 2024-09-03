@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Config;
 
+beforeEach(function () {
+    $this->setupTestApplication();
+});
+
 it('publishes config', function () {
     $path = config_path('ddd.php');
 
@@ -47,6 +51,9 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
     expect($after)->toEqual(config('ddd.domain_path'));
 
     unlink(config_path('ddd.php'));
+
+    // Reset composer back to the factory state
+    $this->setDomainPathInComposer('Domain', 'src/Domain', reload: true);
 })->with([
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],
