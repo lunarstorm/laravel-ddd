@@ -28,6 +28,8 @@ it('publishes config', function () {
 });
 
 it('can initialize composer.json', function ($domainPath, $domainRoot) {
+    $originalContents = file_get_contents(base_path('composer.json'));
+
     $this->updateComposer(
         forget: [
             ['autoload', 'psr-4', 'Domains\\'],
@@ -52,8 +54,10 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
 
     unlink(config_path('ddd.php'));
 
-    // Reset composer back to the factory state
-    $this->setDomainPathInComposer('Domain', 'src/Domain', reload: true);
+    // Restore the original composer.json
+    file_put_contents(base_path('composer.json'), $originalContents);
+
+    $this->composerReload();
 })->with([
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],
