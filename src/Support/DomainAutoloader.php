@@ -109,8 +109,8 @@ class DomainAutoloader
     protected function handleFactories(): void
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
-            if (DomainResolver::isDomainClass($modelName)) {
-                return DomainFactory::factoryForModel($modelName);
+            if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
+                return $factoryName;
             }
 
             $appNamespace = static::appNamespace();

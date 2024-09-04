@@ -7,9 +7,7 @@ use Lunarstorm\LaravelDDD\Support\DomainCache;
 
 class CacheClearSubscriber
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function handle(): void
     {

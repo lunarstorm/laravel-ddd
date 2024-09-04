@@ -24,8 +24,7 @@ class DomainNamespaces
         public readonly string $notifications,
         public readonly string $resources,
         public readonly string $rules,
-    ) {
-    }
+    ) {}
 
     public static function from(string $domain, ?string $subdomain = null): self
     {

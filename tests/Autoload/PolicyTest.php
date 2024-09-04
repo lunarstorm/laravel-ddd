@@ -11,7 +11,7 @@ beforeEach(function () {
     Config::set('ddd.autoload.factories', true);
 
     $this->afterApplicationCreated(function () {
-        (new DomainAutoloader())->autoload();
+        (new DomainAutoloader)->autoload();
     });
 });
 
