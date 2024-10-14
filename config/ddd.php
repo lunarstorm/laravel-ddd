@@ -70,6 +70,14 @@ return [
         'trait' => '',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Layer
+    |--------------------------------------------------------------------------
+    |
+    | Configure domain objects in the application layer.
+    |
+    */
     'application_layer' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
