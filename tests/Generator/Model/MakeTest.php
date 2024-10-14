@@ -43,7 +43,7 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
     ]);
 
     expect(file_get_contents($expectedModelPath))
-    ->toContain("namespace {$expectedNamespace};");
+        ->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
 it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {

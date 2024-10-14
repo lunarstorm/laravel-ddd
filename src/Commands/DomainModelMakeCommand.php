@@ -63,7 +63,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
         $factory = Str::studly($this->argument('name'));
 
         $this->call(DomainFactoryMakeCommand::class, [
-            'name' => $factory . 'Factory',
+            'name' => $factory.'Factory',
             '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
