@@ -33,4 +33,19 @@ class BaseMigrateMakeCommand extends MigrateMakeCommand
 
         return $name;
     }
+
+    protected function qualifyModel(string $model)
+    {
+        return;
+    }
+
+    protected function getDefaultNamespace($rootNamespace)
+    {
+        return;
+    }
+
+    protected function getPath($name)
+    {
+        return;
+    }
 }
