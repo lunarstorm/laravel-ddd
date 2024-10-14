@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -47,15 +48,16 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainJobMakeCommand::class,
                 Commands\DomainListenerMakeCommand::class,
                 Commands\DomainMailMakeCommand::class,
-                // Commands\DomainMigrateMakeCommand::class,
                 Commands\DomainNotificationMakeCommand::class,
                 Commands\DomainObserverMakeCommand::class,
                 Commands\DomainPolicyMakeCommand::class,
                 Commands\DomainProviderMakeCommand::class,
                 Commands\DomainResourceMakeCommand::class,
+                Commands\DomainRequestMakeCommand::class,
                 Commands\DomainRuleMakeCommand::class,
                 Commands\DomainScopeMakeCommand::class,
                 Commands\DomainSeederMakeCommand::class,
+                Commands\Migration\DomainMigrateMakeCommand::class,
             ]);
 
         if (app()->version() >= 11) {
@@ -64,6 +66,21 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
+
+        $this->registerDomainMigrateMakeCommand();
+    }
+
+    protected function registerDomainMigrateMakeCommand()
+    {
+        $this->app->singleton(Commands\Migration\DomainMigrateMakeCommand::class, function ($app) {
+            // Once we have the migration creator registered, we will create the command
+            // and inject the creator. The creator is responsible for the actual file
+            // creation of the migrations, and may be extended by these developers.
+            $creator = $app['migration.creator'];
+            $composer = $app['composer'];
+
+            return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
+        });
     }
 
     public function packageBooted()
@@ -71,6 +88,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->publishes([
             $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
         ], "{$this->package->shortName()}-stubs");
+
+        $this->loadMigrationsFrom(DomainMigration::paths());
     }
 
     public function packageRegistered()

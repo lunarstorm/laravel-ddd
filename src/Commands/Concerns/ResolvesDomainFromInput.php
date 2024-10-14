@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 trait ResolvesDomainFromInput
 {
     use CanPromptForDomain,
+        QualifiesDomainModels,
         HandleHooks;
 
     protected $nameIsAbsolute = false;
@@ -27,7 +28,9 @@ trait ResolvesDomainFromInput
 
     protected function rootNamespace()
     {
-        return Str::finish(DomainResolver::domainRootNamespace(), '\\');
+        $type = $this->guessObjectType();
+
+        return Str::finish(DomainResolver::resolveRootNamespace($type), '\\');
     }
 
     protected function guessObjectType(): string
@@ -37,6 +40,7 @@ trait ResolvesDomainFromInput
             'ddd:base-model' => 'model',
             'ddd:value' => 'value_object',
             'ddd:dto' => 'data_transfer_object',
+            'ddd:migration' => 'migration',
             default => str($this->name)->after(':')->snake()->toString(),
         };
     }

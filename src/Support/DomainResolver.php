@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class DomainResolver
@@ -11,10 +12,10 @@ class DomainResolver
      */
     public static function domainChoices(): array
     {
-        $folders = glob(app()->basePath(static::domainPath().'/*'), GLOB_ONLYDIR);
+        $folders = glob(app()->basePath(static::domainPath() . '/*'), GLOB_ONLYDIR);
 
         return collect($folders)
-            ->map(fn ($path) => basename($path))
+            ->map(fn($path) => basename($path))
             ->sort()
             ->toArray();
     }
@@ -35,6 +36,11 @@ class DomainResolver
         return config('ddd.domain_namespace');
     }
 
+    public static function applicationLayerRootNamespace(): ?string
+    {
+        return config('ddd.application_layer.namespace', 'App\Modules');
+    }
+
     /**
      * Resolve the relative domain object namespace.
      *
@@ -45,10 +51,40 @@ class DomainResolver
         return config("ddd.namespaces.{$type}", str($type)->plural()->studly()->toString());
     }
 
+    public static function isApplicationLayer(string $type): bool
+    {
+        $applicationObjects = config('ddd.application_layer.objects', ['controller', 'request']);
+
+        return in_array($type, $applicationObjects);
+    }
+
+    // public static function getDomainControllerNamespace(string $domain, ?string $controller = null): string
+    // {
+    //     $controllerRootNamespace = app()->getNamespace() . 'Http\Controllers';
+
+    //     $namespace = collect([
+    //         $controllerRootNamespace,
+    //         $domain,
+    //     ])->filter()->implode('\\');
+
+    //     if ($controller) {
+    //         $namespace .= "\\{$controller}";
+    //     }
+
+    //     return $namespace;
+    // }
+
+    public static function resolveRootNamespace(string $type): ?string
+    {
+        return static::isApplicationLayer($type)
+            ? static::applicationLayerRootNamespace()
+            : static::domainRootNamespace();
+    }
+
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
     {
         $namespace = collect([
-            static::domainRootNamespace(),
+            static::resolveRootNamespace($type),
             $domain,
             static::getRelativeObjectNamespace($type),
         ])->filter()->implode('\\');
@@ -93,6 +129,22 @@ class DomainResolver
             ->toString();
 
         return Path::join(...[static::domainPath(), "{$classWithoutDomainRoot}.php"]);
+    }
+
+    /**
+     * Attempt to resolve the folder of a given domain class.
+     */
+    public static function guessFolderFromClass(string $class): ?string
+    {
+        $path = static::guessPathFromClass($class);
+
+        if (! $path) {
+            return null;
+        }
+
+        $filenamePortion = basename($path);
+
+        return Str::beforeLast($path, $filenamePortion);
     }
 
     /**

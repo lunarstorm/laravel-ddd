@@ -56,7 +56,7 @@ class DomainModelMakeLegacyCommand extends DomainGeneratorCommand
 
     protected function createBaseModelIfNeeded()
     {
-        if (! $this->shouldCreateModel()) {
+        if (! $this->shouldCreateBaseModel()) {
             return;
         }
 
@@ -74,7 +74,7 @@ class DomainModelMakeLegacyCommand extends DomainGeneratorCommand
         ]);
     }
 
-    protected function shouldCreateModel(): bool
+    protected function shouldCreateBaseModel(): bool
     {
         $baseModel = config('ddd.base_model');
 

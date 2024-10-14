@@ -11,6 +11,8 @@ class Domain
 
     public readonly string $path;
 
+    public readonly string $migrationPath;
+
     public readonly string $domain;
 
     public readonly ?string $subdomain;
@@ -43,7 +45,7 @@ class Domain
         $subdomain = str($subdomain)->trim('\\/')->toString();
 
         $this->domainWithSubdomain = str($domain)
-            ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
+            ->when($subdomain, fn($domain) => $domain->append("\\{$subdomain}"))
             ->toString();
 
         $this->domain = $domain;
@@ -57,6 +59,8 @@ class Domain
         $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
         $this->path = Path::join(DomainResolver::domainPath(), $this->domainWithSubdomain);
+
+        $this->migrationPath = Path::join($this->path, config('ddd.namespaces.migration', 'Database/Migrations'));
     }
 
     protected function getDomainBasePath()
@@ -79,6 +83,21 @@ class Domain
         return Path::join($this->path, $path);
     }
 
+    public function pathInApplicationLayer(?string $path = null): string
+    {
+        if (is_null($path)) {
+            return $this->path;
+        }
+
+        $path = str($path)
+            ->replace(app()->getNamespace(), '')
+            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
+            ->append('.php')
+            ->toString();
+
+        return Path::join('app', $path);
+    }
+
     public function relativePath(string $path = ''): string
     {
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
@@ -96,7 +115,7 @@ class Domain
         return str($name)
             ->before($baseName)
             ->trim('\\')
-            ->prepend(DomainResolver::domainRootNamespace().'\\'.$this->domainWithSubdomain.'\\')
+            ->prepend(DomainResolver::domainRootNamespace() . '\\' . $this->domainWithSubdomain . '\\')
             ->toString();
     }
 
@@ -108,14 +127,19 @@ class Domain
             default => $this->namespaceFor($type),
         };
 
-        $baseName = str($name)->replace($namespace, '')->trim('\\')->toString();
+        $baseName = str($name)->replace($namespace, '')
+            ->replace(['\\', '/'], '\\')
+            ->trim('\\')
+            ->toString();
 
         return new DomainObject(
             name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace.'\\'.$baseName,
-            path: $this->path($namespace.'\\'.$baseName),
+            fullyQualifiedName: $namespace . '\\' . $baseName,
+            path: DomainResolver::isApplicationLayer($type)
+                ? $this->pathInApplicationLayer($namespace . '\\' . $baseName)
+                : $this->path($namespace . '\\' . $baseName),
             type: $type
         );
     }

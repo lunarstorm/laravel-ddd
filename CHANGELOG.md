@@ -2,6 +2,40 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unreleased]
+### Added
+- Experimental: Ability to configure the Application Layer, to generate domain objects that don't typically belong inside the domain layer.
+    ```php
+    // In config/ddd.php
+    'application_layer' => [
+        'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
+        'objects' => [
+            'controller',
+            'request',
+        ],
+    ],
+    ```
+- Added `ddd:controller` to generate domain-specific controllers in the application layer.
+- Added `ddd:request` to generate domain-spefic requests in the application layer.
+- Added `ddd:migration` to generate domain migrations.
+- Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
+- Added `ddd:seeder` to generate domain seeders.
+
+### Changed
+- `ddd:model` now internally extends Laravel's native `make:model` and inherits all standard options:
+    - `--migration|-m`
+    - `--factory|-f`
+    - `--seed|-s`
+    - `--controller --resource --requests|-crR`
+    - `--policy`
+    - `-mfsc`
+    - `--all|-a`
+    - `--pivot|-p`
+
+### Deprecated
+- Domain base models are no longer required by default, and `config('ddd.base_model')` is now `null` by default.
+
 ## [1.1.2] - 2024-09-02
 ### Fixed
 - During domain factory autoloading, ensure that `guessFactoryNamesUsing` returns a string when a domain factory is resolved.

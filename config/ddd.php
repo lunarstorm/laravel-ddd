@@ -48,6 +48,7 @@ return [
         'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
+        'controller' => 'Controllers',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
@@ -62,11 +63,21 @@ return [
         'policy' => 'Policies',
         'provider' => 'Providers',
         'resource' => 'Resources',
+        'request' => 'Requests',
         'rule' => 'Rules',
         'scope' => 'Scopes',
         'seeder' => 'Database\Seeders',
         'trait' => '',
     ],
+
+'application_layer' => [
+    'path' => 'app/Modules',
+    'namespace' => 'App\Modules',
+    'objects' => [
+        'controller',
+        'request',
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -150,6 +161,11 @@ return [
          * for domain models, and fallback to Laravel's default for all other cases.
          */
         'factories' => true,
+
+        /**
+         * When enabled, migration folders across all domains will be registered as a database migration path.
+         */
+        'migrations' => true,
     ],
 
     /*
