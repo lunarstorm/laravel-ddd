@@ -123,12 +123,11 @@ class Domain
     {
         $namespaceResolver = app('ddd')->getApplicationLayerNamespaceResolver();
 
-        $namespace = match (true) {
-            is_callable($namespaceResolver) => $namespaceResolver(
-                domain: $this->domainWithSubdomain,
-                type: $type,
-                object: $name
-            ),
+        $resolvedNamespace = is_callable($namespaceResolver)
+            ? $namespaceResolver($this->domainWithSubdomain, $type, $name)
+            : null;
+
+        $namespace = $resolvedNamespace ?? match (true) {
             $absolute => $this->namespace->root,
             str($name)->startsWith('\\') => $this->guessNamespaceFromName($name),
             default => $this->namespaceFor($type),
