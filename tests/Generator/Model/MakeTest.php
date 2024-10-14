@@ -42,7 +42,8 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
         config('ddd.namespaces.model'),
     ]);
 
-    expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
+    expect(file_get_contents($expectedModelPath))
+    ->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
 it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {

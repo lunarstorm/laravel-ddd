@@ -34,22 +34,26 @@ class DomainModelMakeCommand extends ModelMakeCommand
     {
         $stub = parent::buildClass($name);
 
+        $replacements = [
+            'use Illuminate\Database\Eloquent\Factories\HasFactory;' => "use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;",
+        ];
+
         if ($baseModel = $this->getBaseModel()) {
             $baseModelClass = class_basename($baseModel);
 
-            $replacements = [
-                'use Illuminate\Database\Eloquent\Model;' => "use {$baseModel};",
+            $replacements = array_merge($replacements, [
                 'extends Model' => "extends {$baseModelClass}",
-            ];
-
-            $stub = str_replace(
-                array_keys($replacements),
-                array_values($replacements),
-                $stub
-            );
-
-            $stub = $this->sortImports($stub);
+                'use Illuminate\Database\Eloquent\Model;' => "use {$baseModel};",
+            ]);
         }
+
+        $stub = str_replace(
+            array_keys($replacements),
+            array_values($replacements),
+            $stub
+        );
+
+        $stub = $this->sortImports($stub);
 
         return $stub;
     }
@@ -59,7 +63,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
         $factory = Str::studly($this->argument('name'));
 
         $this->call(DomainFactoryMakeCommand::class, [
-            'name' => $factory.'Factory',
+            'name' => $factory . 'Factory',
             '--domain' => $this->domain->dotName,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
