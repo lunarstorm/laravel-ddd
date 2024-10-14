@@ -57,7 +57,7 @@ class DomainMigration
         $finder = static::finder($paths);
 
         return Lody::filesFromFinder($finder)
-            ->map(fn ($file) => $file->getPath())
+            ->map(fn ($file) => Path::normalize($file->getPath()))
             ->unique()
             ->values()
             ->toArray();
