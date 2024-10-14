@@ -2,14 +2,13 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Support\Path;
 
 beforeEach(function () {
     $this->setupTestApplication();
     DomainCache::clear();
 });
 
-it('can cache discovered domain providers and commands', function () {
+it('can cache discovered domain providers, commands, migrations', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
@@ -28,8 +27,9 @@ it('can cache discovered domain providers and commands', function () {
     expect(DomainCache::get('domain-commands'))
         ->toContain('Domain\Invoicing\Commands\InvoiceDeliver');
 
-    expect(DomainCache::get('domain-migration-paths'))
-        ->toContain(base_path(Path::normalize('src/Domain/Invoicing/Database/Migrations')));
+    $paths = collect(DomainCache::get('domain-migration-paths'))->join("\n");
+
+    expect($paths)->toContainFilepath('src/Domain/Invoicing/Database/Migrations');
 });
 
 it('can clear the cache', function () {
