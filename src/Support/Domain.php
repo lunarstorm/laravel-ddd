@@ -121,7 +121,14 @@ class Domain
 
     public function object(string $type, string $name, bool $absolute = false): DomainObject
     {
+        $namespaceResolver = app('ddd')->getApplicationLayerNamespaceResolver();
+
         $namespace = match (true) {
+            is_callable($namespaceResolver) => $namespaceResolver(
+                domain: $this->domainWithSubdomain,
+                type: $type,
+                object: $name
+            ),
             $absolute => $this->namespace->root,
             str($name)->startsWith('\\') => $this->guessNamespaceFromName($name),
             default => $this->namespaceFor($type),
@@ -132,14 +139,16 @@ class Domain
             ->trim('\\')
             ->toString();
 
+        $fullyQualifiedName = $namespace.'\\'.$baseName;
+
         return new DomainObject(
             name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace.'\\'.$baseName,
+            fullyQualifiedName: $fullyQualifiedName,
             path: DomainResolver::isApplicationLayer($type)
-                ? $this->pathInApplicationLayer($namespace.'\\'.$baseName)
-                : $this->path($namespace.'\\'.$baseName),
+                ? $this->pathInApplicationLayer($fullyQualifiedName)
+                : $this->path($fullyQualifiedName),
             type: $type
         );
     }

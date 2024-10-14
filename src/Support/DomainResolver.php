@@ -35,9 +35,12 @@ class DomainResolver
         return config('ddd.domain_namespace');
     }
 
+    /**
+     * Get the current configured root application layer namespace.
+     */
     public static function applicationLayerRootNamespace(): ?string
     {
-        return config('ddd.application_layer.namespace', 'App\Modules');
+        return config('ddd.application_layer.namespace');
     }
 
     /**
@@ -50,29 +53,25 @@ class DomainResolver
         return config("ddd.namespaces.{$type}", str($type)->plural()->studly()->toString());
     }
 
+    /**
+     * Determine whether a given object type is part of the application layer.
+     */
     public static function isApplicationLayer(string $type): bool
     {
-        $applicationObjects = config('ddd.application_layer.objects', ['controller', 'request']);
+        $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
+            $applicationObjects = config('ddd.application_layer.objects', ['controller', 'request']);
 
-        return in_array($type, $applicationObjects);
+            return in_array($type, $applicationObjects);
+        };
+
+        return $filter($type);
     }
 
-    // public static function getDomainControllerNamespace(string $domain, ?string $controller = null): string
-    // {
-    //     $controllerRootNamespace = app()->getNamespace() . 'Http\Controllers';
-
-    //     $namespace = collect([
-    //         $controllerRootNamespace,
-    //         $domain,
-    //     ])->filter()->implode('\\');
-
-    //     if ($controller) {
-    //         $namespace .= "\\{$controller}";
-    //     }
-
-    //     return $namespace;
-    // }
-
+    /**
+     * Resolve the root namespace for a given domain object type.
+     *
+     * @param  string  $type  The domain object type.
+     */
     public static function resolveRootNamespace(string $type): ?string
     {
         return static::isApplicationLayer($type)
@@ -80,19 +79,30 @@ class DomainResolver
             : static::domainRootNamespace();
     }
 
+    /**
+     * Get the fully qualified namespace for a domain object.
+     *
+     * @param  string  $domain  The domain name.
+     * @param  string  $type  The domain object type.
+     * @param  string|null  $object  The domain object name.
+     */
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
     {
-        $namespace = collect([
-            static::resolveRootNamespace($type),
-            $domain,
-            static::getRelativeObjectNamespace($type),
-        ])->filter()->implode('\\');
+        $resolver = app('ddd')->getApplicationLayerNamespaceResolver() ?? function (string $domain, string $type, ?string $object) {
+            $namespace = collect([
+                static::resolveRootNamespace($type),
+                $domain,
+                static::getRelativeObjectNamespace($type),
+            ])->filter()->implode('\\');
 
-        if ($object) {
-            $namespace .= "\\{$object}";
-        }
+            if ($object) {
+                $namespace .= "\\{$object}";
+            }
 
-        return $namespace;
+            return $namespace;
+        };
+
+        return $resolver($domain, $type, $object);
     }
 
     /**

@@ -48,6 +48,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainJobMakeCommand::class,
                 Commands\DomainListenerMakeCommand::class,
                 Commands\DomainMailMakeCommand::class,
+                Commands\DomainMiddlewareMakeCommand::class,
                 Commands\DomainNotificationMakeCommand::class,
                 Commands\DomainObserverMakeCommand::class,
                 Commands\DomainPolicyMakeCommand::class,
@@ -66,11 +67,9 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
-
-        $this->registerDomainMigrateMakeCommand();
     }
 
-    protected function registerDomainMigrateMakeCommand()
+    protected function registerMigrations()
     {
         $this->app->singleton(Commands\Migration\DomainMigrateMakeCommand::class, function ($app) {
             // Once we have the migration creator registered, we will create the command
@@ -81,6 +80,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
             return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
         });
+
+        $this->loadMigrationsFrom(DomainMigration::paths());
     }
 
     public function packageBooted()
@@ -88,12 +89,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->publishes([
             $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
         ], "{$this->package->shortName()}-stubs");
-
-        $this->loadMigrationsFrom(DomainMigration::paths());
     }
 
     public function packageRegistered()
     {
         (new DomainAutoloader)->autoload();
+
+        $this->registerMigrations();
     }
 }

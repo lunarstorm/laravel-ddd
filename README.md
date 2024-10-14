@@ -240,8 +240,6 @@ In production, you should cache the autoload manifests using the `ddd:cache` com
 This is the content of the published config file (`ddd.php`):
 
 ```php
-<?php
-
 return [
 
     /*
@@ -264,7 +262,7 @@ return [
     */
     'domain_namespace' => 'Domain',
 
-        /*
+    /*
     |--------------------------------------------------------------------------
     | Application Layer
     |--------------------------------------------------------------------------

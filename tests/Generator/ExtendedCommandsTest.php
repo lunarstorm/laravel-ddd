@@ -44,6 +44,7 @@ it('can generate extended objects', function ($type, $objectName, $domainPath, $
     'job' => ['job', 'SomeJob'],
     'listener' => ['listener', 'SomeListener'],
     'mail' => ['mail', 'SomeMail'],
+    'middleware' => ['middleware', 'SomeMiddleware'],
     'notification' => ['notification', 'SomeNotification'],
     'observer' => ['observer', 'SomeObserver'],
     'policy' => ['policy', 'SomePolicy'],

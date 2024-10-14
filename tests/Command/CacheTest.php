@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Support\Path;
 
 beforeEach(function () {
     $this->setupTestApplication();
@@ -10,13 +11,15 @@ beforeEach(function () {
 
 it('can cache discovered domain providers and commands', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
-
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
     $this
         ->artisan('ddd:cache')
-        ->expectsOutputToContain('Domain providers cached successfully.')
-        ->expectsOutputToContain('Domain commands cached successfully.')
+        ->expectsOutputToContain('Caching DDD providers, commands, migration paths.')
+        ->expectsOutputToContain('domain providers')
+        ->expectsOutputToContain('domain commands')
+        ->expectsOutputToContain('domain migration paths')
         ->execute();
 
     expect(DomainCache::get('domain-providers'))
@@ -24,6 +27,9 @@ it('can cache discovered domain providers and commands', function () {
 
     expect(DomainCache::get('domain-commands'))
         ->toContain('Domain\Invoicing\Commands\InvoiceDeliver');
+
+    expect(DomainCache::get('domain-migration-paths'))
+        ->toContain(base_path(Path::normalize('src/Domain/Invoicing/Database/Migrations')));
 });
 
 it('can clear the cache', function () {
@@ -31,6 +37,7 @@ it('can clear the cache', function () {
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
     $this
         ->artisan('ddd:clear')
@@ -39,6 +46,7 @@ it('can clear the cache', function () {
 
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 });
 
 it('will not be cleared by laravel cache clearing', function () {

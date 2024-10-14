@@ -168,6 +168,10 @@ class DomainModelMakeCommand extends ModelMakeCommand
     {
         $baseModel = config('ddd.base_model');
 
+        if (is_null($baseModel)) {
+            return false;
+        }
+
         // If the class exists, we don't need to create it.
         if (class_exists($baseModel)) {
             return false;

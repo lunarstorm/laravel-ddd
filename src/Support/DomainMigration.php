@@ -16,18 +16,18 @@ class DomainMigration
 
     public static function cachePaths(): void
     {
-        DomainCache::set('domain-migration-folders', static::discoverPaths());
+        DomainCache::set('domain-migration-paths', static::discoverPaths());
     }
 
     public static function clearCache(): void
     {
-        DomainCache::forget('domain-migration-folders');
+        DomainCache::forget('domain-migration-paths');
     }
 
     public static function paths(): array
     {
-        return DomainCache::has('domain-migration-folders')
-            ? DomainCache::get('domain-migration-folders')
+        return DomainCache::has('domain-migration-paths')
+            ? DomainCache::get('domain-migration-paths')
             : static::discoverPaths();
     }
 
