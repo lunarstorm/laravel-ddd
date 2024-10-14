@@ -13,11 +13,13 @@ All notable changes to `laravel-ddd` will be documented in this file.
         'objects' => [
             'controller',
             'request',
+            'middleware',
         ],
     ],
     ```
 - Added `ddd:controller` to generate domain-specific controllers in the application layer.
 - Added `ddd:request` to generate domain-spefic requests in the application layer.
+- Added `ddd:middleware` to generate domain-specific middleware in the application layer.
 - Added `ddd:migration` to generate domain migrations.
 - Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
 - Added `ddd:seeder` to generate domain seeders.
