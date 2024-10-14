@@ -22,6 +22,24 @@ return [
     */
     'domain_namespace' => 'Domain',
 
+        /*
+    |--------------------------------------------------------------------------
+    | Application Layer
+    |--------------------------------------------------------------------------
+    |
+    | Configure domain objects in the application layer.
+    |
+    */
+    'application_layer' => [
+        'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
+        'objects' => [
+            'controller',
+            'request',
+            'middleware',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Domain Object Namespaces
@@ -57,6 +75,7 @@ return [
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
+        'middleware' => 'Middleware',
         'migration' => 'Database\Migrations',
         'notification' => 'Notifications',
         'observer' => 'Observers',
@@ -72,32 +91,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Layer
-    |--------------------------------------------------------------------------
-    |
-    | Configure domain objects in the application layer.
-    |
-    */
-    'application_layer' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-        'objects' => [
-            'controller',
-            'request',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Base Model
     |--------------------------------------------------------------------------
     |
-    | The base class which generated domain models should extend. By default,
-    | generated domain models will extend `Domain\Shared\Models\BaseModel`,
-    | which will be created if it doesn't already exist.
+    | The base model class which generated domain models should extend. If
+    | set to null, the generated models will extend Laravel's default.
     |
     */
-    'base_model' => 'Domain\Shared\Models\BaseModel',
+    'base_model' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -141,38 +142,15 @@ return [
     | Autoloading
     |--------------------------------------------------------------------------
     |
-    | Configure whether domain providers, commands, policies, and factories
-    | should be auto-discovered and registered.
+    | Configure whether domain providers, commands, policies, factories,
+    | and migrations should be auto-discovered and registered.
     |
     */
     'autoload' => [
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
-         */
         'providers' => true,
-
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
-         */
         'commands' => true,
-
-        /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'policies' => true,
-
-        /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'factories' => true,
-
-        /**
-         * When enabled, migration folders across all domains will be registered as a database migration path.
-         */
         'migrations' => true,
     ],
 
