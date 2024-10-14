@@ -45,7 +45,7 @@ class Domain
         $subdomain = str($subdomain)->trim('\\/')->toString();
 
         $this->domainWithSubdomain = str($domain)
-            ->when($subdomain, fn($domain) => $domain->append("\\{$subdomain}"))
+            ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
             ->toString();
 
         $this->domain = $domain;
@@ -115,7 +115,7 @@ class Domain
         return str($name)
             ->before($baseName)
             ->trim('\\')
-            ->prepend(DomainResolver::domainRootNamespace() . '\\' . $this->domainWithSubdomain . '\\')
+            ->prepend(DomainResolver::domainRootNamespace().'\\'.$this->domainWithSubdomain.'\\')
             ->toString();
     }
 
@@ -136,10 +136,10 @@ class Domain
             name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace . '\\' . $baseName,
+            fullyQualifiedName: $namespace.'\\'.$baseName,
             path: DomainResolver::isApplicationLayer($type)
-                ? $this->pathInApplicationLayer($namespace . '\\' . $baseName)
-                : $this->path($namespace . '\\' . $baseName),
+                ? $this->pathInApplicationLayer($namespace.'\\'.$baseName)
+                : $this->path($namespace.'\\'.$baseName),
             type: $type
         );
     }

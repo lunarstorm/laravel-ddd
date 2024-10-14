@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class DomainResolver
@@ -12,10 +11,10 @@ class DomainResolver
      */
     public static function domainChoices(): array
     {
-        $folders = glob(app()->basePath(static::domainPath() . '/*'), GLOB_ONLYDIR);
+        $folders = glob(app()->basePath(static::domainPath().'/*'), GLOB_ONLYDIR);
 
         return collect($folders)
-            ->map(fn($path) => basename($path))
+            ->map(fn ($path) => basename($path))
             ->sort()
             ->toArray();
     }

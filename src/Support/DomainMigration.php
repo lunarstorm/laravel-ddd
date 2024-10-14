@@ -2,24 +2,10 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Illuminate\Console\Application as ConsoleApplication;
-use Illuminate\Console\Command;
-use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lorisleiva\Lody\Lody;
-use Lunarstorm\LaravelDDD\Factories\DomainFactory;
-use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Throwable;
 
 class DomainMigration
 {
@@ -48,7 +34,7 @@ class DomainMigration
     protected static function normalizePaths($path): array
     {
         return collect($path)
-            ->filter(fn($path) => is_dir($path))
+            ->filter(fn ($path) => is_dir($path))
             ->toArray();
     }
 
@@ -71,7 +57,7 @@ class DomainMigration
         $finder = static::finder($paths);
 
         return Lody::filesFromFinder($finder)
-            ->map(fn($file) => $file->getPath())
+            ->map(fn ($file) => $file->getPath())
             ->unique()
             ->values()
             ->toArray();

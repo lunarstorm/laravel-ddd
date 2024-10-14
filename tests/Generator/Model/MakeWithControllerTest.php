@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Models\DomainModel;
 use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
@@ -53,7 +52,7 @@ it('can generate domain model with controller', function ($domainName, $modelNam
         'RecordController',
         [
             'src/Domain/Invoicing/Models/Record.php',
-            'app/Modules/Invoicing/Controllers/RecordController.php'
+            'app/Modules/Invoicing/Controllers/RecordController.php',
         ],
     ],
 
@@ -63,7 +62,7 @@ it('can generate domain model with controller', function ($domainName, $modelNam
         'RecordEntryController',
         [
             'src/Domain/Invoicing/Models/RecordEntry.php',
-            'app/Modules/Invoicing/Controllers/RecordEntryController.php'
+            'app/Modules/Invoicing/Controllers/RecordEntryController.php',
         ],
     ],
 
@@ -73,7 +72,7 @@ it('can generate domain model with controller', function ($domainName, $modelNam
         'ReportSubmissionController',
         [
             'src/Domain/Reporting/Internal/Models/ReportSubmission.php',
-            'app/Modules/Reporting/Internal/Controllers/ReportSubmissionController.php'
+            'app/Modules/Reporting/Internal/Controllers/ReportSubmissionController.php',
         ],
     ],
 

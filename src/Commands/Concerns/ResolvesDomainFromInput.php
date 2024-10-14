@@ -11,8 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 trait ResolvesDomainFromInput
 {
     use CanPromptForDomain,
-        QualifiesDomainModels,
-        HandleHooks;
+        HandleHooks,
+        QualifiesDomainModels;
 
     protected $nameIsAbsolute = false;
 

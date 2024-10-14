@@ -3,9 +3,6 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Lunarstorm\LaravelDDD\Support\Path;
@@ -41,7 +38,7 @@ it('can generate domain migrations', function ($domainPath, $domainRoot) {
 
     expect($output = Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn($output) => $output
+        fn ($output) => $output
             ->toContainFilepath($relativePath)
             ->toContain('_create_invoices_table.php'),
     );
@@ -53,7 +50,7 @@ it('can generate domain migrations', function ($domainPath, $domainRoot) {
     expect($createdMigrationFile)->toEndWith('_create_invoices_table.php');
 
     expect(file_get_contents($createdMigrationFile))
-        ->toContain("return new class extends Migration");
+        ->toContain('return new class extends Migration');
 })->with('domainPaths');
 
 it('discovers domain migration folders', function ($domainPath, $domainRoot) {
@@ -64,12 +61,11 @@ it('discovers domain migration folders', function ($domainPath, $domainRoot) {
 
     expect($discoveredPaths)->toHaveCount(0);
 
-    Artisan::call("ddd:migration Invoicing:" . uniqid('migration'));
-    Artisan::call("ddd:migration Shared:" . uniqid('migration'));
-    Artisan::call("ddd:migration Reporting:" . uniqid('migration'));
-    Artisan::call("ddd:migration Reporting:" . uniqid('migration'));
-    Artisan::call("ddd:migration Reporting:" . uniqid('migration'));
-
+    Artisan::call('ddd:migration Invoicing:'.uniqid('migration'));
+    Artisan::call('ddd:migration Shared:'.uniqid('migration'));
+    Artisan::call('ddd:migration Reporting:'.uniqid('migration'));
+    Artisan::call('ddd:migration Reporting:'.uniqid('migration'));
+    Artisan::call('ddd:migration Reporting:'.uniqid('migration'));
 
     $discoveredPaths = DomainMigration::discoverPaths();
 
@@ -83,6 +79,6 @@ it('discovers domain migration folders', function ($domainPath, $domainRoot) {
 
     foreach ($discoveredPaths as $path) {
         expect(str($path)->contains($expectedFolderPatterns))
-            ->toBeTrue("Expecting path to contain one of the expected folder patterns");
+            ->toBeTrue('Expecting path to contain one of the expected folder patterns');
     }
 })->with('domainPaths');

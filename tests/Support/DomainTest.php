@@ -115,7 +115,7 @@ describe('application layer', function () {
 
 it('normalizes slashes in nested objects', function ($nameInput, $normalized) {
     expect((new Domain('Invoicing'))->object('class', $nameInput))
-            ->name->toBe($normalized);
+        ->name->toBe($normalized);
 })->with([
     ['Nested\\Thing', 'Nested\\Thing'],
     ['Nested/Thing', 'Nested\\Thing'],

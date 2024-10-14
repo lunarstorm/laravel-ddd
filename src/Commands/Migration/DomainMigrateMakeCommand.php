@@ -2,9 +2,8 @@
 
 namespace Lunarstorm\LaravelDDD\Commands\Migration;
 
-use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Commands\Migration\BaseMigrateMakeCommand;
+use Lunarstorm\LaravelDDD\Support\Path;
 
 class DomainMigrateMakeCommand extends BaseMigrateMakeCommand
 {
@@ -23,6 +22,6 @@ class DomainMigrateMakeCommand extends BaseMigrateMakeCommand
             return $this->laravel->basePath($this->domain->migrationPath);
         }
 
-        return $this->laravel->databasePath() . DIRECTORY_SEPARATOR . 'migrations';
+        return $this->laravel->databasePath().DIRECTORY_SEPARATOR.'migrations';
     }
 }

@@ -2,9 +2,7 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Laravel\Prompts\Prompt;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
-use Mockery\Mock;
 
 beforeEach(function () {
     Config::set('ddd.domain_path', 'src/Domain');
@@ -32,7 +30,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
 
     expect($output = Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn($output) => $output->toContainFilepath($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
@@ -64,7 +62,7 @@ it('can generate domain resource controller from model', function ($domainName, 
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call("ddd:controller",[
+    Artisan::call('ddd:controller', [
         'name' => $controllerName,
         '--domain' => $domainName,
         '--model' => $modelName,
@@ -117,7 +115,7 @@ it('can generate domain controller with requests', function ($domainName, $contr
         }
     }
 
-    Artisan::call("ddd:controller", [
+    Artisan::call('ddd:controller', [
         'name' => $controllerName,
         '--domain' => $domainName,
         '--model' => $modelName,
@@ -127,7 +125,7 @@ it('can generate domain controller with requests', function ($domainName, $contr
     $output = Artisan::output();
 
     foreach ($generatedPaths as $path) {
-        if(Feature::IncludeFilepathInGeneratorCommandOutput->exists()){
+        if (Feature::IncludeFilepathInGeneratorCommandOutput->exists()) {
             expect($output)->toContainFilepath($path);
         }
 

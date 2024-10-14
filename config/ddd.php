@@ -70,14 +70,14 @@ return [
         'trait' => '',
     ],
 
-'application_layer' => [
-    'path' => 'app/Modules',
-    'namespace' => 'App\Modules',
-    'objects' => [
-        'controller',
-        'request',
+    'application_layer' => [
+        'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
+        'objects' => [
+            'controller',
+            'request',
+        ],
     ],
-],
 
     /*
     |--------------------------------------------------------------------------
