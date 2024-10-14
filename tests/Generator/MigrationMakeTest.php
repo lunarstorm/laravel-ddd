@@ -72,9 +72,9 @@ it('discovers domain migration folders', function ($domainPath, $domainRoot) {
     expect($discoveredPaths)->toHaveCount(3);
 
     $expectedFolderPatterns = [
-        'Invoicing/Database/Migrations',
-        'Shared/Database/Migrations',
-        'Reporting/Database/Migrations',
+        Path::normalize('Invoicing/Database/Migrations'),
+        Path::normalize('Shared/Database/Migrations'),
+        Path::normalize('Reporting/Database/Migrations'),
     ];
 
     foreach ($discoveredPaths as $path) {
