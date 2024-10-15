@@ -19,6 +19,20 @@ You may initialize the package using the `ddd:install` artisan command. This wil
 php artisan ddd:install
 ```
 
+### Peer Dependencies
+The following additional packages are suggested while working with this package.
+
+Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
+```bash
+composer require spatie/laravel-data
+```
+
+Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
+```bash
+composer require lorisleiva/laravel-actions
+```
+The default stubs for DTOs and Actions are based on these packages.
+
 ### Deployment
 In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
 ```bash
@@ -179,6 +193,7 @@ Autoloading behaviour can be configured with the `ddd.autoload` configuration op
     'commands' => true,
     'policies' => true,
     'factories' => true,
+    'migrations' => true,
 ],
 ```
 ### Service Providers
@@ -195,14 +210,18 @@ When `ddd.autoload.factories` is enabled, the package will register a custom fac
 
 If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
 
+### Migrations
+When `ddd.autoload.migrations` is enabled, paths within the domain layer matching the configured `ddd.namespaces.migration` namespace will be auto-registered as a database migration path.
+
 ### Ignoring Paths During Autoloading
-To specify folders or paths that should be skipped during autoloading discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
+To specify folders or paths that should be skipped during autoloading class discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
 ```php
 'autoload_ignore' => [
     'Tests',
     'Database/Migrations',
 ],
 ```
+Note that ignoring folders only applies to class-based autoloading: Service Providers, Console Commands, Policies, and Factories.
 
 Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
 ```php
