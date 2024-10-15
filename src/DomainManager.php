@@ -2,6 +2,10 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Illuminate\Console\Command;
+use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\ValueObjects\DomainCommandContext;
+
 class DomainManager
 {
     /**
@@ -23,13 +27,16 @@ class DomainManager
      *
      * @var callable|null
      */
-    protected $applicationLayerNamespaceResolver;
+    protected $namespaceResolver;
+
+    protected ?DomainCommandContext $commandContext;
 
     public function __construct()
     {
         $this->autoloadFilter = null;
         $this->applicationLayerFilter = null;
-        $this->applicationLayerNamespaceResolver = null;
+        $this->namespaceResolver = null;
+        $this->commandContext = null;
     }
 
     public function filterAutoloadPathsUsing(callable $filter): void
@@ -52,13 +59,23 @@ class DomainManager
         return $this->applicationLayerFilter;
     }
 
-    public function resolveApplicationLayerNamespaceUsing(callable $resolver): void
+    public function resolveNamespaceUsing(callable $resolver): void
     {
-        $this->applicationLayerNamespaceResolver = $resolver;
+        $this->namespaceResolver = $resolver;
     }
 
-    public function getApplicationLayerNamespaceResolver(): ?callable
+    public function getNamespaceResolver(): ?callable
     {
-        return $this->applicationLayerNamespaceResolver;
+        return $this->namespaceResolver;
+    }
+
+    public function captureCommandContext(Command $command, ?Domain $domain, ?string $type): void
+    {
+        $this->commandContext = DomainCommandContext::fromCommand($command, $domain, $type);
+    }
+
+    public function getCommandContext(): ?DomainCommandContext
+    {
+        return $this->commandContext;
     }
 }

@@ -3,14 +3,14 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\Concerns\CallsDomainCommands;
+use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 use function Laravel\Prompts\confirm;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
-    use CallsDomainCommands,
+    use ForwardsToDomainCommands,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
@@ -51,7 +51,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         ];
 
         if ($this->option('requests')) {
-            $namespace = $this->domain->namespaceFor('request');
+            $namespace = $this->domain->namespaceFor('request', $this->getNameInput());
 
             [$storeRequestClass, $updateRequestClass] = $this->generateFormRequests(
                 $modelClass,

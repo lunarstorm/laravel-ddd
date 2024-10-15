@@ -103,9 +103,9 @@ class Domain
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
     }
 
-    public function namespaceFor(string $type): string
+    public function namespaceFor(string $type, ?string $name = null): string
     {
-        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type);
+        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type, $name);
     }
 
     public function guessNamespaceFromName(string $name): string
@@ -121,11 +121,15 @@ class Domain
 
     public function object(string $type, string $name, bool $absolute = false): DomainObject
     {
-        $namespaceResolver = app('ddd')->getApplicationLayerNamespaceResolver();
+        $resolvedNamespace = null;
 
-        $resolvedNamespace = is_callable($namespaceResolver)
-            ? $namespaceResolver($this->domainWithSubdomain, $type, $name)
-            : null;
+        if (DomainResolver::isApplicationLayer($type)) {
+            $resolver = app('ddd')->getNamespaceResolver();
+
+            $resolvedNamespace = is_callable($resolver)
+                ? $resolver($this->domainWithSubdomain, $type, app('ddd')->getCommandContext())
+                : null;
+        }
 
         $namespace = $resolvedNamespace ?? match (true) {
             $absolute => $this->namespace->root,

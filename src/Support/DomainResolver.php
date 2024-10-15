@@ -92,25 +92,37 @@ class DomainResolver
      *
      * @param  string  $domain  The domain name.
      * @param  string  $type  The domain object type.
-     * @param  string|null  $object  The domain object name.
+     * @param  string|null  $name  The domain object name.
      */
-    public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
+    public static function getDomainObjectNamespace(string $domain, string $type, ?string $name = null): string
     {
-        $resolver = app('ddd')->getApplicationLayerNamespaceResolver() ?? function (string $domain, string $type, ?string $object) {
+        if (static::isApplicationLayer($type)) {
+            $customResolver = app('ddd')->getNamespaceResolver();
+
+            $resolved = is_callable($customResolver)
+                ? $customResolver($domain, $type, app('ddd')->getCommandContext())
+                : null;
+
+            if (! is_null($resolved)) {
+                return $resolved;
+            }
+        }
+
+        $resolver = function (string $domain, string $type, ?string $name) {
             $namespace = collect([
                 static::resolveRootNamespace($type),
                 $domain,
                 static::getRelativeObjectNamespace($type),
             ])->filter()->implode('\\');
 
-            if ($object) {
-                $namespace .= "\\{$object}";
+            if ($name) {
+                $namespace .= "\\{$name}";
             }
 
             return $namespace;
         };
 
-        return $resolver($domain, $type, $object);
+        return $resolver($domain, $type, $name);
     }
 
     /**

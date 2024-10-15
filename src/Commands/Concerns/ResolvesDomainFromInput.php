@@ -110,5 +110,7 @@ trait ResolvesDomainFromInput
         }
 
         $this->input->setArgument('name', $nameInput);
+
+        app('ddd')->captureCommandContext($this, $this->domain, $this->guessObjectType());
     }
 }
