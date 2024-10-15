@@ -10,8 +10,10 @@ beforeEach(function () {
     config(['cache.default' => 'file']);
 
     DomainCache::clear();
-    Artisan::call('cache:clear');
-    Artisan::call('optimize:clear');
+});
+
+afterEach(function () {
+    $this->artisan('optimize:clear')->execute();
 });
 
 it('can cache discovered domain providers, commands, migrations', function () {
