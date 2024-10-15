@@ -116,6 +116,40 @@ php artisan ddd:clear
 ```
 
 ## Advanced Usage
+### Application Layer (since 1.2)
+Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
+```php
+// In config/ddd.php
+'application_layer' => [
+    'path' => 'app/Modules',
+    'namespace' => 'App\Modules',
+    'objects' => [
+        'controller',
+        'request',
+        'middleware',
+    ],
+],
+```
+The default configuration above will result in the following:
+```bash
+ddd:model Invoicing:Invoice --controller --resource --requests
+```
+Output:
+```
+├─ app
+|   └─ Modules
+│       └─ Invoicing
+│           ├─ Controllers
+│           │   └─ InvoiceController.php
+│           └─ Requests
+│               ├─ StoreInvoiceRequest.php
+│               └─ UpdateInvoiceRequest.php
+├─ src/Domain
+    └── Invoicing
+         └── Models
+             └── Invoice.php
+```
+
 ### Nested Objects
 For any `ddd:*` generator command, nested objects can be specified with forward slashes.
 ```bash
