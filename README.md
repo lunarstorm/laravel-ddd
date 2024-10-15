@@ -20,7 +20,7 @@ php artisan ddd:install
 ```
 
 ### Peer Dependencies
-The following additional packages are suggested while working with this package.
+The following additional packages are suggested (but not required) while working with this package.
 
 Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
 ```bash
@@ -31,7 +31,7 @@ Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-acti
 ```bash
 composer require lorisleiva/laravel-actions
 ```
-The default stubs for DTOs and Actions are based on these packages.
+The default DTO and Action stubs of this package use the above dependencies. Of course, you may customize the stubs to suit your needs if you aren't using the above packages.
 
 ### Deployment
 In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
