@@ -18,11 +18,7 @@ it('can register a custom namespace resolver', function () {
         'namespace' => 'App',
     ]);
 
-    DDD::resolveNamespaceUsing(function (
-        string $domain,
-        string $type,
-        ?DomainCommandContext $context
-    ): ?string {
+    DDD::resolveNamespaceUsing(function (string $domain, string $type, ?DomainCommandContext $context): ?string {
         if ($type == 'controller' && $context->option('api')) {
             return "App\\Api\\Controllers\\{$domain}";
         }
