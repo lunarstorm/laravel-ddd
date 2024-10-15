@@ -36,6 +36,14 @@ class DomainResolver
     }
 
     /**
+     * Get the current configured application layer path.
+     */
+    public static function applicationLayerPath(): ?string
+    {
+        return config('ddd.application_layer.path');
+    }
+
+    /**
      * Get the current configured root application layer namespace.
      */
     public static function applicationLayerRootNamespace(): ?string

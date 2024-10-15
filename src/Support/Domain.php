@@ -90,12 +90,12 @@ class Domain
         }
 
         $path = str($path)
-            ->replace(app()->getNamespace(), '')
+            ->replace(DomainResolver::applicationLayerRootNamespace(), '')
             ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
             ->append('.php')
             ->toString();
 
-        return Path::join('app', $path);
+        return Path::join(DomainResolver::applicationLayerPath(), $path);
     }
 
     public function relativePath(string $path = ''): string
