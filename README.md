@@ -38,6 +38,7 @@ In production, run `ddd:cache` during the deployment process to [optimize autolo
 ```bash
 php artisan ddd:cache
 ```
+Note: Since Laravel 11.27.1, `ddd:cache` will automatically be invoked during Laravel's `optimize` command, in which case you do not need to run `ddd:cache` separately if your production environment already runs `optimize`.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -145,9 +146,9 @@ Output:
 │               ├─ StoreInvoiceRequest.php
 │               └─ UpdateInvoiceRequest.php
 ├─ src/Domain
-    └── Invoicing
-         └── Models
-             └── Invoice.php
+    └─ Invoicing
+         └─ Models
+             └─ Invoice.php
 ```
 
 ### Nested Objects
@@ -286,6 +287,8 @@ You may disable autoloading by setting the respective autoload options to `false
 
 ## Autoloading in Production
 In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
+
+Note: Since Laravel 11.27.1, `ddd:cache` and `ddd:clear` will automatically be invoked when running Laravel's `optimize` and `optimize:clear` respectively. If this applies to you and you are already running `optimize` in production, you don't need to manually run `ddd:cache`.
 
 <a name="config-file"></a>
 
