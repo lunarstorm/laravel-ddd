@@ -7,6 +7,7 @@ enum Feature: string
     case PromptForMissingInput = '9.49.0';
     case IncludeFilepathInGeneratorCommandOutput = '9.32.0';
     case LaravelPromptsPackage = '10.17';
+    case LaravelPackageOptimizeCommands = '11.27.1';
 
     public function exists(): bool
     {

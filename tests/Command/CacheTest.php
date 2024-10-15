@@ -2,10 +2,16 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
     $this->setupTestApplication();
+
+    config(['cache.default' => 'file']);
+
     DomainCache::clear();
+    Artisan::call('cache:clear');
+    Artisan::call('optimize:clear');
 });
 
 it('can cache discovered domain providers, commands, migrations', function () {
@@ -50,23 +56,59 @@ it('can clear the cache', function () {
 });
 
 it('will not be cleared by laravel cache clearing', function () {
-    config(['cache.default' => 'file']);
-
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
     $this->artisan('ddd:cache')->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
     $this->artisan('cache:clear')->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
-    $this->artisan('optimize:clear')->execute();
+    if (Feature::LaravelPackageOptimizeCommands->missing()) {
+        $this->artisan('optimize:clear')->execute();
 
-    expect(DomainCache::get('domain-providers'))->not->toBeNull();
-    expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-providers'))->not->toBeNull();
+        expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
+    }
 });
+
+describe('laravel optimize', function () {
+    test('optimize will include ddd:cache', function () {
+        config(['cache.default' => 'file']);
+
+        expect(DomainCache::get('domain-providers'))->toBeNull();
+        expect(DomainCache::get('domain-commands'))->toBeNull();
+        expect(DomainCache::get('domain-migration-paths'))->toBeNull();
+
+        $this->artisan('optimize')->execute();
+
+        expect(DomainCache::get('domain-providers'))->not->toBeNull();
+        expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
+    });
+
+    test('optimize:clear will clear ddd cache', function () {
+        config(['cache.default' => 'file']);
+
+        $this->artisan('ddd:cache')->execute();
+
+        expect(DomainCache::get('domain-providers'))->not->toBeNull();
+        expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
+
+        $this->artisan('optimize:clear')->execute();
+
+        expect(DomainCache::get('domain-providers'))->toBeNull();
+        expect(DomainCache::get('domain-commands'))->toBeNull();
+        expect(DomainCache::get('domain-migration-paths'))->toBeNull();
+    });
+})->skipOnLaravelVersionsBelow(Feature::LaravelPackageOptimizeCommands->value);
