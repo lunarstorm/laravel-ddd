@@ -28,8 +28,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasCommands([
                 Commands\InstallCommand::class,
                 Commands\UpgradeCommand::class,
-                Commands\CacheCommand::class,
-                Commands\CacheClearCommand::class,
+                Commands\OptimizeCommand::class,
+                Commands\OptimizeClearCommand::class,
                 Commands\DomainListCommand::class,
                 Commands\DomainModelMakeCommand::class,
                 Commands\DomainFactoryMakeCommand::class,
@@ -92,9 +92,9 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
             $this->optimizes(
-                optimize: 'ddd:cache',
+                optimize: 'ddd:optimize',
                 clear: 'ddd:clear',
-                key: 'ddd:cache',
+                key: 'ddd cache',
             );
         }
     }

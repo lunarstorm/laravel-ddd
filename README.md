@@ -34,11 +34,11 @@ composer require lorisleiva/laravel-actions
 The default DTO and Action stubs of this package use the above dependencies. Of course, you may customize the stubs to suit your needs if you aren't using the above packages.
 
 ### Deployment
-In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
+In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
 ```bash
-php artisan ddd:cache
+php artisan ddd:optimize
 ```
-Note: Since Laravel 11.27.1, `ddd:cache` will automatically be invoked during Laravel's `optimize` command, in which case you do not need to run `ddd:cache` separately if your production environment already runs `optimize`.
+Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -110,7 +110,7 @@ Generated objects will be placed in the appropriate domain namespace as specifie
 php artisan ddd:list
 
 # Cache domain manifests (used for autoloading)
-php artisan ddd:cache
+php artisan ddd:optimize
 
 # Clear the domain cache
 php artisan ddd:clear
@@ -286,9 +286,9 @@ You may disable autoloading by setting the respective autoload options to `false
 <a name="autoloading-in-production"></a>
 
 ## Autoloading in Production
-In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
+In production, you should cache the autoload manifests using the `ddd:optimize` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
 
-Note: Since Laravel 11.27.1, `ddd:cache` and `ddd:clear` will automatically be invoked when running Laravel's `optimize` and `optimize:clear` respectively. If this applies to you and you are already running `optimize` in production, you don't need to manually run `ddd:cache`.
+> **Note**: Since Laravel 11.27.1, the framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` and `ddd:clear` respectively.
 
 <a name="config-file"></a>
 

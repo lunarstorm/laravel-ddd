@@ -6,11 +6,20 @@ use Illuminate\Console\Command;
 use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 
-class CacheCommand extends Command
+class OptimizeCommand extends Command
 {
-    protected $name = 'ddd:cache';
+    protected $name = 'ddd:optimize';
 
     protected $description = 'Cache auto-discovered domain objects and migration paths.';
+
+    protected function configure()
+    {
+        $this->setAliases([
+            'ddd:cache',
+        ]);
+
+        parent::configure();
+    }
 
     public function handle()
     {

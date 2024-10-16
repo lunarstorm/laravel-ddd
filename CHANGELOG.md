@@ -21,8 +21,8 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Added `ddd:request` to generate domain-spefic requests in the application layer.
 - Added `ddd:middleware` to generate domain-specific middleware in the application layer.
 - Added `ddd:migration` to generate domain migrations.
-- Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
 - Added `ddd:seeder` to generate domain seeders.
+- Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
 
 ### Changed
 - `ddd:model` now internally extends Laravel's native `make:model` and inherits all standard options:
@@ -34,6 +34,8 @@ All notable changes to `laravel-ddd` will be documented in this file.
     - `-mfsc`
     - `--all|-a`
     - `--pivot|-p`
+- `ddd:cache` is now `ddd:optimize` (`ddd:cache` is still available as an alias).
+- For Laravel 11.27.1+, the framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` and `ddd:clear` respectively.
 
 ### Deprecated
 - Domain base models are no longer required by default, and `config('ddd.base_model')` is now `null` by default.
