@@ -71,36 +71,36 @@ php artisan ddd:{object} {name}
 The following generators are currently available:
 | Command | Description | Usage |
 |---|---|---|
-| ddd:model | Generate a domain model | `php artisan ddd:model Invoicing:Invoice`<br> <br> Options:<br> `--migration\|-m`<br>  `--factory\|-f`<br> `--seed\|-s`<br> `--controller --resource --requests\|-crR`<br> `--policy`<br> `-mfsc`<br> `--all\|-a`<br> `--pivot\|-p`<br> |
-| ddd:factory | Generate a domain factory | `php artisan ddd:factory Invoicing:InvoiceFactory` |
-| ddd:dto | Generate a data transfer object | `php artisan ddd:dto Invoicing:LineItemPayload` |
-| ddd:value | Generate a value object | `php artisan ddd:value Shared:DollarAmount` |
-| ddd:view-model | Generate a view model | `php artisan ddd:view-model Invoicing:ShowInvoiceViewModel` |
-| ddd:action | Generate an action | `php artisan ddd:action Invoicing:SendInvoiceToCustomer` |
-| ddd:cast | Generate a cast | `php artisan ddd:cast Invoicing:MoneyCast` |
-| ddd:channel | Generate a channel | `php artisan ddd:channel Invoicing:InvoiceChannel` |
-| ddd:command | Generate a command | `php artisan ddd:command Invoicing:InvoiceDeliver` |
-| ddd:controller | Generate a controller | `php artisan ddd:controller Invoicing:InvoiceController`<br> <br>  Options: inherits options from *make:controller* |
-| ddd:event | Generate an event | `php artisan ddd:event Invoicing:PaymentWasReceived` |
-| ddd:exception | Generate an exception | `php artisan ddd:exception Invoicing:InvoiceNotFoundException` |
-| ddd:job | Generate a job | `php artisan ddd:job Invoicing:GenerateInvoicePdf` |
-| ddd:listener | Generate a listener | `php artisan ddd:listener Invoicing:HandlePaymentReceived` |
-| ddd:mail | Generate a mail | `php artisan ddd:mail Invoicing:OverduePaymentReminderEmail` |
-| ddd:middleware | Generate a middleware | `php artisan ddd:middleware Invoicing:VerifiedCustomerMiddleware` |
-| ddd:migration | Generate a migration | `php artisan ddd:migration Invoicing:CreateInvoicesTable` |
-| ddd:notification | Generate a notification | `php artisan ddd:notification Invoicing:YourPaymentWasReceived` |
-| ddd:observer | Generate an observer | `php artisan ddd:observer Invoicing:InvoiceObserver` |
-| ddd:policy | Generate a policy | `php artisan ddd:policy Invoicing:InvoicePolicy` |
-| ddd:provider | Generate a provider | `php artisan ddd:provider Invoicing:InvoiceServiceProvider` |
-| ddd:resource | Generate a resource | `php artisan ddd:resource Invoicing:InvoiceResource` |
-| ddd:rule | Generate a rule | `php artisan ddd:rule Invoicing:ValidPaymentMethod` |
-| ddd:request | Generate a form request | `php artisan ddd:request Invoicing:StoreInvoiceRequest` |
-| ddd:scope | Generate a scope | `php artisan ddd:scope Invoicing:ArchivedInvoicesScope` |
-| ddd:seeder | Generate a seeder | `php artisan ddd:seeder Invoicing:InvoiceSeeder` |
-| ddd:class | Generate a class (Laravel 11+) | `php artisan ddd:class Invoicing:Support/InvoiceBuilder` |
-| ddd:enum | Generate an enum (Laravel 11+) | `php artisan ddd:enum Customer:CustomerType` |
-| ddd:interface | Generate an interface (Laravel 11+) | `php artisan ddd:interface Customer:Contracts/Invoiceable` |
-| ddd:trait | Generate a trait (Laravel 11+) | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
+| `ddd:model` | Generate a domain model | `php artisan ddd:model Invoicing:Invoice`<br> <br> Options:<br> `--migration\|-m`<br>  `--factory\|-f`<br> `--seed\|-s`<br> `--controller --resource --requests\|-crR`<br> `--policy`<br> `-mfsc`<br> `--all\|-a`<br> `--pivot\|-p`<br> |
+| `ddd:factory` | Generate a domain factory | `php artisan ddd:factory Invoicing:InvoiceFactory` |
+| `ddd:dto` | Generate a data transfer object | `php artisan ddd:dto Invoicing:LineItemPayload` |
+| `ddd:value` | Generate a value object | `php artisan ddd:value Shared:DollarAmount` |
+| `ddd:view-model` | Generate a view model | `php artisan ddd:view-model Invoicing:ShowInvoiceViewModel` |
+| `ddd:action` | Generate an action | `php artisan ddd:action Invoicing:SendInvoiceToCustomer` |
+| `ddd:cast` | Generate a cast | `php artisan ddd:cast Invoicing:MoneyCast` |
+| `ddd:channel` | Generate a channel | `php artisan ddd:channel Invoicing:InvoiceChannel` |
+| `ddd:command` | Generate a command | `php artisan ddd:command Invoicing:InvoiceDeliver` |
+| `ddd:controller` | Generate a controller | `php artisan ddd:controller Invoicing:InvoiceController`<br> <br>  Options: inherits options from *make:controller* |
+| `ddd:event` | Generate an event | `php artisan ddd:event Invoicing:PaymentWasReceived` |
+| `ddd:exception` | Generate an exception | `php artisan ddd:exception Invoicing:InvoiceNotFoundException` |
+| `ddd:job` | Generate a job | `php artisan ddd:job Invoicing:GenerateInvoicePdf` |
+| `ddd:listener` | Generate a listener | `php artisan ddd:listener Invoicing:HandlePaymentReceived` |
+| `ddd:mail` | Generate a mail | `php artisan ddd:mail Invoicing:OverduePaymentReminderEmail` |
+| `ddd:middleware` | Generate a middleware | `php artisan ddd:middleware Invoicing:VerifiedCustomerMiddleware` |
+| `ddd:migration` | Generate a migration | `php artisan ddd:migration Invoicing:CreateInvoicesTable` |
+| `ddd:notification` | Generate a notification | `php artisan ddd:notification Invoicing:YourPaymentWasReceived` |
+| `ddd:observer` | Generate an observer | `php artisan ddd:observer Invoicing:InvoiceObserver` |
+| `ddd:policy` | Generate a policy | `php artisan ddd:policy Invoicing:InvoicePolicy` |
+| `ddd:provider` | Generate a provider | `php artisan ddd:provider Invoicing:InvoiceServiceProvider` |
+| `ddd:resource` | Generate a resource | `php artisan ddd:resource Invoicing:InvoiceResource` |
+| `ddd:rule` | Generate a rule | `php artisan ddd:rule Invoicing:ValidPaymentMethod` |
+| `ddd:request` | Generate a form request | `php artisan ddd:request Invoicing:StoreInvoiceRequest` |
+| `ddd:scope` | Generate a scope | `php artisan ddd:scope Invoicing:ArchivedInvoicesScope` |
+| `ddd:seeder` | Generate a seeder | `php artisan ddd:seeder Invoicing:InvoiceSeeder` |
+| `ddd:class` | Generate a class (Laravel 11+) | `php artisan ddd:class Invoicing:Support/InvoiceBuilder` |
+| `ddd:enum` | Generate an enum (Laravel 11+) | `php artisan ddd:enum Customer:CustomerType` |
+| `ddd:interface` | Generate an interface (Laravel 11+) | `php artisan ddd:interface Customer:Contracts/Invoiceable` |
+| `ddd:trait` | Generate a trait (Laravel 11+) | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
 
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
