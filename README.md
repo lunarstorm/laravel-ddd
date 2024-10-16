@@ -121,7 +121,7 @@ php artisan ddd:clear
 Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
 ```php
 // In config/ddd.php
-'application_layer' => [
+'application' => [
     'path' => 'app/Modules',
     'namespace' => 'App\Modules',
     'objects' => [
@@ -149,6 +149,21 @@ Output:
     └─ Invoicing
          └─ Models
              └─ Invoice.php
+```
+
+### Custom Layers (since 1.2)
+Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
+```php
+// In config/ddd.php
+'application' => [
+    'path' => 'app/Modules',
+    'namespace' => 'App\Modules',
+    'objects' => [
+        'controller',
+        'request',
+        'middleware',
+    ],
+],
 ```
 
 ### Nested Objects
@@ -326,7 +341,7 @@ return [
     | Configure domain objects in the application layer.
     |
     */
-    'application_layer' => [
+    'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => [

@@ -30,7 +30,7 @@ return [
     | Configure domain objects in the application layer.
     |
     */
-    'application_layer' => [
+    'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => [
@@ -42,12 +42,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Custom Layers
+    |--------------------------------------------------------------------------
+    |
+    | Mapping of additional top-level namespaces and paths that should
+    | be recognized as layers when generating ddd:* objects.
+    |
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    | When using ddd:* generators, specifying a domain matching a key in
+    | this array will generate objects in that corresponding layer.
+    |
+    */
+    'layers' => [
+        // 'Infrastructure' => 'src/Infrastructure',
+        // 'Integrations' => 'src/Integrations',
+        // 'Support' => 'src/Support',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Domain Object Namespaces
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*

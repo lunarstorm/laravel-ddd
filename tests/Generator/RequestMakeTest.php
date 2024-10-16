@@ -8,7 +8,7 @@ beforeEach(function () {
     Config::set('ddd.domain_path', 'src/Domain');
     Config::set('ddd.domain_namespace', 'Domain');
 
-    Config::set('ddd.application_layer', [
+    Config::set('ddd.application', [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => ['controller', 'request'],

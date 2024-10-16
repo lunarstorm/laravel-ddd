@@ -71,7 +71,8 @@ it('can generate domain model with options', function ($options, $objectType, $o
     }
 
     $command = [
-        'ddd:model', [
+        'ddd:model',
+        [
             'name' => $modelName,
             '--domain' => $domain->dotName,
             ...$options,

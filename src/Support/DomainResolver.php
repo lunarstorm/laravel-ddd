@@ -40,7 +40,7 @@ class DomainResolver
      */
     public static function applicationLayerPath(): ?string
     {
-        return config('ddd.application_layer.path');
+        return config('ddd.application.path');
     }
 
     /**
@@ -48,7 +48,7 @@ class DomainResolver
      */
     public static function applicationLayerRootNamespace(): ?string
     {
-        return config('ddd.application_layer.namespace');
+        return config('ddd.application.namespace');
     }
 
     /**
@@ -67,7 +67,7 @@ class DomainResolver
     public static function isApplicationLayer(string $type): bool
     {
         $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
-            $applicationObjects = config('ddd.application_layer.objects', ['controller', 'request']);
+            $applicationObjects = config('ddd.application.objects', ['controller', 'request']);
 
             return in_array($type, $applicationObjects);
         };
@@ -85,6 +85,28 @@ class DomainResolver
         return static::isApplicationLayer($type)
             ? static::applicationLayerRootNamespace()
             : static::domainRootNamespace();
+    }
+
+    /**
+     * Resolve the intended layer of a specified domain name keyword.
+     */
+    public static function resolveLayer(string $domain, ?string $type = null): ?Layer
+    {
+        $layers = config('ddd.layers', []);
+
+        return match (true) {
+            array_key_exists($domain, $layers) => new Layer($domain, $layers[$domain]),
+
+            $type && static::isApplicationLayer($type) => new Layer(
+                static::applicationLayerRootNamespace().'\\'.$domain,
+                Path::join(static::applicationLayerPath(), $domain),
+            ),
+
+            default => new Layer(
+                static::domainRootNamespace().'\\'.$domain,
+                Path::join(static::domainPath(), $domain),
+            )
+        };
     }
 
     /**
@@ -107,9 +129,10 @@ class DomainResolver
         }
 
         $resolver = function (string $domain, string $type, ?string $name) {
+            $layer = static::resolveLayer($domain, $type);
+
             $namespace = collect([
-                static::resolveRootNamespace($type),
-                $domain,
+                $layer->namespace,
                 static::getRelativeObjectNamespace($type),
             ])->filter()->implode('\\');
 

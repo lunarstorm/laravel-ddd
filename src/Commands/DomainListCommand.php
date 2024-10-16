@@ -23,8 +23,8 @@ class DomainListCommand extends Command
 
                 return [
                     $domain->domain,
-                    $domain->namespace->root,
-                    Path::normalize($domain->path),
+                    $domain->layer->namespace,
+                    Path::normalize($domain->layer->path),
                 ];
             })
             ->toArray();

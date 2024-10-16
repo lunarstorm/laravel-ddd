@@ -93,7 +93,7 @@ it('can describe an anonymous domain object', function ($domainName, $objectType
 
 describe('application layer', function () {
     beforeEach(function () {
-        Config::set('ddd.application_layer', [
+        Config::set('ddd.application', [
             'path' => 'app/Modules',
             'namespace' => 'App\Modules',
             'objects' => ['controller', 'request'],
@@ -110,6 +110,25 @@ describe('application layer', function () {
         ['Invoicing', 'controller', 'Nested\\InvoiceController', 'App\\Modules\\Invoicing\\Controllers\\Nested\\InvoiceController', 'app/Modules/Invoicing/Controllers/Nested/InvoiceController.php'],
         ['Invoicing', 'request', 'StoreInvoiceRequest', 'App\\Modules\\Invoicing\\Requests\\StoreInvoiceRequest', 'app/Modules/Invoicing/Requests/StoreInvoiceRequest.php'],
         ['Invoicing', 'request', 'Nested\\StoreInvoiceRequest', 'App\\Modules\\Invoicing\\Requests\\Nested\\StoreInvoiceRequest', 'app/Modules/Invoicing/Requests/Nested/StoreInvoiceRequest.php'],
+    ]);
+});
+
+describe('custom layers', function () {
+    beforeEach(function () {
+        Config::set('ddd.layers', [
+            'Support' => 'src/Support',
+        ]);
+    });
+
+    it('can map domains to custom layers', function ($domainName, $objectType, $objectName, $expectedFQN, $expectedPath) {
+        expect((new Domain($domainName))->object($objectType, $objectName))
+            ->name->toBe($objectName)
+            ->fullyQualifiedName->toBe($expectedFQN)
+            ->path->toBe(Path::normalize($expectedPath));
+    })->with([
+        ['Support', 'class', 'ExchangeRate', 'Support\\ExchangeRate', 'src/Support/ExchangeRate.php'],
+        ['Support', 'trait', 'Concerns\\HasOptions', 'Support\\Concerns\\HasOptions', 'src/Support/Concerns/HasOptions.php'],
+        ['Support', 'exception', 'InvalidExchangeRate', 'Support\\Exceptions\\InvalidExchangeRate', 'src/Support/Exceptions/InvalidExchangeRate.php'],
     ]);
 });
 
