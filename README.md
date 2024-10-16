@@ -31,7 +31,7 @@ Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-acti
 ```bash
 composer require lorisleiva/laravel-actions
 ```
-The default DTO and Action stubs of this package use the above dependencies. Of course, you may customize the stubs to suit your needs if you aren't using the above packages.
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may customize the stubs accordingly.
 
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
@@ -71,7 +71,7 @@ php artisan ddd:{object} {name}
 The following generators are currently available:
 | Command | Description | Usage |
 |---|---|---|
-| ddd:model [options] | Generate a domain model | `php artisan ddd:model Invoicing:Invoice`<br> <br> Options:<br> `--migration\|-m`<br>  `--factory\|-f`<br> `--seed\|-s`<br> `--controller --resource --requests\|-crR`<br> `--policy`<br> `-mfsc`<br> `--all\|-a`<br> `--pivot\|-p`<br> |
+| ddd:model | Generate a domain model | `php artisan ddd:model Invoicing:Invoice`<br> <br> Options:<br> `--migration\|-m`<br>  `--factory\|-f`<br> `--seed\|-s`<br> `--controller --resource --requests\|-crR`<br> `--policy`<br> `-mfsc`<br> `--all\|-a`<br> `--pivot\|-p`<br> |
 | ddd:factory | Generate a domain factory | `php artisan ddd:factory Invoicing:InvoiceFactory` |
 | ddd:dto | Generate a data transfer object | `php artisan ddd:dto Invoicing:LineItemPayload` |
 | ddd:value | Generate a value object | `php artisan ddd:value Shared:DollarAmount` |
@@ -80,7 +80,7 @@ The following generators are currently available:
 | ddd:cast | Generate a cast | `php artisan ddd:cast Invoicing:MoneyCast` |
 | ddd:channel | Generate a channel | `php artisan ddd:channel Invoicing:InvoiceChannel` |
 | ddd:command | Generate a command | `php artisan ddd:command Invoicing:InvoiceDeliver` |
-| ddd:controller [options] | Generate a controller | `php artisan ddd:controller Invoicing:InvoiceController`<br> <br>  Options: supports the standard options as `make:controller` |
+| ddd:controller | Generate a controller | `php artisan ddd:controller Invoicing:InvoiceController`<br> <br>  Options: inherits options from *make:controller* |
 | ddd:event | Generate an event | `php artisan ddd:event Invoicing:PaymentWasReceived` |
 | ddd:exception | Generate an exception | `php artisan ddd:exception Invoicing:InvoiceNotFoundException` |
 | ddd:job | Generate a job | `php artisan ddd:job Invoicing:GenerateInvoicePdf` |
