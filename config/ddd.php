@@ -30,7 +30,7 @@ return [
     | Configure domain objects in the application layer.
     |
     */
-    'application_layer' => [
+    'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => [

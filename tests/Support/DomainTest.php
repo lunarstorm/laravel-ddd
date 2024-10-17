@@ -93,7 +93,7 @@ it('can describe an anonymous domain object', function ($domainName, $objectType
 
 describe('application layer', function () {
     beforeEach(function () {
-        Config::set('ddd.application_layer', [
+        Config::set('ddd.application', [
             'path' => 'app/Modules',
             'namespace' => 'App\Modules',
             'objects' => ['controller', 'request'],

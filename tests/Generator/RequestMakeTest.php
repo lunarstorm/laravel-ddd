@@ -8,7 +8,7 @@ beforeEach(function () {
     Config::set('ddd.domain_path', 'src/Domain');
     Config::set('ddd.domain_namespace', 'Domain');
 
-    Config::set('ddd.application_layer', [
+    Config::set('ddd.application', [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => ['controller', 'request'],
@@ -30,7 +30,7 @@ it('can generate domain request', function ($domainName, $requestName, $relative
 
     expect($output = Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContainFilepath($relativePath),
+        fn($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();

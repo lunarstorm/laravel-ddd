@@ -7,7 +7,7 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Experimental: Ability to configure the Application Layer, to generate domain objects that don't typically belong inside the domain layer.
     ```php
     // In config/ddd.php
-    'application_layer' => [
+    'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
         'objects' => [

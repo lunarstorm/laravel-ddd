@@ -11,10 +11,10 @@ class DomainResolver
      */
     public static function domainChoices(): array
     {
-        $folders = glob(app()->basePath(static::domainPath().'/*'), GLOB_ONLYDIR);
+        $folders = glob(app()->basePath(static::domainPath() . '/*'), GLOB_ONLYDIR);
 
         return collect($folders)
-            ->map(fn ($path) => basename($path))
+            ->map(fn($path) => basename($path))
             ->sort()
             ->toArray();
     }
@@ -40,7 +40,7 @@ class DomainResolver
      */
     public static function applicationLayerPath(): ?string
     {
-        return config('ddd.application_layer.path');
+        return config('ddd.application.path');
     }
 
     /**
@@ -48,7 +48,7 @@ class DomainResolver
      */
     public static function applicationLayerRootNamespace(): ?string
     {
-        return config('ddd.application_layer.namespace');
+        return config('ddd.application.namespace');
     }
 
     /**
@@ -67,7 +67,7 @@ class DomainResolver
     public static function isApplicationLayer(string $type): bool
     {
         $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
-            $applicationObjects = config('ddd.application_layer.objects', ['controller', 'request']);
+            $applicationObjects = config('ddd.application.objects', ['controller', 'request']);
 
             return in_array($type, $applicationObjects);
         };

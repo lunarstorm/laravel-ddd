@@ -13,7 +13,7 @@ beforeEach(function () {
 });
 
 it('can register a custom namespace resolver', function () {
-    Config::set('ddd.application_layer', [
+    Config::set('ddd.application', [
         'path' => 'src/App',
         'namespace' => 'App',
     ]);
