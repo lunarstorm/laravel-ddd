@@ -30,7 +30,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
 
     expect($output = Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn($output) => $output->toContainFilepath($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
