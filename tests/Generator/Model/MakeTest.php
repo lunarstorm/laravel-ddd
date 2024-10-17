@@ -42,7 +42,8 @@ it('can generate domain models', function ($domainPath, $domainRoot) {
         config('ddd.namespaces.model'),
     ]);
 
-    expect(file_get_contents($expectedModelPath))->toContain("namespace {$expectedNamespace};");
+    expect(file_get_contents($expectedModelPath))
+        ->toContain("namespace {$expectedNamespace};");
 })->with('domainPaths');
 
 it('can generate a domain model with factory', function ($domainPath, $domainRoot, $domainName, $subdomain) {
@@ -178,4 +179,35 @@ it('skips base model creation if configured base model already exists', function
 })->with([
     ['Illuminate\Database\Eloquent\Model'],
     ['Lunarstorm\LaravelDDD\Models\DomainModel'],
+]);
+
+it('extends custom base models when applicable', function ($baseModelClass, $baseModelName) {
+    Config::set('ddd.base_model', $baseModelClass);
+
+    $domain = 'Fruits';
+    $modelName = 'Lemon';
+
+    $expectedModelPath = base_path(implode('/', [
+        config('ddd.domain_path'),
+        $domain,
+        config('ddd.namespaces.model'),
+        "{$modelName}.php",
+    ]));
+
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
+
+    Artisan::call("ddd:model {$domain}:{$modelName}");
+
+    expect(file_exists($expectedModelPath))->toBeTrue();
+
+    expect(file_get_contents($expectedModelPath))
+        ->toContain("use {$baseModelClass};")
+        ->toContain("extends {$baseModelName}");
+})->with([
+    ['Domain\Shared\Models\BaseModel', 'BaseModel'],
+    ['Lunarstorm\LaravelDDD\Models\DomainModel', 'DomainModel'],
+    ['Illuminate\Database\Eloquent\NonExistentModel', 'NonExistentModel'],
+    ['OtherVendor\OtherPackage\Models\NonExistentModel', 'NonExistentModel'],
 ]);

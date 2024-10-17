@@ -154,7 +154,9 @@ class DomainAutoloader
         }
 
         $paths = static::normalizePaths(
-            $configValue === true ? app()->basePath(DomainResolver::domainPath()) : $configValue
+            $configValue === true
+                ? app()->basePath(DomainResolver::domainPath())
+                : $configValue
         );
 
         if (empty($paths)) {

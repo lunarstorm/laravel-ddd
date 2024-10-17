@@ -13,6 +13,11 @@ beforeEach(function () {
         '--domain' => 'Customer',
     ]);
 
+    $this->artisan('ddd:value', [
+        'name' => 'Subtotal',
+        '--domain' => 'Shared',
+    ]);
+
     $this->expectedDomains = [
         'Customer',
         'Invoicing',

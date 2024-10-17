@@ -11,6 +11,8 @@ class Domain
 
     public readonly string $path;
 
+    public readonly string $migrationPath;
+
     public readonly string $domain;
 
     public readonly ?string $subdomain;
@@ -57,6 +59,8 @@ class Domain
         $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
         $this->path = Path::join(DomainResolver::domainPath(), $this->domainWithSubdomain);
+
+        $this->migrationPath = Path::join($this->path, config('ddd.namespaces.migration', 'Database/Migrations'));
     }
 
     protected function getDomainBasePath()
@@ -79,14 +83,29 @@ class Domain
         return Path::join($this->path, $path);
     }
 
+    public function pathInApplicationLayer(?string $path = null): string
+    {
+        if (is_null($path)) {
+            return $this->path;
+        }
+
+        $path = str($path)
+            ->replace(DomainResolver::applicationLayerRootNamespace(), '')
+            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
+            ->append('.php')
+            ->toString();
+
+        return Path::join(DomainResolver::applicationLayerPath(), $path);
+    }
+
     public function relativePath(string $path = ''): string
     {
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
     }
 
-    public function namespaceFor(string $type): string
+    public function namespaceFor(string $type, ?string $name = null): string
     {
-        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type);
+        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type, $name);
     }
 
     public function guessNamespaceFromName(string $name): string
@@ -102,20 +121,37 @@ class Domain
 
     public function object(string $type, string $name, bool $absolute = false): DomainObject
     {
-        $namespace = match (true) {
+        $resolvedNamespace = null;
+
+        if (DomainResolver::isApplicationLayer($type)) {
+            $resolver = app('ddd')->getNamespaceResolver();
+
+            $resolvedNamespace = is_callable($resolver)
+                ? $resolver($this->domainWithSubdomain, $type, app('ddd')->getCommandContext())
+                : null;
+        }
+
+        $namespace = $resolvedNamespace ?? match (true) {
             $absolute => $this->namespace->root,
             str($name)->startsWith('\\') => $this->guessNamespaceFromName($name),
             default => $this->namespaceFor($type),
         };
 
-        $baseName = str($name)->replace($namespace, '')->trim('\\')->toString();
+        $baseName = str($name)->replace($namespace, '')
+            ->replace(['\\', '/'], '\\')
+            ->trim('\\')
+            ->toString();
+
+        $fullyQualifiedName = $namespace.'\\'.$baseName;
 
         return new DomainObject(
             name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace.'\\'.$baseName,
-            path: $this->path($namespace.'\\'.$baseName),
+            fullyQualifiedName: $fullyQualifiedName,
+            path: DomainResolver::isApplicationLayer($type)
+                ? $this->pathInApplicationLayer($fullyQualifiedName)
+                : $this->path($fullyQualifiedName),
             type: $type
         );
     }

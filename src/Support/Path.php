@@ -26,4 +26,9 @@ class Path
             $path
         );
     }
+
+    public static function normalizeNamespace(string $namespace): string
+    {
+        return str_replace(['\\', '/'], '\\', $namespace);
+    }
 }

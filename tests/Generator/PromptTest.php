@@ -23,6 +23,7 @@ it('[base view model] prompts for missing input', function () {
 it('[model] prompts for missing input', function () {
     $this->artisan('ddd:model')
         ->expectsQuestion('What should the model be named?', 'Belt')
+        ->expectsQuestion('Would you like any of the following?', [])
         ->expectsQuestion('What is the domain?', 'Utility')
         ->assertExitCode(0);
 });

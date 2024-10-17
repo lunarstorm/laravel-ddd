@@ -151,6 +151,7 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('Custom'));
         File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
+        File::deleteDirectory(base_path('src/App'));
         File::deleteDirectory(app_path('Models'));
 
         File::deleteDirectory(base_path('bootstrap/cache/ddd'));
