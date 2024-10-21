@@ -27,12 +27,17 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure domain objects in the application layer.
+    | Configure objects that belong in the application layer.
+    |
+    | e.g., App\Modules\Invoicing\Controllers\*
+    |       App\Modules\Invoicing\Requests\*
     |
     */
     'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
+
+        // Specify which ddd:* objects belong in the application layer
         'objects' => [
             'controller',
             'request',
@@ -42,12 +47,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Generator Object Namespaces
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | This array maps the default relative namespaces of generated objects
+    | relative to their domain's root namespace.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*
