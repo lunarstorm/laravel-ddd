@@ -20,7 +20,7 @@ it('can publish config file', function () {
 });
 
 it('can publish stubs', function () {
-    $dir = resource_path('stubs/ddd');
+    $dir = base_path('stubs/ddd');
 
     if (File::exists($dir)) {
         File::deleteDirectory($dir);

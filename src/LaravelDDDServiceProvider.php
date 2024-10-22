@@ -87,7 +87,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         $this->publishes([
-            $this->package->basePath('/../stubs') => resource_path("stubs/{$this->package->shortName()}"),
+            $this->package->basePath('/../stubs') => base_path("stubs/{$this->package->shortName()}"),
         ], "{$this->package->shortName()}-stubs");
 
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {

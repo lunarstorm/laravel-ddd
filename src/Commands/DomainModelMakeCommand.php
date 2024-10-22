@@ -5,12 +5,14 @@ namespace Lunarstorm\LaravelDDD\Commands;
 use Illuminate\Foundation\Console\ModelMakeCommand;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 
 class DomainModelMakeCommand extends ModelMakeCommand
 {
     use ForwardsToDomainCommands,
+        HasDomainStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:model';
