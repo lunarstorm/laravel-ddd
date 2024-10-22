@@ -2,50 +2,25 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Symfony\Component\Console\Input\InputOption;
+use Illuminate\Database\Console\Factories\FactoryMakeCommand;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
-class DomainFactoryMakeCommand extends DomainGeneratorCommand
+class DomainFactoryMakeCommand extends FactoryMakeCommand
 {
+    use HasDomainStubs,
+        ResolvesDomainFromInput;
+
     protected $name = 'ddd:factory';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate a domain model factory';
-
-    protected $type = 'Factory';
-
-    protected function getOptions()
-    {
-        return [
-            ...parent::getOptions(),
-            ['model', 'm', InputOption::VALUE_OPTIONAL, 'The name of the model'],
-        ];
-    }
 
     protected function getStub()
     {
-        return $this->resolveStubPath('factory.php.stub');
+        return $this->resolveDddStubPath('factory.stub');
     }
 
-    protected function getPath($name)
+    protected function getNamespace($name)
     {
-        if (! str_ends_with($name, 'Factory')) {
-            $name .= 'Factory';
-        }
-
-        return parent::getPath($name);
-    }
-
-    protected function getFactoryName()
-    {
-        $name = $this->getNameInput();
-
-        return str_ends_with($name, 'Factory')
-            ? substr($name, 0, -7)
-            : $name;
+        return $this->domain->namespaceFor('factory');
     }
 
     protected function preparePlaceholders(): array
@@ -60,16 +35,10 @@ class DomainFactoryMakeCommand extends DomainGeneratorCommand
 
         $domainFactory = $domain->factory($name);
 
-        // dump('preparing placeholders', [
-        //     'name' => $name,
-        //     'modelName' => $modelName,
-        //     'domainFactory' => $domainFactory,
-        // ]);
-
         return [
             'namespacedModel' => $domainModel->fullyQualifiedName,
             'model' => class_basename($domainModel->fullyQualifiedName),
-            'factory' => $this->getFactoryName(),
+            'factory' => $domainFactory->name,
             'namespace' => $domainFactory->namespace,
         ];
     }
@@ -80,6 +49,6 @@ class DomainFactoryMakeCommand extends DomainGeneratorCommand
             $name = substr($name, 0, -7);
         }
 
-        return $this->domain->model($name)->name;
+        return $this->domain->model(class_basename($name))->name;
     }
 }

@@ -31,7 +31,7 @@ class DomainBaseViewModelMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('base-view-model.php.stub');
+        return $this->resolveDddStubPath('base-view-model.stub');
     }
 
     protected function getRelativeDomainNamespace(): string

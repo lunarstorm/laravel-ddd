@@ -17,7 +17,7 @@ class DomainActionMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('action.php.stub');
+        return $this->resolveDddStubPath('action.stub');
     }
 
     protected function preparePlaceholders(): array

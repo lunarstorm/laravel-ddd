@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method static void filterAutoloadPathsUsing(callable $filter)
  * @method static void resolveNamespaceUsing(callable $resolver)
+ * @method static string packagePath(string $path = '')
  */
 class DDD extends Facade
 {

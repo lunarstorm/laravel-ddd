@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Console\Command;
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainCommandContext;
 
 class DomainManager
@@ -77,5 +78,10 @@ class DomainManager
     public function getCommandContext(): ?DomainCommandContext
     {
         return $this->commandContext;
+    }
+
+    public function packagePath($path = ''): string
+    {
+        return Path::normalize(__DIR__.'/../'.$path);
     }
 }

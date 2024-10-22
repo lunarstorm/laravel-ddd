@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 use function Laravel\Prompts\confirm;
@@ -11,6 +12,7 @@ use function Laravel\Prompts\confirm;
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
     use ForwardsToDomainCommands,
+        HasDomainStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
