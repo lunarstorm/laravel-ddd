@@ -19,11 +19,26 @@ You may initialize the package using the `ddd:install` artisan command. This wil
 php artisan ddd:install
 ```
 
-### Deployment
-In production, run `ddd:cache` during the deployment process to [optimize autoloading](#autoloading-in-production).
+### Peer Dependencies
+The following additional packages are suggested (but not required) while working with this package.
+
+Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
 ```bash
-php artisan ddd:cache
+composer require spatie/laravel-data
 ```
+
+Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
+```bash
+composer require lorisleiva/laravel-actions
+```
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may customize the stubs accordingly.
+
+### Deployment
+In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
+```bash
+php artisan ddd:optimize
+```
+Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -53,55 +68,40 @@ php artisan ddd:{object} {name}
 
 ## Available Commands
 ### Generators
-The following generators are currently available, shown using short-hand syntax:
-```bash
-# Generate a domain model
-php artisan ddd:model Invoicing:Invoice
+The following generators are currently available:
+| Command | Description | Usage |
+|---|---|---|
+| `ddd:model` | Generate a domain model | `php artisan ddd:model Invoicing:Invoice`<br> <br> Options:<br> `--migration\|-m`<br>  `--factory\|-f`<br> `--seed\|-s`<br> `--controller --resource --requests\|-crR`<br> `--policy`<br> `-mfsc`<br> `--all\|-a`<br> `--pivot\|-p`<br> |
+| `ddd:factory` | Generate a domain factory | `php artisan ddd:factory Invoicing:InvoiceFactory` |
+| `ddd:dto` | Generate a data transfer object | `php artisan ddd:dto Invoicing:LineItemPayload` |
+| `ddd:value` | Generate a value object | `php artisan ddd:value Shared:DollarAmount` |
+| `ddd:view-model` | Generate a view model | `php artisan ddd:view-model Invoicing:ShowInvoiceViewModel` |
+| `ddd:action` | Generate an action | `php artisan ddd:action Invoicing:SendInvoiceToCustomer` |
+| `ddd:cast` | Generate a cast | `php artisan ddd:cast Invoicing:MoneyCast` |
+| `ddd:channel` | Generate a channel | `php artisan ddd:channel Invoicing:InvoiceChannel` |
+| `ddd:command` | Generate a command | `php artisan ddd:command Invoicing:InvoiceDeliver` |
+| `ddd:controller` | Generate a controller | `php artisan ddd:controller Invoicing:InvoiceController`<br> <br>  Options: inherits options from *make:controller* |
+| `ddd:event` | Generate an event | `php artisan ddd:event Invoicing:PaymentWasReceived` |
+| `ddd:exception` | Generate an exception | `php artisan ddd:exception Invoicing:InvoiceNotFoundException` |
+| `ddd:job` | Generate a job | `php artisan ddd:job Invoicing:GenerateInvoicePdf` |
+| `ddd:listener` | Generate a listener | `php artisan ddd:listener Invoicing:HandlePaymentReceived` |
+| `ddd:mail` | Generate a mail | `php artisan ddd:mail Invoicing:OverduePaymentReminderEmail` |
+| `ddd:middleware` | Generate a middleware | `php artisan ddd:middleware Invoicing:VerifiedCustomerMiddleware` |
+| `ddd:migration` | Generate a migration | `php artisan ddd:migration Invoicing:CreateInvoicesTable` |
+| `ddd:notification` | Generate a notification | `php artisan ddd:notification Invoicing:YourPaymentWasReceived` |
+| `ddd:observer` | Generate an observer | `php artisan ddd:observer Invoicing:InvoiceObserver` |
+| `ddd:policy` | Generate a policy | `php artisan ddd:policy Invoicing:InvoicePolicy` |
+| `ddd:provider` | Generate a provider | `php artisan ddd:provider Invoicing:InvoiceServiceProvider` |
+| `ddd:resource` | Generate a resource | `php artisan ddd:resource Invoicing:InvoiceResource` |
+| `ddd:rule` | Generate a rule | `php artisan ddd:rule Invoicing:ValidPaymentMethod` |
+| `ddd:request` | Generate a form request | `php artisan ddd:request Invoicing:StoreInvoiceRequest` |
+| `ddd:scope` | Generate a scope | `php artisan ddd:scope Invoicing:ArchivedInvoicesScope` |
+| `ddd:seeder` | Generate a seeder | `php artisan ddd:seeder Invoicing:InvoiceSeeder` |
+| `ddd:class` | Generate a class (Laravel 11+) | `php artisan ddd:class Invoicing:Support/InvoiceBuilder` |
+| `ddd:enum` | Generate an enum (Laravel 11+) | `php artisan ddd:enum Customer:CustomerType` |
+| `ddd:interface` | Generate an interface (Laravel 11+) | `php artisan ddd:interface Customer:Contracts/Invoiceable` |
+| `ddd:trait` | Generate a trait (Laravel 11+) | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
 
-# Generate a domain model with factory
-php artisan ddd:model Invoicing:Invoice -f
-php artisan ddd:model Invoicing:Invoice --factory
-
-# Generate a domain factory
-php artisan ddd:factory Invoicing:InvoiceFactory
-php artisan ddd:factory Invoicing:InvoiceFactory --model=Invoice # optionally specifying the model
-
-# Generate a data transfer object
-php artisan ddd:dto Invoicing:LineItemPayload
-
-# Generates a value object
-php artisan ddd:value Shared:DollarAmount
-
-# Generates a view model
-php artisan ddd:view-model Invoicing:ShowInvoiceViewModel
-
-# Generates an action
-php artisan ddd:action Invoicing:SendInvoiceToCustomer
-
-# Extended Commands 
-# These extend Laravel's respective make:* commands and places the objects into the domain layer
-php artisan ddd:cast Invoicing:MoneyCast
-php artisan ddd:channel Invoicing:InvoiceChannel
-php artisan ddd:command Invoicing:InvoiceDeliver
-php artisan ddd:event Invoicing:PaymentWasReceived
-php artisan ddd:exception Invoicing:InvoiceNotFoundException
-php artisan ddd:job Invoicing:GenerateInvoicePdf
-php artisan ddd:listener Invoicing:HandlePaymentReceived
-php artisan ddd:mail Invoicing:OverduePaymentReminderEmail
-php artisan ddd:notification Invoicing:YourPaymentWasReceived
-php artisan ddd:observer Invoicing:InvoiceObserver
-php artisan ddd:policy Invoicing:InvoicePolicy
-php artisan ddd:provider Invoicing:InvoiceServiceProvider
-php artisan ddd:resource Invoicing:InvoiceResource
-php artisan ddd:rule Invoicing:ValidPaymentMethod
-php artisan ddd:scope Invoicing:ArchivedInvoicesScope
-
-# Laravel 11+ only
-php artisan ddd:class Invoicing:Support/InvoiceBuilder
-php artisan ddd:enum Customer:CustomerType
-php artisan ddd:interface Customer:Contracts/Invoiceable
-php artisan ddd:trait Customer:Concerns/HasInvoices
-```
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
 ### Other Commands
@@ -110,13 +110,47 @@ Generated objects will be placed in the appropriate domain namespace as specifie
 php artisan ddd:list
 
 # Cache domain manifests (used for autoloading)
-php artisan ddd:cache
+php artisan ddd:optimize
 
 # Clear the domain cache
 php artisan ddd:clear
 ```
 
 ## Advanced Usage
+### Application Layer (since 1.2)
+Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
+```php
+// In config/ddd.php
+'application' => [
+    'path' => 'app/Modules',
+    'namespace' => 'App\Modules',
+    'objects' => [
+        'controller',
+        'request',
+        'middleware',
+    ],
+],
+```
+The configuration above will result in the following:
+```bash
+ddd:model Invoicing:Invoice --controller --resource --requests
+```
+Output:
+```
+├─ app
+|   └─ Modules
+│       └─ Invoicing
+│           ├─ Controllers
+│           │   └─ InvoiceController.php
+│           └─ Requests
+│               ├─ StoreInvoiceRequest.php
+│               └─ UpdateInvoiceRequest.php
+├─ src/Domain
+    └─ Invoicing
+         └─ Models
+             └─ Invoice.php
+```
+
 ### Nested Objects
 For any `ddd:*` generator command, nested objects can be specified with forward slashes.
 ```bash
@@ -194,6 +228,7 @@ Autoloading behaviour can be configured with the `ddd.autoload` configuration op
     'commands' => true,
     'policies' => true,
     'factories' => true,
+    'migrations' => true,
 ],
 ```
 ### Service Providers
@@ -210,14 +245,18 @@ When `ddd.autoload.factories` is enabled, the package will register a custom fac
 
 If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
 
+### Migrations
+When `ddd.autoload.migrations` is enabled, paths within the domain layer matching the configured `ddd.namespaces.migration` namespace will be auto-registered as a database migration path and recognized by `php artisan migrate`.
+
 ### Ignoring Paths During Autoloading
-To specify folders or paths that should be skipped during autoloading discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
+To specify folders or paths that should be skipped during autoloading class discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
 ```php
 'autoload_ignore' => [
     'Tests',
     'Database/Migrations',
 ],
 ```
+Note that ignoring folders only applies to class-based autoloading: Service Providers, Console Commands, Policies, and Factories.
 
 Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
 ```php
@@ -240,13 +279,16 @@ You may disable autoloading by setting the respective autoload options to `false
 //     'commands' => true,
 //     'policies' => true,
 //     'factories' => true,
+//     'migrations' => true,
 // ],
 ```
 
 <a name="autoloading-in-production"></a>
 
 ## Autoloading in Production
-In production, you should cache the autoload manifests using the `ddd:cache` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
+In production, you should cache the autoload manifests using the `ddd:optimize` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
+
+> **Note**: Since Laravel 11.27.1, the framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` and `ddd:clear` respectively.
 
 <a name="config-file"></a>
 
@@ -278,12 +320,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Application Layer
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | Configure objects that belong in the application layer.
+    |
+    | e.g., App\Modules\Invoicing\Controllers\*
+    |       App\Modules\Invoicing\Requests\*
+    |
+    */
+    'application' => [
+        'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
+
+        // Specify which ddd:* objects belong in the application layer
+        'objects' => [
+            'controller',
+            'request',
+            'middleware',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generator Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This array maps the default relative namespaces of generated objects
+    | relative to their domain's root namespace.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*
@@ -302,6 +366,7 @@ return [
         'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
+        'controller' => 'Controllers',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
@@ -310,13 +375,17 @@ return [
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
+        'middleware' => 'Middleware',
+        'migration' => 'Database\Migrations',
         'notification' => 'Notifications',
         'observer' => 'Observers',
         'policy' => 'Policies',
         'provider' => 'Providers',
         'resource' => 'Resources',
+        'request' => 'Requests',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'seeder' => 'Database\Seeders',
         'trait' => '',
     ],
 
@@ -325,12 +394,11 @@ return [
     | Base Model
     |--------------------------------------------------------------------------
     |
-    | The base class which generated domain models should extend. By default,
-    | generated domain models will extend `Domain\Shared\Models\BaseModel`,
-    | which will be created if it doesn't already exist.
+    | The base model class which generated domain models should extend. If
+    | set to null, the generated models will extend Laravel's default.
     |
     */
-    'base_model' => 'Domain\Shared\Models\BaseModel',
+    'base_model' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -374,34 +442,16 @@ return [
     | Autoloading
     |--------------------------------------------------------------------------
     |
-    | Configure whether domain providers, commands, policies, and factories
-    | should be auto-discovered and registered.
+    | Configure whether domain providers, commands, policies, factories,
+    | and migrations should be auto-discovered and registered.
     |
     */
     'autoload' => [
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
-         */
         'providers' => true,
-
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
-         */
         'commands' => true,
-
-        /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'policies' => true,
-
-        /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'factories' => true,
+        'migrations' => true,
     ],
 
     /*
@@ -415,7 +465,7 @@ return [
     | e.g., src/Domain/Invoicing/<folder-to-ignore>
     |
     | If more advanced filtering is needed, a callback can be registered
-    | using the `DDD::filterAutoloadPathsUsing(callback $filter)` in
+    | using `DDD::filterAutoloadPathsUsing(callback $filter)` in
     | the AppServiceProvider's boot method.
     |
     */
