@@ -28,7 +28,7 @@ class DomainDtoMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('dto.php.stub');
+        return $this->resolveDddStubPath('dto.stub');
     }
 
     protected function getRelativeDomainNamespace(): string

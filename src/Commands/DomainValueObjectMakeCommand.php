@@ -27,6 +27,6 @@ class DomainValueObjectMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('value-object.php.stub');
+        return $this->resolveDddStubPath('value-object.stub');
     }
 }

@@ -29,7 +29,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('view-model.php.stub');
+        return $this->resolveDddStubPath('view-model.stub');
     }
 
     protected function preparePlaceholders(): array
