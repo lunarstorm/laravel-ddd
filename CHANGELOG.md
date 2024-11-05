@@ -40,6 +40,10 @@ All notable changes to `laravel-ddd` will be documented in this file.
 ### Deprecated
 - Domain base models are no longer required by default, and `config('ddd.base_model')` is now `null` by default.
 
+## [1.1.3] - 2024-11-05
+### Chore
+- Allow `laravel/prompts` dependency to use latest version when possible.
+
 ## [1.1.2] - 2024-09-02
 ### Fixed
 - During domain factory autoloading, ensure that `guessFactoryNamesUsing` returns a string when a domain factory is resolved.
