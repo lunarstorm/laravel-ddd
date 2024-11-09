@@ -9,7 +9,7 @@ use function Laravel\Prompts\multiselect;
 
 class PublishCommand extends Command
 {
-    public $signature = 'ddd:publish';
+    public $name = 'ddd:publish';
 
     protected $description = 'Publish package resources';
 
@@ -38,8 +38,8 @@ class PublishCommand extends Command
     public function handle(): int
     {
         $thingsToPublish = [
-            ...$this->hasOption('config') ? ['config'] : [],
-            ...$this->hasOption('stubs') ? ['stubs'] : [],
+            ...$this->option('config') ? ['config'] : [],
+            ...$this->option('stubs') ? ['stubs'] : [],
         ] ?: $this->askForThingsToPublish();
 
         if (in_array('config', $thingsToPublish)) {
