@@ -9,7 +9,7 @@ use Lunarstorm\LaravelDDD\Support\DomainResolver;
 class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {
     use HasDomainStubs;
-    
+
     protected $name = 'ddd:view-model';
 
     /**

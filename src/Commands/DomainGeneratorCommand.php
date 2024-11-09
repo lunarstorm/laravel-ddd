@@ -4,7 +4,6 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\InteractsWithStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;

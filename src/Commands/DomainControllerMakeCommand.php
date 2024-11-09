@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
-use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
@@ -12,8 +11,8 @@ use function Laravel\Prompts\confirm;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
-    use HasDomainStubs,
-        ForwardsToDomainCommands,
+    use ForwardsToDomainCommands,
+        HasDomainStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
@@ -63,10 +62,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             );
         }
 
-        $namespacedRequests = $namespace . '\\' . $storeRequestClass . ';';
+        $namespacedRequests = $namespace.'\\'.$storeRequestClass.';';
 
         if ($storeRequestClass !== $updateRequestClass) {
-            $namespacedRequests .= PHP_EOL . 'use ' . $namespace . '\\' . $updateRequestClass . ';';
+            $namespacedRequests .= PHP_EOL.'use '.$namespace.'\\'.$updateRequestClass.';';
         }
 
         return array_merge($replace, [
@@ -74,10 +73,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             '{{storeRequest}}' => $storeRequestClass,
             '{{ updateRequest }}' => $updateRequestClass,
             '{{updateRequest}}' => $updateRequestClass,
-            '{{ namespacedStoreRequest }}' => $namespace . '\\' . $storeRequestClass,
-            '{{namespacedStoreRequest}}' => $namespace . '\\' . $storeRequestClass,
-            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass,
-            '{{namespacedUpdateRequest}}' => $namespace . '\\' . $updateRequestClass,
+            '{{ namespacedStoreRequest }}' => $namespace.'\\'.$storeRequestClass,
+            '{{namespacedStoreRequest}}' => $namespace.'\\'.$storeRequestClass,
+            '{{ namespacedUpdateRequest }}' => $namespace.'\\'.$updateRequestClass,
+            '{{namespacedUpdateRequest}}' => $namespace.'\\'.$updateRequestClass,
             '{{ namespacedRequests }}' => $namespacedRequests,
             '{{namespacedRequests}}' => $namespacedRequests,
         ]);

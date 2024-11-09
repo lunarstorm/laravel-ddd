@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 class DomainBaseModelMakeCommand extends DomainGeneratorCommand
 {
     use HasDomainStubs;
-    
+
     protected $name = 'ddd:base-model';
 
     /**
