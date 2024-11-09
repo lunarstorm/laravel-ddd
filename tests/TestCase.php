@@ -137,7 +137,7 @@ class TestCase extends Orchestra
             ->setTimeout(null)
             ->run(function ($type, $output) {});
 
-            return $this;
+        return $this;
     }
 
     protected function cleanSlate()
