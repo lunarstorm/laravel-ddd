@@ -62,10 +62,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             );
         }
 
-        $namespacedRequests = $namespace.'\\'.$storeRequestClass.';';
+        $namespacedRequests = $namespace . '\\' . $storeRequestClass . ';';
 
         if ($storeRequestClass !== $updateRequestClass) {
-            $namespacedRequests .= PHP_EOL.'use '.$namespace.'\\'.$updateRequestClass.';';
+            $namespacedRequests .= PHP_EOL . 'use ' . $namespace . '\\' . $updateRequestClass . ';';
         }
 
         return array_merge($replace, [
@@ -73,10 +73,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             '{{storeRequest}}' => $storeRequestClass,
             '{{ updateRequest }}' => $updateRequestClass,
             '{{updateRequest}}' => $updateRequestClass,
-            '{{ namespacedStoreRequest }}' => $namespace.'\\'.$storeRequestClass,
-            '{{namespacedStoreRequest}}' => $namespace.'\\'.$storeRequestClass,
-            '{{ namespacedUpdateRequest }}' => $namespace.'\\'.$updateRequestClass,
-            '{{namespacedUpdateRequest}}' => $namespace.'\\'.$updateRequestClass,
+            '{{ namespacedStoreRequest }}' => $namespace . '\\' . $storeRequestClass,
+            '{{namespacedStoreRequest}}' => $namespace . '\\' . $storeRequestClass,
+            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass,
+            '{{namespacedUpdateRequest}}' => $namespace . '\\' . $updateRequestClass,
             '{{ namespacedRequests }}' => $namespacedRequests,
             '{{namespacedRequests}}' => $namespacedRequests,
         ]);
@@ -91,6 +91,9 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         }
 
         $replace = [];
+
+        // Ensure invalid import is stripped (needed for Laravel 10)
+        $replace["use {$this->getNamespace($name)}\Controller;\n"] = '';
 
         $appRootNamespace = $this->laravel->getNamespace();
         $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
