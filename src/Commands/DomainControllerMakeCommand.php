@@ -95,7 +95,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         $appRootNamespace = $this->laravel->getNamespace();
         $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
 
-        $baseControllerExists = file_exists($pathToAppBaseController);
+        $baseControllerExists = $this->files->exists($pathToAppBaseController);
 
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);

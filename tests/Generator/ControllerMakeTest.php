@@ -206,9 +206,6 @@ it('does not extend base controller if base controller not found', function ($do
         ->toContain("namespace {$expectedNamespace};")
         ->not->toContain("use App\Http\Controllers\Controller;")
         ->not->toContain('extends Controller');
-
-    // Reset the application skeleton
-    $this->setupTestApplication();
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
