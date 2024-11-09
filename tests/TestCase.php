@@ -33,7 +33,7 @@ class TestCase extends Orchestra
             // );
 
             Factory::guessFactoryNamesUsing(
-                fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
+                fn(string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
             );
         });
 
@@ -140,7 +140,7 @@ class TestCase extends Orchestra
 
     protected function cleanSlate()
     {
-        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
+        File::copy(__DIR__ . '/.skeleton/composer.json', base_path('composer.json'));
 
         File::delete(base_path('config/ddd.php'));
 
@@ -148,6 +148,7 @@ class TestCase extends Orchestra
         File::cleanDirectory(base_path('database/factories'));
 
         File::deleteDirectory(resource_path('stubs/ddd'));
+        File::deleteDirectory(base_path('stubs'));
         File::deleteDirectory(base_path('Custom'));
         File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
@@ -157,12 +158,17 @@ class TestCase extends Orchestra
         File::deleteDirectory(base_path('bootstrap/cache/ddd'));
     }
 
+    protected function cleanStubs()
+    {
+        File::cleanDirectory(base_path('stubs'));
+    }
+
     protected function setupTestApplication()
     {
-        File::copyDirectory(__DIR__.'/.skeleton/app', app_path());
-        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
-        File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
-        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
+        File::copyDirectory(__DIR__ . '/.skeleton/app', app_path());
+        File::copyDirectory(__DIR__ . '/.skeleton/database', base_path('database'));
+        File::copyDirectory(__DIR__ . '/.skeleton/src/Domain', base_path('src/Domain'));
+        File::copy(__DIR__ . '/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
         File::ensureDirectoryExists(app_path('Models'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
@@ -172,7 +178,7 @@ class TestCase extends Orchestra
     {
         $this->updateComposer(
             set: [
-                [['autoload', 'psr-4', $domainNamespace.'\\'], $domainPath],
+                [['autoload', 'psr-4', $domainNamespace . '\\'], $domainPath],
             ],
         );
 

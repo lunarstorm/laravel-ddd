@@ -86,6 +86,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
     {
         $stub = parent::buildClass($name);
 
+        if($this->isUsingPublishedStub()){
+            return $stub;
+        }
+
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
@@ -95,7 +99,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
 
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);
-            $replace["\nclass {$controllerClass}\n"] = "use {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+            $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
         }
 
         $stub = str_replace(
