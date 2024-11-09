@@ -4,11 +4,13 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Lunarstorm\LaravelDDD\Commands\Concerns\InteractsWithStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 class DomainFactoryMakeCommand extends FactoryMakeCommand
 {
     use HasDomainStubs,
+        InteractsWithStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:factory';

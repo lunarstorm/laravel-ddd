@@ -47,26 +47,4 @@ trait HasDomainStubs
 
         return DDD::packagePath('stubs/'.$path);
     }
-
-    // protected function resolveStubPath($stub)
-    // {
-    //     $defaultStub = parent::resolveStubPath($stub);
-
-    //     $stubFilename = basename($stub);
-
-    //     // Check if there is a user-published stub
-    //     $publishedPath = app()->basePath('stubs/ddd/'.$stubFilename);
-
-    //     if (file_exists($publishedPath)) {
-    //         return $publishedPath;
-    //     }
-
-    //     $legacyPublishedPath = Str::replaceLast('.stub', '.php.stub', $publishedPath);
-
-    //     if (file_exists($legacyPublishedPath)) {
-    //         return $legacyPublishedPath;
-    //     }
-
-    //     return $defaultStub;
-    // }
 }
