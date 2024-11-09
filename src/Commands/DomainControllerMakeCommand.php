@@ -62,10 +62,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             );
         }
 
-        $namespacedRequests = $namespace.'\\'.$storeRequestClass.';';
+        $namespacedRequests = $namespace . '\\' . $storeRequestClass . ';';
 
         if ($storeRequestClass !== $updateRequestClass) {
-            $namespacedRequests .= PHP_EOL.'use '.$namespace.'\\'.$updateRequestClass.';';
+            $namespacedRequests .= PHP_EOL . 'use ' . $namespace . '\\' . $updateRequestClass . ';';
         }
 
         return array_merge($replace, [
@@ -73,10 +73,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             '{{storeRequest}}' => $storeRequestClass,
             '{{ updateRequest }}' => $updateRequestClass,
             '{{updateRequest}}' => $updateRequestClass,
-            '{{ namespacedStoreRequest }}' => $namespace.'\\'.$storeRequestClass,
-            '{{namespacedStoreRequest}}' => $namespace.'\\'.$storeRequestClass,
-            '{{ namespacedUpdateRequest }}' => $namespace.'\\'.$updateRequestClass,
-            '{{namespacedUpdateRequest}}' => $namespace.'\\'.$updateRequestClass,
+            '{{ namespacedStoreRequest }}' => $namespace . '\\' . $storeRequestClass,
+            '{{namespacedStoreRequest}}' => $namespace . '\\' . $storeRequestClass,
+            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass,
+            '{{namespacedUpdateRequest}}' => $namespace . '\\' . $updateRequestClass,
             '{{ namespacedRequests }}' => $namespacedRequests,
             '{{namespacedRequests}}' => $namespacedRequests,
         ]);
@@ -92,8 +92,8 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
 
         $replace = [];
 
-        // Ensure invalid import is stripped (needed for Laravel 10)
-        $replace["use {$this->getNamespace($name)}\Controller;\n"] = '';
+        // Ensure invalid artifacts are stripped (Laravel 10 compatibility)
+        $replace["use {$this->rootNamespace()}Http\Controllers\Controller;\n"] = '';
 
         $appRootNamespace = $this->laravel->getNamespace();
         $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
@@ -105,8 +105,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
         } else {
             $replace[' extends Controller'] = '';
-            $rootNamespace = $this->rootNamespace();
-            $replace["use {$rootNamespace}Http\Controllers\Controller;\n"] = '';
         }
 
         $stub = str_replace(
