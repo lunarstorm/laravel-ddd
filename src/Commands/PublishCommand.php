@@ -3,9 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Process\Process;
 
 use function Laravel\Prompts\multiselect;
 
