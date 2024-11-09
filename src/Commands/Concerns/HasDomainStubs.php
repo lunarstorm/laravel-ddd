@@ -42,7 +42,7 @@ trait HasDomainStubs
             ->toString();
 
         // Check if there is a user-published stub
-        if (file_exists($publishedPath = app()->basePath('stubs/ddd/' . $stubFilename))) {
+        if (file_exists($publishedPath = app()->basePath('stubs/ddd/'.$stubFilename))) {
             return $publishedPath;
         }
 
@@ -61,10 +61,10 @@ trait HasDomainStubs
             ->ltrim('/\\')
             ->toString();
 
-        if($publishedPath = $this->resolvePublishedDddStub($path)) {
+        if ($publishedPath = $this->resolvePublishedDddStub($path)) {
             return $publishedPath;
         }
 
-        return DDD::packagePath('stubs/' . $path);
+        return DDD::packagePath('stubs/'.$path);
     }
 }

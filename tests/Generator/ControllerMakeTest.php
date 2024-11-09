@@ -32,7 +32,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
 
     expect($output = Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn($output) => $output->toContainFilepath($relativePath),
+        fn ($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
@@ -40,7 +40,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
     expect(file_get_contents($expectedPath))
         ->toContain("namespace {$expectedNamespace};")
         ->toContain("use App\Http\Controllers\Controller;")
-        ->toContain("extends Controller");
+        ->toContain('extends Controller');
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
@@ -205,7 +205,7 @@ it('does not extend base controller if base controller not found', function ($do
     expect(file_get_contents($expectedPath))
         ->toContain("namespace {$expectedNamespace};")
         ->not->toContain("use App\Http\Controllers\Controller;")
-        ->not->toContain("extends Controller");
+        ->not->toContain('extends Controller');
 
     // Reset the application skeleton
     $this->setupTestApplication();
@@ -234,7 +234,7 @@ it('does not attempt to extend base controller when using custom stubs', functio
     expect(file_exists($baseControllerPath))->toBeTrue();
 
     // Publish a custom controller.stub
-    $customStub = <<<STUB
+    $customStub = <<<'STUB'
 <?php
 
 namespace {{ namespace }};
@@ -255,9 +255,9 @@ STUB;
 
     expect(file_get_contents($expectedPath))
         ->toContain("namespace {$expectedNamespace};")
-        ->toContain("use CustomControllerTrait;")
+        ->toContain('use CustomControllerTrait;')
         ->not->toContain("use App\Http\Controllers\Controller;")
-        ->not->toContain("extends Controller");
+        ->not->toContain('extends Controller');
 
     $this->cleanStubs();
 })->with([

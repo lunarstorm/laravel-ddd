@@ -86,7 +86,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
     {
         $stub = parent::buildClass($name);
 
-        if($this->isUsingPublishedStub()){
+        if ($this->isUsingPublishedStub()) {
             return $stub;
         }
 
