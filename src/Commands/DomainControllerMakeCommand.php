@@ -100,6 +100,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);
             $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+        } else {
+            $replace[' extends Controller'] = '';
+            $rootNamespace = $this->rootNamespace();
+            $replace["use {$rootNamespace}Http\Controllers\Controller;\n"] = '';
         }
 
         $stub = str_replace(
