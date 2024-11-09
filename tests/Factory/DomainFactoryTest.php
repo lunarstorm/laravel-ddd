@@ -28,10 +28,12 @@ it('is backwards compatible with factories located in database/factories/**/*', 
 
 it('can instantiate a domain model factory', function ($domainParameter, $modelName, $modelClass) {
     $this->setupTestApplication();
-    $this->composerReload();
 
     Config::set('ddd.base_model', 'Lunarstorm\LaravelDDD\Models\DomainModel');
     Artisan::call("ddd:model -f {$domainParameter}:{$modelName}");
+
+    $this->composerReload();
+
     expect(class_exists($modelClass))->toBeTrue();
     expect($modelClass::factory())->toBeInstanceOf(Factory::class);
 })->with([
