@@ -2,10 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DomainBaseViewModelMakeCommand extends DomainGeneratorCommand
 {
+    use HasDomainStubs;
+    
     protected $name = 'ddd:base-view-model';
 
     /**

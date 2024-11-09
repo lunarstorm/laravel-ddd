@@ -2,8 +2,12 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
+
 class DomainValueObjectMakeCommand extends DomainGeneratorCommand
 {
+    use HasDomainStubs;
+    
     protected $name = 'ddd:value';
 
     /**

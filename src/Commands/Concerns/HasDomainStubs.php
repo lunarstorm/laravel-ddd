@@ -7,7 +7,24 @@ use Lunarstorm\LaravelDDD\Facades\DDD;
 
 trait HasDomainStubs
 {
-    use InteractsWithStubs;
+    protected function getStub()
+    {
+        $defaultStub = parent::getStub();
+
+        $stubFilename = basename($defaultStub);
+
+        // Check if there is a user-published stub
+        if (file_exists($publishedPath = app()->basePath('stubs/ddd/' . $stubFilename))) {
+            return $publishedPath;
+        }
+
+        // Also check for legacy stub extensions
+        if (file_exists($legacyPublishedPath = Str::replaceLast('.stub', '.php.stub', $publishedPath))) {
+            return $legacyPublishedPath;
+        }
+
+        return $defaultStub;
+    }
 
     protected function resolveDddStubPath($path)
     {
@@ -16,7 +33,7 @@ trait HasDomainStubs
             ->ltrim('/\\')
             ->toString();
 
-        $publishedPath = resource_path('stubs/ddd/'.$path);
+        $publishedPath = resource_path('stubs/ddd/' . $path);
 
         if (file_exists($publishedPath)) {
             return $publishedPath;
@@ -28,28 +45,28 @@ trait HasDomainStubs
             return $legacyPublishedPath;
         }
 
-        return DDD::packagePath('stubs/'.$path);
+        return DDD::packagePath('stubs/' . $path);
     }
 
-    protected function resolveStubPath($stub)
-    {
-        $defaultStub = parent::resolveStubPath($stub);
+    // protected function resolveStubPath($stub)
+    // {
+    //     $defaultStub = parent::resolveStubPath($stub);
 
-        $stubFilename = basename($stub);
+    //     $stubFilename = basename($stub);
 
-        // Check if there is a user-published stub
-        $publishedPath = app()->basePath('stubs/ddd/'.$stubFilename);
+    //     // Check if there is a user-published stub
+    //     $publishedPath = app()->basePath('stubs/ddd/'.$stubFilename);
 
-        if (file_exists($publishedPath)) {
-            return $publishedPath;
-        }
+    //     if (file_exists($publishedPath)) {
+    //         return $publishedPath;
+    //     }
 
-        $legacyPublishedPath = Str::replaceLast('.stub', '.php.stub', $publishedPath);
+    //     $legacyPublishedPath = Str::replaceLast('.stub', '.php.stub', $publishedPath);
 
-        if (file_exists($legacyPublishedPath)) {
-            return $legacyPublishedPath;
-        }
+    //     if (file_exists($legacyPublishedPath)) {
+    //         return $legacyPublishedPath;
+    //     }
 
-        return $defaultStub;
-    }
+    //     return $defaultStub;
+    // }
 }

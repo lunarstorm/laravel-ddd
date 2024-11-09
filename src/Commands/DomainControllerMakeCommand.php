@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
+use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
@@ -11,8 +12,8 @@ use function Laravel\Prompts\confirm;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
-    use ForwardsToDomainCommands,
-        HasDomainStubs,
+    use HasDomainStubs,
+        ForwardsToDomainCommands,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
@@ -62,10 +63,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             );
         }
 
-        $namespacedRequests = $namespace.'\\'.$storeRequestClass.';';
+        $namespacedRequests = $namespace . '\\' . $storeRequestClass . ';';
 
         if ($storeRequestClass !== $updateRequestClass) {
-            $namespacedRequests .= PHP_EOL.'use '.$namespace.'\\'.$updateRequestClass.';';
+            $namespacedRequests .= PHP_EOL . 'use ' . $namespace . '\\' . $updateRequestClass . ';';
         }
 
         return array_merge($replace, [
@@ -73,12 +74,37 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             '{{storeRequest}}' => $storeRequestClass,
             '{{ updateRequest }}' => $updateRequestClass,
             '{{updateRequest}}' => $updateRequestClass,
-            '{{ namespacedStoreRequest }}' => $namespace.'\\'.$storeRequestClass,
-            '{{namespacedStoreRequest}}' => $namespace.'\\'.$storeRequestClass,
-            '{{ namespacedUpdateRequest }}' => $namespace.'\\'.$updateRequestClass,
-            '{{namespacedUpdateRequest}}' => $namespace.'\\'.$updateRequestClass,
+            '{{ namespacedStoreRequest }}' => $namespace . '\\' . $storeRequestClass,
+            '{{namespacedStoreRequest}}' => $namespace . '\\' . $storeRequestClass,
+            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass,
+            '{{namespacedUpdateRequest}}' => $namespace . '\\' . $updateRequestClass,
             '{{ namespacedRequests }}' => $namespacedRequests,
             '{{namespacedRequests}}' => $namespacedRequests,
         ]);
+    }
+
+    protected function buildClass($name)
+    {
+        $stub = parent::buildClass($name);
+
+        $replace = [];
+
+        $appRootNamespace = $this->laravel->getNamespace();
+        $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
+
+        $baseControllerExists = file_exists($pathToAppBaseController);
+
+        if ($baseControllerExists) {
+            $controllerClass = class_basename($name);
+            $replace["\nclass {$controllerClass}\n"] = "use {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+        }
+
+        $stub = str_replace(
+            array_keys($replace),
+            array_values($replace),
+            $stub
+        );
+
+        return $this->sortImports($stub);
     }
 }

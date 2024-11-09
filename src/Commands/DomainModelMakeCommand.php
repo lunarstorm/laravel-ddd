@@ -33,13 +33,30 @@ class DomainModelMakeCommand extends ModelMakeCommand
         $this->afterHandle();
     }
 
+    protected function buildFactoryReplacements()
+    {
+        $replacements = parent::buildFactoryReplacements();
+
+        if ($this->option('factory')) {
+            $factoryNamespace = Str::start($this->domain->factory($this->getNameInput())->fullyQualifiedName, '\\');
+
+            $factoryCode = <<<EOT
+            /** @use HasFactory<$factoryNamespace> */
+                use HasFactory;
+            EOT;
+
+            $replacements['{{ factory }}'] = $factoryCode;
+            $replacements['{{ factoryImport }}'] = 'use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;';
+        }
+
+        return $replacements;
+    }
+
     protected function buildClass($name)
     {
         $stub = parent::buildClass($name);
 
-        $replacements = [
-            'use Illuminate\Database\Eloquent\Factories\HasFactory;' => "use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;",
-        ];
+        $replacements = [];
 
         if ($baseModel = $this->getBaseModel()) {
             $baseModelClass = class_basename($baseModel);
@@ -56,9 +73,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
             $stub
         );
 
-        $stub = $this->sortImports($stub);
-
-        return $stub;
+        return $this->sortImports($stub);
     }
 
     protected function createBaseModelIfNeeded()
