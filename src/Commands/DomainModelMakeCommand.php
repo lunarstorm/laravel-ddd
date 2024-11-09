@@ -56,20 +56,24 @@ class DomainModelMakeCommand extends ModelMakeCommand
     {
         $stub = parent::buildClass($name);
 
-        $replacements = [];
+        if ($this->isUsingPublishedStub()) {
+            return $stub;
+        }
+
+        $replace = [];
 
         if ($baseModel = $this->getBaseModel()) {
             $baseModelClass = class_basename($baseModel);
 
-            $replacements = array_merge($replacements, [
+            $replace = array_merge($replace, [
                 'extends Model' => "extends {$baseModelClass}",
                 'use Illuminate\Database\Eloquent\Model;' => "use {$baseModel};",
             ]);
         }
 
         $stub = str_replace(
-            array_keys($replacements),
-            array_values($replacements),
+            array_keys($replace),
+            array_values($replace),
             $stub
         );
 

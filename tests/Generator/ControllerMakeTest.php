@@ -219,8 +219,6 @@ it('does not extend base controller if base controller not found', function ($do
 ]);
 
 it('does not attempt to extend base controller when using custom stubs', function ($domainName, $controllerName, $relativePath, $expectedNamespace, $stubFolder) {
-    $this->setupTestApplication();
-
     $expectedPath = base_path($relativePath);
 
     if (file_exists($expectedPath)) {
