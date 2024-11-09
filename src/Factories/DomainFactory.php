@@ -36,7 +36,9 @@ abstract class DomainFactory extends Factory
             }
 
             // First try resolving as a factory class in the domain layer
-            if (class_exists($factoryClass = DomainResolver::getDomainObjectNamespace($model->domain, 'factory', "{$model->name}Factory"))) {
+            $factoryClass = DomainResolver::getDomainObjectNamespace($model->domain, 'factory', "{$model->name}Factory");
+            $factory = DomainObject::fromClass($factoryClass, 'factory');
+            if (file_exists(app()->basePath($factory->path))) {
                 return $factoryClass;
             }
 
