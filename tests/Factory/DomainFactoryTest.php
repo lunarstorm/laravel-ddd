@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
@@ -27,6 +28,7 @@ it('is backwards compatible with factories located in database/factories/**/*', 
 
 it('can instantiate a domain model factory', function ($domainParameter, $modelName, $modelClass) {
     $this->setupTestApplication();
+    $this->composerReload();
 
     Config::set('ddd.base_model', 'Lunarstorm\LaravelDDD\Models\DomainModel');
     Artisan::call("ddd:model -f {$domainParameter}:{$modelName}");
