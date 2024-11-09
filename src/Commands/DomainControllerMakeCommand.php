@@ -92,8 +92,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
 
         $replace = [];
 
-        // Ensure invalid artifacts are stripped (Laravel 10 compatibility)
-        $replace["use {$this->rootNamespace()}Http\Controllers\Controller;\n"] = '';
+        // Todo: these were attempted tweaks to counteract failing CI tests
+        // on Laravel 10, and should be revisited at some point.
+        // $replace["use {$this->rootNamespace()}Http\Controllers\Controller;\n"] = '';
+        // $replace[' extends Controller'] = '';
 
         $appRootNamespace = $this->laravel->getNamespace();
         $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
@@ -103,8 +105,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);
             $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
-        } else {
-            $replace[' extends Controller'] = '';
         }
 
         $stub = str_replace(
