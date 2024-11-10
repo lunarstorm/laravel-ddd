@@ -102,7 +102,7 @@ it('can publish specific stubs interactively', function () {
     $options = app('ddd')->stubs()->allStubs();
 
     $matches = collect($options)
-        ->filter(fn ($stub, $path) => str($stub)->contains('class'))
+        ->filter(fn ($stub, $path) => str($stub)->contains('model'))
         ->all();
 
     $this
@@ -110,9 +110,9 @@ it('can publish specific stubs interactively', function () {
         ->expectsQuestion('What do you want to do?', 'some')
         ->expectsSearch(
             'Which stub should be published?',
-            search: 'class',
+            search: 'model',
             answers: $matches,
-            answer: ['class.stub']
+            answer: ['model.stub']
         )
         ->assertSuccessful()
         ->execute();
@@ -123,5 +123,5 @@ it('can publish specific stubs interactively', function () {
 
     expect(count($stubFiles))->toEqual(1);
 
-    expect($stubFiles[0]->getFilename())->toEqual('class.stub');
+    expect($stubFiles[0]->getFilename())->toEqual('model.stub');
 });
