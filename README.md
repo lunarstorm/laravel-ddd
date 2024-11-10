@@ -31,43 +31,7 @@ Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-acti
 ```bash
 composer require lorisleiva/laravel-actions
 ```
-The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may customize the stubs accordingly.
-
-### Customizing Stubs
-To publish one or more stubs for customization, you may use the `ddd:stub` command:
-```bash
-# Publish one or more stubs interactively via prompts
-php artisan ddd:stub
-
-# Publish all stubs
-php artisan ddd:stub --all
-
-# Publish and overwrite only the files that have already been published
-php artisan ddd:stub --all --existing
-
-# Overwrite any existing files
-php artisan ddd:stub --all --force
-
-# Publish one or more stubs specified as arguments
-php artisan ddd:stub model
-php artisan ddd:stub model dto action
-php artisan ddd:stub controller controller.plain controller.api
-```
-To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
-```bash 
-php artisan ddd:stub listener.
-```
-Output:
-```bash
-Publishing /stubs/ddd/listener.typed.queued.stub
-Publishing /stubs/ddd/listener.queued.stub
-Publishing /stubs/ddd/listener.typed.stub
-Publishing /stubs/ddd/listener.stub
-```
-For a quick reference of available stubs, use the `--list` option:
-```bash
-php artisan ddd:stub --list
-```
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [customize the stubs](#publishing-stubs-advanced) accordingly.
 
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
@@ -183,8 +147,8 @@ Output:
 │               └─ UpdateInvoiceRequest.php
 ├─ src/Domain
     └─ Invoicing
-         └─ Models
-             └─ Invoice.php
+        └─ Models
+            └─ Invoice.php
 ```
 
 ### Nested Objects
@@ -247,13 +211,49 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 ```
 
 ## Customization
+### Config File
 This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the [config file](#config-file) and generator stubs as needed:
 
 ```bash
-php artisan vendor:publish --tag="ddd-config"
-php artisan vendor:publish --tag="ddd-stubs"
+php artisan ddd:publish --config
+php artisan ddd:publish --stubs
 ```
-Note that the extended commands do not publish ddd-specific stubs, and inherit the respective application-level stubs published by Laravel.
+
+### Publishing Stubs (Advanced)
+For more granular management of stubs, you may use the `ddd:stub` command:
+```bash
+# Publish one or more stubs interactively via prompts
+php artisan ddd:stub
+
+# Publish all stubs
+php artisan ddd:stub --all
+
+# Publish and overwrite only the files that have already been published
+php artisan ddd:stub --all --existing
+
+# Overwrite any existing files
+php artisan ddd:stub --all --force
+
+# Publish one or more stubs specified as arguments
+php artisan ddd:stub model
+php artisan ddd:stub model dto action
+php artisan ddd:stub controller controller.plain controller.api
+```
+To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
+```bash 
+php artisan ddd:stub listener.
+```
+Output:
+```bash
+Publishing /stubs/ddd/listener.typed.queued.stub
+Publishing /stubs/ddd/listener.queued.stub
+Publishing /stubs/ddd/listener.typed.stub
+Publishing /stubs/ddd/listener.stub
+```
+For a quick reference of available stubs, use the `--list` option:
+```bash
+php artisan ddd:stub --list
+```
 
 ## Domain Autoloading and Discovery
 Autoloading behaviour can be configured with the `ddd.autoload` configuration option. By default, domain providers, commands, policies, and factories are auto-discovered and registered.
