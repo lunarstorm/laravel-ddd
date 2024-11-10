@@ -142,6 +142,7 @@ class Domain
         $baseName = str($name)->replace($namespace, '')
             ->replace(['\\', '/'], '\\')
             ->trim('\\')
+            ->when($type === 'factory', fn ($name) => $name->finish('Factory'))
             ->toString();
 
         $fullyQualifiedName = $namespace.'\\'.$baseName;
