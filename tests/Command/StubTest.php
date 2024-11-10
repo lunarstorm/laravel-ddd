@@ -124,4 +124,4 @@ it('can publish specific stubs interactively', function () {
     expect(count($stubFiles))->toEqual(1);
 
     expect($stubFiles[0]->getFilename())->toEqual('model.stub');
-});
+})->skipOnLaravelVersionsBelow('11.30.0');

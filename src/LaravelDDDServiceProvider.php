@@ -63,12 +63,22 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\Migration\DomainMigrateMakeCommand::class,
             ]);
 
-        if (app()->version() >= 11) {
+        if ($this->laravelVersion(11)) {
             $package->hasCommand(Commands\DomainClassMakeCommand::class);
             $package->hasCommand(Commands\DomainEnumMakeCommand::class);
             $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
+
+        // if ($this->laravelVersion('11.30.0')) {
+        //     $package->hasCommand(Commands\PublishCommand::class);
+        //     $package->hasCommand(Commands\StubCommand::class);
+        // }
+    }
+
+    protected function laravelVersion($value)
+    {
+        return version_compare(app()->version(), $value, '>=');
     }
 
     protected function registerMigrations()
