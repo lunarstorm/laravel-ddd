@@ -53,7 +53,9 @@ class PublishCommand extends Command
 
         if (in_array('stubs', $thingsToPublish)) {
             $this->comment('Publishing stubs...');
-            $this->call('ddd:stub --all');
+            $this->call('ddd:stub', [
+                '--all' => true,
+            ]);
         }
 
         return self::SUCCESS;
