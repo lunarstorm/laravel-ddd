@@ -136,6 +136,8 @@ class TestCase extends Orchestra
         (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
             ->setTimeout(null)
             ->run(function ($type, $output) {});
+
+        return $this;
     }
 
     protected function cleanSlate()
@@ -148,13 +150,24 @@ class TestCase extends Orchestra
         File::cleanDirectory(base_path('database/factories'));
 
         File::deleteDirectory(resource_path('stubs/ddd'));
+        File::deleteDirectory(base_path('stubs'));
         File::deleteDirectory(base_path('Custom'));
         File::deleteDirectory(base_path('src/Domain'));
         File::deleteDirectory(base_path('src/Domains'));
         File::deleteDirectory(base_path('src/App'));
+        File::deleteDirectory(app_path('Modules'));
         File::deleteDirectory(app_path('Models'));
 
         File::deleteDirectory(base_path('bootstrap/cache/ddd'));
+
+        return $this;
+    }
+
+    protected function cleanStubs()
+    {
+        File::cleanDirectory(base_path('stubs'));
+
+        return $this;
     }
 
     protected function setupTestApplication()
@@ -166,6 +179,8 @@ class TestCase extends Orchestra
         File::ensureDirectoryExists(app_path('Models'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
+
+        return $this;
     }
 
     protected function setDomainPathInComposer($domainNamespace, $domainPath, bool $reload = true)

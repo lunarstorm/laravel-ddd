@@ -2,8 +2,14 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+
+beforeEach(function () {
+    $this->cleanSlate();
+    $this->setupTestApplication();
+});
 
 it('can generate domain models', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);
@@ -210,4 +216,54 @@ it('extends custom base models when applicable', function ($baseModelClass, $bas
     ['Lunarstorm\LaravelDDD\Models\DomainModel', 'DomainModel'],
     ['Illuminate\Database\Eloquent\NonExistentModel', 'NonExistentModel'],
     ['OtherVendor\OtherPackage\Models\NonExistentModel', 'NonExistentModel'],
+]);
+
+it('does not attempt to extend custom base models when using custom stubs', function ($baseModelClass, $baseModelName, $stubFolder) {
+    Config::set('ddd.base_model', $baseModelClass);
+
+    $domain = 'Fruits';
+    $modelName = 'Lemon';
+
+    $expectedModelPath = base_path(implode('/', [
+        config('ddd.domain_path'),
+        $domain,
+        config('ddd.namespaces.model'),
+        "{$modelName}.php",
+    ]));
+
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
+
+    // Publish a custom stub
+    $customStub = <<<'STUB'
+<?php
+
+namespace {{ namespace }};
+
+class {{ class }}
+{
+    use CustomModelTrait;
+}
+STUB;
+
+    File::ensureDirectoryExists(app()->basePath($stubFolder));
+    file_put_contents(app()->basePath($stubFolder.'/model.stub'), $customStub);
+    expect(file_exists(app()->basePath($stubFolder.'/model.stub')))->toBeTrue();
+
+    Artisan::call("ddd:model {$domain}:{$modelName}");
+
+    expect(file_exists($expectedModelPath))->toBeTrue();
+
+    expect(file_get_contents($expectedModelPath))
+        ->toContain('use CustomModelTrait;')
+        ->not->toContain("use {$baseModelClass};")
+        ->not->toContain("extends {$baseModelName}");
+
+    $this->cleanStubs();
+})->with([
+    ['Domain\Shared\Models\BaseModel', 'BaseModel'],
+])->with([
+    'stubs',
+    'stubs/ddd',
 ]);

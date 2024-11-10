@@ -23,11 +23,7 @@ class InstallCommand extends Command
         $this->registerDomainAutoload();
 
         if ($this->confirm('Would you like to publish stubs?')) {
-            $this->comment('Publishing stubs...');
-
-            $this->callSilently('vendor:publish', [
-                '--tag' => 'ddd-stubs',
-            ]);
+            $this->call('ddd:stub');
         }
 
         return self::SUCCESS;

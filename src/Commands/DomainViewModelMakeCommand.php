@@ -3,10 +3,13 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 
 class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {
+    use HasDomainStubs;
+
     protected $name = 'ddd:view-model';
 
     /**
@@ -29,7 +32,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('view-model.php.stub');
+        return $this->resolveDddStubPath('view-model.stub');
     }
 
     protected function preparePlaceholders(): array
