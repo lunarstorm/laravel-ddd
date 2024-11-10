@@ -102,21 +102,6 @@ class Domain
         return Path::join(DomainResolver::applicationLayerPath(), $path);
     }
 
-    public function pathInApplicationLayer(?string $path = null): string
-    {
-        if (is_null($path)) {
-            return $this->path;
-        }
-
-        $path = str($path)
-            ->replace(DomainResolver::applicationLayerRootNamespace(), '')
-            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
-            ->append('.php')
-            ->toString();
-
-        return Path::join(DomainResolver::applicationLayerPath(), $path);
-    }
-
     public function relativePath(string $path = ''): string
     {
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);

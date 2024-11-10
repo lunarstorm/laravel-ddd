@@ -96,21 +96,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->loadMigrationsFrom(DomainMigration::paths());
     }
 
-    protected function registerMigrations()
-    {
-        $this->app->singleton(Commands\Migration\DomainMigrateMakeCommand::class, function ($app) {
-            // Once we have the migration creator registered, we will create the command
-            // and inject the creator. The creator is responsible for the actual file
-            // creation of the migrations, and may be extended by these developers.
-            $creator = $app['migration.creator'];
-            $composer = $app['composer'];
-
-            return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
-        });
-
-        $this->loadMigrationsFrom(DomainMigration::paths());
-    }
-
     public function packageBooted()
     {
         $this->publishes([
