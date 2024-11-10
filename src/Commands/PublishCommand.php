@@ -18,6 +18,7 @@ class PublishCommand extends Command
         return [
             ['config', 'c', InputOption::VALUE_NONE, 'Publish the config file'],
             ['stubs', 's', InputOption::VALUE_NONE, 'Publish the stubs'],
+            ['all', 'a', InputOption::VALUE_NONE, 'Publish both the config file and stubs'],
         ];
     }
 
@@ -40,6 +41,7 @@ class PublishCommand extends Command
         $thingsToPublish = [
             ...$this->option('config') ? ['config'] : [],
             ...$this->option('stubs') ? ['stubs'] : [],
+            ...$this->option('all') ? ['config', 'stubs'] : [],
         ] ?: $this->askForThingsToPublish();
 
         if (in_array('config', $thingsToPublish)) {
@@ -51,10 +53,7 @@ class PublishCommand extends Command
 
         if (in_array('stubs', $thingsToPublish)) {
             $this->comment('Publishing stubs...');
-
-            $this->callSilently('vendor:publish', [
-                '--tag' => 'ddd-stubs',
-            ]);
+            $this->call('ddd:stub --all');
         }
 
         return self::SUCCESS;

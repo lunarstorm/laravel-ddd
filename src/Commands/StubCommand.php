@@ -3,11 +3,9 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Console\StubPublishCommand;
 use Illuminate\Foundation\Events\PublishingStubs;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use ReflectionClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -36,81 +34,17 @@ class StubCommand extends Command
         ];
     }
 
-    protected function getNativeLaravelStubs()
+    protected function getStubChoices()
     {
-        $laravelStubCommand = new ReflectionClass(new StubPublishCommand);
-
-        $dir = dirname($laravelStubCommand->getFileName());
-
         return [
-            $dir.'/stubs/cast.inbound.stub' => 'cast.inbound.stub',
-            $dir.'/stubs/cast.stub' => 'cast.stub',
-            $dir.'/stubs/class.stub' => 'class.stub',
-            $dir.'/stubs/class.invokable.stub' => 'class.invokable.stub',
-            $dir.'/stubs/console.stub' => 'console.stub',
-            $dir.'/stubs/enum.stub' => 'enum.stub',
-            $dir.'/stubs/enum.backed.stub' => 'enum.backed.stub',
-            $dir.'/stubs/event.stub' => 'event.stub',
-            $dir.'/stubs/job.queued.stub' => 'job.queued.stub',
-            $dir.'/stubs/job.stub' => 'job.stub',
-            $dir.'/stubs/listener.typed.queued.stub' => 'listener.typed.queued.stub',
-            $dir.'/stubs/listener.queued.stub' => 'listener.queued.stub',
-            $dir.'/stubs/listener.typed.stub' => 'listener.typed.stub',
-            $dir.'/stubs/listener.stub' => 'listener.stub',
-            $dir.'/stubs/mail.stub' => 'mail.stub',
-            $dir.'/stubs/markdown-mail.stub' => 'markdown-mail.stub',
-            $dir.'/stubs/markdown-notification.stub' => 'markdown-notification.stub',
-            $dir.'/stubs/model.pivot.stub' => 'model.pivot.stub',
-            $dir.'/stubs/model.stub' => 'model.stub',
-            $dir.'/stubs/notification.stub' => 'notification.stub',
-            $dir.'/stubs/observer.plain.stub' => 'observer.plain.stub',
-            $dir.'/stubs/observer.stub' => 'observer.stub',
-            $dir.'/stubs/pest.stub' => 'pest.stub',
-            $dir.'/stubs/pest.unit.stub' => 'pest.unit.stub',
-            $dir.'/stubs/policy.plain.stub' => 'policy.plain.stub',
-            $dir.'/stubs/policy.stub' => 'policy.stub',
-            $dir.'/stubs/provider.stub' => 'provider.stub',
-            $dir.'/stubs/request.stub' => 'request.stub',
-            $dir.'/stubs/resource.stub' => 'resource.stub',
-            $dir.'/stubs/resource-collection.stub' => 'resource-collection.stub',
-            $dir.'/stubs/rule.stub' => 'rule.stub',
-            $dir.'/stubs/scope.stub' => 'scope.stub',
-            $dir.'/stubs/test.stub' => 'test.stub',
-            $dir.'/stubs/test.unit.stub' => 'test.unit.stub',
-            $dir.'/stubs/trait.stub' => 'trait.stub',
-            $dir.'/stubs/view-component.stub' => 'view-component.stub',
-            // realpath($dir . '/../../Database/Console/Factories/stubs/factory.stub') => 'factory.stub',
-            realpath($dir.'/../../Database/Console/Seeds/stubs/seeder.stub') => 'seeder.stub',
-            realpath($dir.'/../../Database/Migrations/stubs/migration.create.stub') => 'migration.create.stub',
-            realpath($dir.'/../../Database/Migrations/stubs/migration.stub') => 'migration.stub',
-            realpath($dir.'/../../Database/Migrations/stubs/migration.update.stub') => 'migration.update.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.api.stub') => 'controller.api.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.invokable.stub') => 'controller.invokable.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.model.api.stub') => 'controller.model.api.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.model.stub') => 'controller.model.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.nested.api.stub') => 'controller.nested.api.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.nested.singleton.api.stub') => 'controller.nested.singleton.api.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.nested.singleton.stub') => 'controller.nested.singleton.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.nested.stub') => 'controller.nested.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.plain.stub') => 'controller.plain.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.singleton.api.stub') => 'controller.singleton.api.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.singleton.stub') => 'controller.singleton.stub',
-            realpath($dir.'/../../Routing/Console/stubs/controller.stub') => 'controller.stub',
-            realpath($dir.'/../../Routing/Console/stubs/middleware.stub') => 'middleware.stub',
+            ...app('ddd')->stubs()->dddStubs(),
+            ...app('ddd')->stubs()->frameworkStubs(),
         ];
     }
 
     protected function resolveSelectedStubs(array $names = [])
     {
-        $stubs = [
-            realpath(__DIR__.'/../../stubs/action.stub') => 'action.stub',
-            realpath(__DIR__.'/../../stubs/dto.stub') => 'dto.stub',
-            realpath(__DIR__.'/../../stubs/value-object.stub') => 'value-object.stub',
-            realpath(__DIR__.'/../../stubs/view-model.stub') => 'view-model.stub',
-            realpath(__DIR__.'/../../stubs/base-view-model.stub') => 'base-view-model.stub',
-            realpath(__DIR__.'/../../stubs/factory.stub') => 'factory.stub',
-            ...$this->getNativeLaravelStubs(),
-        ];
+        $stubs = $this->getStubChoices();
 
         if ($names) {
             return collect($stubs)
@@ -121,7 +55,7 @@ class StubCommand extends Command
                 ->all();
         }
 
-        return multisearch(
+        $selected = multisearch(
             label: 'Which stub should be published?',
             placeholder: 'Search for a stub...',
             options: fn (string $value) => strlen($value) > 0
@@ -129,6 +63,10 @@ class StubCommand extends Command
                 : $stubs,
             required: true
         );
+
+        return collect($stubs)
+            ->filter(fn ($stub, $path) => in_array($stub, $selected))
+            ->all();
     }
 
     public function handle(): int
@@ -139,35 +77,25 @@ class StubCommand extends Command
             default => select(
                 label: 'What do you want to do?',
                 options: [
-                    'all' => 'Publish all stubs',
                     'some' => 'Choose stubs to publish',
+                    'all' => 'Publish all stubs',
                 ],
                 required: true,
-                default: 'all'
+                default: 'some'
             )
         };
 
-        if ($option === 'all') {
-            $this->comment('Publishing all stubs...');
-
-            $this->call('vendor:publish', [
-                '--tag' => 'ddd-stubs',
-            ]);
-
-            return self::SUCCESS;
-        }
-
-        $stubs = $this->resolveSelectedStubs($this->argument('name'));
-
-        if (! is_dir($stubsPath = $this->laravel->basePath('stubs/ddd'))) {
-            (new Filesystem)->makeDirectory($stubsPath, recursive: true);
-        }
+        $stubs = $option === 'all'
+            ? $this->getStubChoices()
+            : $this->resolveSelectedStubs($this->argument('name'));
 
         if (empty($stubs)) {
             $this->warn('No matching stubs found.');
 
             return self::INVALID;
         }
+
+        File::ensureDirectoryExists($stubsPath = $this->laravel->basePath('stubs/ddd'));
 
         $this->laravel['events']->dispatch($event = new PublishingStubs($stubs));
 

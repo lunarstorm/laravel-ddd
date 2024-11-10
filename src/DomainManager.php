@@ -32,12 +32,15 @@ class DomainManager
 
     protected ?DomainCommandContext $commandContext;
 
+    protected StubManager $stubs;
+
     public function __construct()
     {
         $this->autoloadFilter = null;
         $this->applicationLayerFilter = null;
         $this->namespaceResolver = null;
         $this->commandContext = null;
+        $this->stubs = new StubManager;
     }
 
     public function filterAutoloadPathsUsing(callable $filter): void
@@ -83,5 +86,10 @@ class DomainManager
     public function packagePath($path = ''): string
     {
         return Path::normalize(__DIR__.'/../'.$path);
+    }
+
+    public function stubs(): StubManager
+    {
+        return $this->stubs;
     }
 }
