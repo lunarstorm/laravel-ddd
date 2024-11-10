@@ -119,8 +119,7 @@ it('can publish stubs using wildcard', function ($argument, $stubsToPublish) {
 })->with([
     'model*' => ['model*', ['model', 'model.pivot']],
     'model.' => ['model.', ['model', 'model.pivot']],
-    'listener*' => ['listener*', ['listener', 'listener.typed', 'listener.queued', 'listener.typed.queued']],
-    'listener.' => ['listener.', ['listener', 'listener.typed', 'listener.queued', 'listener.typed.queued']],
+    'policy.' => ['policy.', ['policy', 'policy.plain']],
 ]);
 
 it('can publish stubs using wildcard (laravel 11 stubs)', function ($argument, $stubsToPublish) {
