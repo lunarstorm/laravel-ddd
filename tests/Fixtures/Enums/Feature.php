@@ -9,7 +9,7 @@ enum Feature: string
     case Laravel11 = '11.0.0';
     case LaravelPromptsPackage = '10.17';
     case LaravelPackageOptimizeCommands = '11.27.1';
-    case ExpectSearchAssertion = '11.30.0';
+    case PromptMultiSearchAssertion = '11.30.0';
 
     public function exists(): bool
     {

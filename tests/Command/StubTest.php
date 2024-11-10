@@ -106,26 +106,17 @@ it('can publish specific stubs interactively', function () {
         ->filter(fn ($stub, $path) => str($stub)->contains('model'))
         ->all();
 
-    if (Feature::ExpectSearchAssertion->exists()) {
-        $this
-            ->artisan('ddd:stub')
-            ->expectsQuestion('What do you want to do?', 'some')
-            ->expectsSearch(
-                'Which stub should be published?',
-                search: 'model',
-                answers: $matches,
-                answer: ['model.stub']
-            )
-            ->assertSuccessful()
-            ->execute();
-    } else {
-        $this
-            ->artisan('ddd:stub')
-            ->expectsQuestion('What do you want to do?', 'some')
-            ->expectsQuestion('Which stub should be published?', ['model.stub'])
-            ->assertSuccessful()
-            ->execute();
-    }
+    $this
+        ->artisan('ddd:stub')
+        ->expectsQuestion('What do you want to do?', 'some')
+        ->expectsSearch(
+            'Which stub should be published?',
+            search: 'model',
+            answers: $matches,
+            answer: ['model.stub']
+        )
+        ->assertSuccessful()
+        ->execute();
 
     assertDirectoryExists($publishedStubFolder);
 
@@ -134,4 +125,4 @@ it('can publish specific stubs interactively', function () {
     expect(count($stubFiles))->toEqual(1);
 
     expect($stubFiles[0]->getFilename())->toEqual('model.stub');
-});
+})->skip(fn () => Feature::PromptMultiSearchAssertion->missing(), 'Multi-search assertion not available');
