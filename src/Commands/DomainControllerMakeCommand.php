@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 use function Laravel\Prompts\confirm;
@@ -11,6 +12,7 @@ use function Laravel\Prompts\confirm;
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
     use ForwardsToDomainCommands,
+        HasDomainStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
@@ -78,5 +80,39 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             '{{ namespacedRequests }}' => $namespacedRequests,
             '{{namespacedRequests}}' => $namespacedRequests,
         ]);
+    }
+
+    protected function buildClass($name)
+    {
+        $stub = parent::buildClass($name);
+
+        if ($this->isUsingPublishedStub()) {
+            return $stub;
+        }
+
+        $replace = [];
+
+        // Todo: these were attempted tweaks to counteract failing CI tests
+        // on Laravel 10, and should be revisited at some point.
+        // $replace["use {$this->rootNamespace()}Http\Controllers\Controller;\n"] = '';
+        // $replace[' extends Controller'] = '';
+
+        $appRootNamespace = $this->laravel->getNamespace();
+        $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
+
+        $baseControllerExists = $this->files->exists($pathToAppBaseController);
+
+        if ($baseControllerExists) {
+            $controllerClass = class_basename($name);
+            $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+        }
+
+        $stub = str_replace(
+            array_keys($replace),
+            array_values($replace),
+            $stub
+        );
+
+        return $this->sortImports($stub);
     }
 }

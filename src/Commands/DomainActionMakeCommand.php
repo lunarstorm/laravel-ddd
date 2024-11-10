@@ -2,8 +2,12 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
+
 class DomainActionMakeCommand extends DomainGeneratorCommand
 {
+    use HasDomainStubs;
+
     protected $name = 'ddd:action';
 
     /**
@@ -17,7 +21,7 @@ class DomainActionMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('action.php.stub');
+        return $this->resolveDddStubPath('action.stub');
     }
 
     protected function preparePlaceholders(): array

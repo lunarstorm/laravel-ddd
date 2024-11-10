@@ -3,8 +3,11 @@
 All notable changes to `laravel-ddd` will be documented in this file.
 
 ## [Unreleased]
+### Breaking
+- Stubs are now published to `/stubs/ddd/*` instead of `resources/stubs/ddd/*`. If you have ddd stubs published from a prior version, they should be relocated.
+
 ### Added
-- Experimental: Ability to configure the Application Layer, to generate domain objects that don't typically belong inside the domain layer.
+- Ability to configure the Application Layer, to generate domain objects that don't typically belong inside the domain layer.
     ```php
     // In config/ddd.php
     'application' => [
@@ -22,6 +25,7 @@ All notable changes to `laravel-ddd` will be documented in this file.
 - Added `ddd:middleware` to generate domain-specific middleware in the application layer.
 - Added `ddd:migration` to generate domain migrations.
 - Added `ddd:seeder` to generate domain seeders.
+- Added `ddd:stub` to list, search, and publish one or more stubs as needed.
 - Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
 
 ### Changed
@@ -39,6 +43,10 @@ All notable changes to `laravel-ddd` will be documented in this file.
 
 ### Deprecated
 - Domain base models are no longer required by default, and `config('ddd.base_model')` is now `null` by default.
+
+## [1.1.3] - 2024-11-05
+### Chore
+- Allow `laravel/prompts` dependency to use latest version when possible.
 
 ## [1.1.2] - 2024-09-02
 ### Fixed

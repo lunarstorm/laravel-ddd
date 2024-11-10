@@ -10,47 +10,47 @@ beforeEach(function () {
     Config::set('ddd.domain_namespace', 'Domain');
 });
 
-// it('can generate a domain model with factory', function () {
-//     $domainName = 'Invoicing';
-//     $modelName = 'Record';
+it('can generate a domain model with factory', function () {
+    $domainName = 'Invoicing';
+    $modelName = 'Record';
 
-//     $domain = new Domain($domainName);
+    $domain = new Domain($domainName);
 
-//     $factoryName = "{$modelName}Factory";
+    $factoryName = "{$modelName}Factory";
 
-//     $domainModel = $domain->model($modelName);
+    $domainModel = $domain->model($modelName);
 
-//     $domainFactory = $domain->factory($factoryName);
+    $domainFactory = $domain->factory($factoryName);
 
-//     $expectedModelPath = base_path($domainModel->path);
+    $expectedModelPath = base_path($domainModel->path);
 
-//     if (file_exists($expectedModelPath)) {
-//         unlink($expectedModelPath);
-//     }
+    if (file_exists($expectedModelPath)) {
+        unlink($expectedModelPath);
+    }
 
-//     $expectedFactoryPath = base_path($domainFactory->path);
+    $expectedFactoryPath = base_path($domainFactory->path);
 
-//     if (file_exists($expectedFactoryPath)) {
-//         unlink($expectedFactoryPath);
-//     }
+    if (file_exists($expectedFactoryPath)) {
+        unlink($expectedFactoryPath);
+    }
 
-//     Artisan::call('ddd:model', [
-//         'name' => $modelName,
-//         '--domain' => $domain->dotName,
-//         '--factory' => true,
-//     ]);
+    Artisan::call('ddd:model', [
+        'name' => $modelName,
+        '--domain' => $domain->dotName,
+        '--factory' => true,
+    ]);
 
-//     $output = Artisan::output();
+    $output = Artisan::output();
 
-//     expect($output)->toContainFilepath($domainModel->path);
+    expect($output)->toContainFilepath($domainModel->path);
 
-//     expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
-//     expect(file_exists($expectedFactoryPath))->toBeTrue("Expecting factory file to be generated at {$expectedFactoryPath}");
+    expect(file_exists($expectedModelPath))->toBeTrue("Expecting model file to be generated at {$expectedModelPath}");
+    expect(file_exists($expectedFactoryPath))->toBeTrue("Expecting factory file to be generated at {$expectedFactoryPath}");
 
-//     expect(file_get_contents($expectedFactoryPath))
-//         ->toContain("use {$domainModel->fullyQualifiedName};")
-//         ->toContain("protected \$model = {$modelName}::class;");
-// });
+    expect(file_get_contents($expectedFactoryPath))
+        ->toContain("use {$domainModel->fullyQualifiedName};")
+        ->toContain("protected \$model = {$modelName}::class;");
+});
 
 it('can generate domain model with options', function ($options, $objectType, $objectName, $expectedObjectPath) {
     $domainName = 'Invoicing';
@@ -71,8 +71,7 @@ it('can generate domain model with options', function ($options, $objectType, $o
     }
 
     $command = [
-        'ddd:model',
-        [
+        'ddd:model', [
             'name' => $modelName,
             '--domain' => $domain->dotName,
             ...$options,

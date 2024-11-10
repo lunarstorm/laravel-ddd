@@ -5,12 +5,14 @@ namespace Lunarstorm\LaravelDDD\Commands;
 use Illuminate\Foundation\Console\ModelMakeCommand;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 
 class DomainModelMakeCommand extends ModelMakeCommand
 {
     use ForwardsToDomainCommands,
+        HasDomainStubs,
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:model';
@@ -31,32 +33,51 @@ class DomainModelMakeCommand extends ModelMakeCommand
         $this->afterHandle();
     }
 
+    protected function buildFactoryReplacements()
+    {
+        $replacements = parent::buildFactoryReplacements();
+
+        if ($this->option('factory')) {
+            $factoryNamespace = Str::start($this->domain->factory($this->getNameInput())->fullyQualifiedName, '\\');
+
+            $factoryCode = <<<EOT
+            /** @use HasFactory<$factoryNamespace> */
+                use HasFactory;
+            EOT;
+
+            $replacements['{{ factory }}'] = $factoryCode;
+            $replacements['{{ factoryImport }}'] = 'use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;';
+        }
+
+        return $replacements;
+    }
+
     protected function buildClass($name)
     {
         $stub = parent::buildClass($name);
 
-        $replacements = [
-            'use Illuminate\Database\Eloquent\Factories\HasFactory;' => "use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;",
-        ];
+        if ($this->isUsingPublishedStub()) {
+            return $stub;
+        }
+
+        $replace = [];
 
         if ($baseModel = $this->getBaseModel()) {
             $baseModelClass = class_basename($baseModel);
 
-            $replacements = array_merge($replacements, [
+            $replace = array_merge($replace, [
                 'extends Model' => "extends {$baseModelClass}",
                 'use Illuminate\Database\Eloquent\Model;' => "use {$baseModel};",
             ]);
         }
 
         $stub = str_replace(
-            array_keys($replacements),
-            array_values($replacements),
+            array_keys($replace),
+            array_values($replace),
             $stub
         );
 
-        $stub = $this->sortImports($stub);
-
-        return $stub;
+        return $this->sortImports($stub);
     }
 
     protected function createBaseModelIfNeeded()

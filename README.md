@@ -31,7 +31,7 @@ Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-acti
 ```bash
 composer require lorisleiva/laravel-actions
 ```
-The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may customize the stubs accordingly.
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [customize the stubs](#publishing-stubs-advanced) accordingly.
 
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
@@ -131,7 +131,7 @@ Some objects interact with the domain layer, but are not part of the domain laye
     ],
 ],
 ```
-The default configuration above will result in the following:
+The configuration above will result in the following:
 ```bash
 ddd:model Invoicing:Invoice --controller --resource --requests
 ```
@@ -147,23 +147,8 @@ Output:
 │               └─ UpdateInvoiceRequest.php
 ├─ src/Domain
     └─ Invoicing
-         └─ Models
-             └─ Invoice.php
-```
-
-### Custom Layers (since 1.2)
-Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
-```php
-// In config/ddd.php
-'application' => [
-    'path' => 'app/Modules',
-    'namespace' => 'App\Modules',
-    'objects' => [
-        'controller',
-        'request',
-        'middleware',
-    ],
-],
+        └─ Models
+            └─ Invoice.php
 ```
 
 ### Nested Objects
@@ -226,13 +211,49 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 ```
 
 ## Customization
+### Config File
 This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the [config file](#config-file) and generator stubs as needed:
 
 ```bash
-php artisan vendor:publish --tag="ddd-config"
-php artisan vendor:publish --tag="ddd-stubs"
+php artisan ddd:publish --config
+php artisan ddd:publish --stubs
 ```
-Note that the extended commands do not publish ddd-specific stubs, and inherit the respective application-level stubs published by Laravel.
+
+### Publishing Stubs (Advanced)
+For more granular management of stubs, you may use the `ddd:stub` command:
+```bash
+# Publish one or more stubs interactively via prompts
+php artisan ddd:stub
+
+# Publish all stubs
+php artisan ddd:stub --all
+
+# Publish and overwrite only the files that have already been published
+php artisan ddd:stub --all --existing
+
+# Overwrite any existing files
+php artisan ddd:stub --all --force
+
+# Publish one or more stubs specified as arguments
+php artisan ddd:stub model
+php artisan ddd:stub model dto action
+php artisan ddd:stub controller controller.plain controller.api
+```
+To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
+```bash 
+php artisan ddd:stub listener.
+```
+Output:
+```bash
+Publishing /stubs/ddd/listener.typed.queued.stub
+Publishing /stubs/ddd/listener.queued.stub
+Publishing /stubs/ddd/listener.typed.stub
+Publishing /stubs/ddd/listener.stub
+```
+For a quick reference of available stubs, use the `--list` option:
+```bash
+php artisan ddd:stub --list
+```
 
 ## Domain Autoloading and Discovery
 Autoloading behaviour can be configured with the `ddd.autoload` configuration option. By default, domain providers, commands, policies, and factories are auto-discovered and registered.
@@ -338,12 +359,17 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure domain objects in the application layer.
+    | Configure objects that belong in the application layer.
+    |
+    | e.g., App\Modules\Invoicing\Controllers\*
+    |       App\Modules\Invoicing\Requests\*
     |
     */
     'application' => [
         'path' => 'app/Modules',
         'namespace' => 'App\Modules',
+
+        // Specify which ddd:* objects belong in the application layer
         'objects' => [
             'controller',
             'request',
@@ -353,12 +379,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Generator Object Namespaces
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | This array maps the default relative namespaces of generated objects
+    | relative to their domain's root namespace.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*

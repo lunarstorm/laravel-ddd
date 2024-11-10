@@ -75,16 +75,4 @@ it('can generate domain model with controller', function ($domainName, $modelNam
             'app/Modules/Reporting/Internal/Controllers/ReportSubmissionController.php',
         ],
     ],
-
-    // '--controller --api' => [
-    //     ['--controller' => true, '--api' => true],
-    //     'RecordController',
-    //     'app/Http/Controllers/Invoicing/RecordController.php',
-    // ],
-
-    // '--controller --requests' => [
-    //     ['--controller' => true, '--requests' => true],
-    //     'RecordController',
-    //     'app/Http/Controllers/Invoicing/RecordController.php',
-    // ],
 ]);

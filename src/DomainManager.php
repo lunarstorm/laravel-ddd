@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Console\Command;
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainCommandContext;
 
 class DomainManager
@@ -31,12 +32,15 @@ class DomainManager
 
     protected ?DomainCommandContext $commandContext;
 
+    protected StubManager $stubs;
+
     public function __construct()
     {
         $this->autoloadFilter = null;
         $this->applicationLayerFilter = null;
         $this->namespaceResolver = null;
         $this->commandContext = null;
+        $this->stubs = new StubManager;
     }
 
     public function filterAutoloadPathsUsing(callable $filter): void
@@ -77,5 +81,20 @@ class DomainManager
     public function getCommandContext(): ?DomainCommandContext
     {
         return $this->commandContext;
+    }
+
+    public function packagePath($path = ''): string
+    {
+        return Path::normalize(realpath(__DIR__.'/../'.$path));
+    }
+
+    public function laravelVersion($value)
+    {
+        return version_compare(app()->version(), $value, '>=');
+    }
+
+    public function stubs(): StubManager
+    {
+        return $this->stubs;
     }
 }
