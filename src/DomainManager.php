@@ -85,7 +85,7 @@ class DomainManager
 
     public function packagePath($path = ''): string
     {
-        return Path::normalize(__DIR__.'/../'.$path);
+        return Path::normalize(realpath(__DIR__.'/../'.$path));
     }
 
     public function laravelVersion($value)

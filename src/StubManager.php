@@ -68,8 +68,8 @@ class StubManager
             $dir.'/stubs/resource-collection.stub' => 'resource-collection.stub',
             $dir.'/stubs/rule.stub' => 'rule.stub',
             $dir.'/stubs/scope.stub' => 'scope.stub',
-            $dir.'/stubs/test.stub' => 'test.stub',
-            $dir.'/stubs/test.unit.stub' => 'test.unit.stub',
+            // $dir.'/stubs/test.stub' => 'test.stub',
+            // $dir.'/stubs/test.unit.stub' => 'test.unit.stub',
             $dir.'/stubs/trait.stub' => 'trait.stub',
             $dir.'/stubs/view-component.stub' => 'view-component.stub',
             // Factories will use a ddd-specific stub

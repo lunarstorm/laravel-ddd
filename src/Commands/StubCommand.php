@@ -6,11 +6,14 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\Events\PublishingStubs;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Facades\DDD;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 use function Laravel\Prompts\multisearch;
 use function Laravel\Prompts\select;
+use function Laravel\Prompts\table;
 
 class StubCommand extends Command
 {
@@ -31,6 +34,7 @@ class StubCommand extends Command
             ['all', 'a', InputOption::VALUE_NONE, 'Publish all stubs'],
             ['existing', null, InputOption::VALUE_NONE, 'Publish and overwrite only the files that have already been published'],
             ['force', null, InputOption::VALUE_NONE, 'Overwrite any existing files'],
+            ['list', 'l', InputOption::VALUE_NONE, 'List all available stubs'],
         ];
     }
 
@@ -47,11 +51,23 @@ class StubCommand extends Command
         $stubs = $this->getStubChoices();
 
         if ($names) {
+            [$startsWith, $exactNames] = collect($names)
+                ->partition(fn ($name) => str($name)->endsWith(['*', '.']));
+
+            $startsWith = $startsWith->map(
+                fn ($name) => str($name)
+                    ->replaceEnd('*', '.')
+                    ->replaceEnd('.', '')
+            );
+
             return collect($stubs)
-                ->filter(
-                    fn ($stub, $path) => in_array($stub, $names)
-                        || in_array(str($stub)->replaceEnd('.stub', '')->toString(), $names)
-                )
+                ->filter(function ($stub, $path) use ($startsWith, $exactNames) {
+                    $stubWithoutExtension = str($stub)->replaceEnd('.stub', '');
+
+                    return $exactNames->contains($stub)
+                        || $exactNames->contains($stubWithoutExtension)
+                        || str($stub)->startsWith($startsWith);
+                })
                 ->all();
         }
 
@@ -72,6 +88,7 @@ class StubCommand extends Command
     public function handle(): int
     {
         $option = match (true) {
+            $this->option('list') => 'list',
             $this->option('all') => 'all',
             count($this->argument('name')) > 0 => 'named',
             default => select(
@@ -84,6 +101,32 @@ class StubCommand extends Command
                 default: 'some'
             )
         };
+
+        if ($option === 'list') {
+            // $this->table(
+            //     ['Stub', 'Path'],
+            //     collect($this->getStubChoices())->map(
+            //         fn($stub, $path) => [
+            //             $stub,
+            //             Str::after($path, $this->laravel->basePath())
+            //         ]
+            //     )
+            // );
+
+            table(
+                headers: ['Stub', 'Source'],
+                rows: collect($this->getStubChoices())->map(
+                    fn ($stub, $path) => [
+                        Str::replaceLast('.stub', '', $stub),
+                        str($path)->startsWith(DDD::packagePath())
+                            ? 'ddd'
+                            : 'laravel',
+                    ]
+                )
+            );
+
+            return self::SUCCESS;
+        }
 
         $stubs = $option === 'all'
             ? $this->getStubChoices()

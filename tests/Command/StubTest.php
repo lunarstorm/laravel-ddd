@@ -95,6 +95,34 @@ it('can publish specific stubs using arguments', function ($stubsToPublish) {
     'controller' => [['controller']],
 ]);
 
+it('can publish stubs using wildcard', function ($argument, $stubsToPublish) {
+    $expectedStubFilenames = collect($stubsToPublish)
+        ->map(fn ($stub) => $stub.'.stub')
+        ->all();
+
+    $this
+        ->artisan("ddd:stub {$argument}")
+        ->assertSuccessful()
+        ->execute();
+
+    $publishedStubFolder = app()->basePath('stubs/ddd');
+
+    assertDirectoryExists($publishedStubFolder);
+
+    $stubFiles = File::files($publishedStubFolder);
+
+    expect(count($stubFiles))->toEqual(count($stubsToPublish));
+
+    foreach ($stubFiles as $file) {
+        expect($file->getFilename())->toBeIn($expectedStubFilenames);
+    }
+})->with([
+    'model*' => ['model*', ['model', 'model.pivot']],
+    'model.' => ['model*', ['model', 'model.pivot']],
+    'listener*' => ['listener*', ['listener', 'listener.typed', 'listener.queued', 'listener.typed.queued']],
+    'listener.' => ['listener*', ['listener', 'listener.typed', 'listener.queued', 'listener.typed.queued']],
+]);
+
 it('can publish specific stubs interactively', function () {
     $publishedStubFolder = app()->basePath('stubs/ddd');
 

@@ -33,6 +33,42 @@ composer require lorisleiva/laravel-actions
 ```
 The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may customize the stubs accordingly.
 
+### Customizing Stubs
+To publish one or more stubs for customization, you may use the `ddd:stub` command:
+```bash
+# Publish one or more stubs interactively via prompts
+php artisan ddd:stub
+
+# Publish all stubs
+php artisan ddd:stub --all
+
+# Publish and overwrite only the files that have already been published
+php artisan ddd:stub --all --existing
+
+# Overwrite any existing files
+php artisan ddd:stub --all --force
+
+# Publish one or more stubs specified as arguments
+php artisan ddd:stub model
+php artisan ddd:stub model dto action
+php artisan ddd:stub controller controller.plain controller.api
+```
+To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
+```bash 
+php artisan ddd:stub listener.
+```
+Output:
+```bash
+Publishing /stubs/ddd/listener.typed.queued.stub
+Publishing /stubs/ddd/listener.queued.stub
+Publishing /stubs/ddd/listener.typed.stub
+Publishing /stubs/ddd/listener.stub
+```
+For a quick reference of available stubs, use the `--list` option:
+```bash
+php artisan ddd:stub --list
+```
+
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
 ```bash
