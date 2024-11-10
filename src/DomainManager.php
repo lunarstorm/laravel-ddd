@@ -88,6 +88,11 @@ class DomainManager
         return Path::normalize(__DIR__.'/../'.$path);
     }
 
+    public function laravelVersion($value)
+    {
+        return version_compare(app()->version(), $value, '>=');
+    }
+
     public function stubs(): StubManager
     {
         return $this->stubs;

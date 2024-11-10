@@ -35,7 +35,7 @@ class StubManager
 
         $dir = dirname($laravelStubCommand->getFileName());
 
-        return [
+        $stubs = [
             $dir.'/stubs/cast.inbound.stub' => 'cast.inbound.stub',
             $dir.'/stubs/cast.stub' => 'cast.stub',
             $dir.'/stubs/class.stub' => 'class.stub',
@@ -92,5 +92,11 @@ class StubManager
             realpath($dir.'/../../Routing/Console/stubs/controller.stub') => 'controller.stub',
             realpath($dir.'/../../Routing/Console/stubs/middleware.stub') => 'middleware.stub',
         ];
+
+        // Some stubs are not available across all Laravel versions,
+        // so we'll just skip the files that don't exist.
+        return collect($stubs)->filter(function ($stub, $path) {
+            return file_exists($path);
+        })->all();
     }
 }
