@@ -19,7 +19,7 @@ it('can register a custom namespace resolver', function () {
         'namespace' => 'App',
     ]);
 
-    DDD::resolveObjectSchemaUsing(function (string $domainName, ?string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
+    DDD::resolveObjectSchemaUsing(function (string $domainName, string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
         if ($type === 'controller' && $command->option('api')) {
             return new ObjectSchema(
                 name: $name = str($nameInput)->replaceEnd('Controller', '')->finish('ApiController')->toString(),

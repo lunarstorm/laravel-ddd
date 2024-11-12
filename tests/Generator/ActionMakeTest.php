@@ -58,7 +58,7 @@ it('normalizes generated action object to pascal case', function ($given, $norma
     Artisan::call("ddd:action {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue("ddd:action {$domain}:{$given} -> expected {$expectedPath} to exist.");
-})->with('makeActionInputs')->only();
+})->with('makeActionInputs');
 
 it('extends a base action if specified in config', function ($baseAction) {
     Config::set('ddd.base_action', $baseAction);

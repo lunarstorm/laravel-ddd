@@ -151,6 +151,36 @@ Output:
             └─ Invoice.php
 ```
 
+### Custom Layers (since 1.2)
+Often times, additional top-level namespaces are needed to hold shared components, helpers, and things that are not domain-specific. A common example is the `Infrastructure` layer. You may configure these additional layers in the `ddd.layers` configuration.
+```php
+// In config/ddd.php
+'layers' => [
+    'Infrastructure' => 'src/Infrastructure',
+    // 'Support' => 'src/Support',
+],
+```
+The configuration above will result in the following:
+```bash
+ddd:model Invoicing:Invoice
+ddd:trait Infrastructure:Concerns/HasExpiryDate
+```
+Output:
+```
+├─ src/Domain
+|   └─ Invoicing
+|       └─ Models
+|           └─ Invoice.php
+├─ src/Infrastructure
+    └─ Concerns
+        └─ HasExpiryDate.php
+```
+After defining new layers in `ddd.php`, make sure the corresponding namespaces are also registered in your `composer.json` file. You may use the `ddd:config` helper command to handle this for you.
+```bash
+# Sync composer.json with ddd.php
+php artisan ddd:config composer
+```
+
 ### Nested Objects
 For any `ddd:*` generator command, nested objects can be specified with forward slashes.
 ```bash
@@ -359,17 +389,12 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure objects that belong in the application layer.
-    |
-    | e.g., App\Modules\Invoicing\Controllers\*
-    |       App\Modules\Invoicing\Requests\*
+    | Configure domain objects in the application layer.
     |
     */
     'application' => [
-        'path' => 'app/Modules',
         'namespace' => 'App\Modules',
-
-        // Specify which ddd:* objects belong in the application layer
+        'path' => 'app/Modules',
         'objects' => [
             'controller',
             'request',
@@ -379,11 +404,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Generator Object Namespaces
+    | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | This array maps the default relative namespaces of generated objects
-    | relative to their domain's root namespace.
+    | Mapping of additional top-level namespaces and paths that should
+    | be recognized as layers when generating ddd:* objects.
+    |
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    | When using ddd:* generators, specifying a domain matching a key in
+    | this array will generate objects in that corresponding layer.
+    |
+    */
+    'layers' => [
+        // 'Infrastructure' => 'src/Infrastructure',
+        // 'Integrations' => 'src/Integrations',
+        // 'Support' => 'src/Support',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Domain Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
     |
     | e.g., Domain\Invoicing\Models\*
     |       Domain\Invoicing\Data\*
