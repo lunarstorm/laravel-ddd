@@ -31,7 +31,7 @@ it('can generate action objects', function ($domainPath, $domainRoot) {
 
     expect(Artisan::output())->when(
         Feature::IncludeFilepathInGeneratorCommandOutput->exists(),
-        fn ($output) => $output->toContainFilepath($relativePath),
+        fn($output) => $output->toContainFilepath($relativePath),
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
@@ -57,7 +57,7 @@ it('normalizes generated action object to pascal case', function ($given, $norma
 
     Artisan::call("ddd:action {$domain}:{$given}");
 
-    expect(file_exists($expectedPath))->toBeTrue();
+    expect(file_exists($expectedPath))->toBeTrue("ddd:action {$domain}:{$given} -> expected {$expectedPath} to exist.");
 })->with('makeActionInputs');
 
 it('extends a base action if specified in config', function ($baseAction) {
@@ -81,7 +81,7 @@ it('extends a base action if specified in config', function ($baseAction) {
 
     expect(file_exists($expectedPath))->toBeTrue();
 
-    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name} extends {$baseAction}" . PHP_EOL . '{');
 })->with([
     'BaseAction' => 'BaseAction',
     'Base\Action' => 'Base\Action',
@@ -107,5 +107,5 @@ it('does not extend a base action if not specified in config', function () {
     Artisan::call("ddd:action {$domain}:{$name}");
 
     expect(file_exists($expectedPath))->toBeTrue();
-    expect(file_get_contents($expectedPath))->toContain("class {$name}".PHP_EOL.'{');
+    expect(file_get_contents($expectedPath))->toContain("class {$name}" . PHP_EOL . '{');
 });
