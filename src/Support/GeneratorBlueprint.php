@@ -4,7 +4,6 @@ namespace Lunarstorm\LaravelDDD\Support;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
 use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
 
@@ -31,7 +30,7 @@ class GeneratorBlueprint
         string $domainName,
         Command $command,
     ) {
-        $this->nameInput = Str::replace(['.', '\\', '/'], '/', $nameInput);
+        $this->nameInput = str($nameInput)->studly()->replace(['.', '\\', '/'], '/')->toString();
 
         $this->domain = new Domain($domainName);
 
