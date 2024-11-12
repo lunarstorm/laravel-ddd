@@ -53,7 +53,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         ];
 
         if ($this->option('requests')) {
-            $namespace = $this->domain->namespaceFor('request', $this->getNameInput());
+            $namespace = $this->blueprint->getNamespaceFor('request', $this->getNameInput());
 
             [$storeRequestClass, $updateRequestClass] = $this->generateFormRequests(
                 $modelClass,

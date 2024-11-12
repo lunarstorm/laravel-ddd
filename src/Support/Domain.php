@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Lunarstorm\LaravelDDD\ValueObjects\DomainNamespaces;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 
 class Domain
@@ -18,8 +17,6 @@ class Domain
     public readonly ?string $subdomain;
 
     public readonly string $domainWithSubdomain;
-
-    public readonly DomainNamespaces $namespace;
 
     public readonly Layer $layer;
 
@@ -59,8 +56,6 @@ class Domain
             : $this->domain;
 
         $this->layer = DomainResolver::resolveLayer($this->domainWithSubdomain);
-
-        $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
 
         $this->path = $this->layer->path;
 
@@ -107,6 +102,16 @@ class Domain
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
     }
 
+    public function rootNamespace(): string
+    {
+        return $this->layer->namespace;
+    }
+
+    public function intendedLayerFor(string $type)
+    {
+        return DomainResolver::resolveLayer($this->domainWithSubdomain, $type);
+    }
+
     public function namespaceFor(string $type, ?string $name = null): string
     {
         return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type, $name);
@@ -125,15 +130,9 @@ class Domain
 
     public function object(string $type, string $name, bool $absolute = false): DomainObject
     {
-        $resolver = app('ddd')->getNamespaceResolver();
+        $layer = $this->intendedLayerFor($type);
 
-        $customNamespace = is_callable($resolver)
-            ? $resolver($this->domainWithSubdomain, $type, app('ddd')->getCommandContext())
-            : null;
-
-        $layer = DomainResolver::resolveLayer($this->domainWithSubdomain, $type);
-
-        $namespace = $customNamespace ?? match (true) {
+        $namespace = match (true) {
             $absolute => $layer->namespace,
             str($name)->startsWith('\\') => $layer->guessNamespaceFromName($name),
             default => $layer->namespaceFor($type),
@@ -146,19 +145,6 @@ class Domain
             ->toString();
 
         $fullyQualifiedName = $namespace.'\\'.$baseName;
-
-        if ($customNamespace) {
-            return new DomainObject(
-                name: $baseName,
-                domain: $this->domain,
-                namespace: $namespace,
-                fullyQualifiedName: $fullyQualifiedName,
-                path: DomainResolver::isApplicationLayer($type)
-                    ? $this->pathInApplicationLayer($fullyQualifiedName)
-                    : $this->path($fullyQualifiedName),
-                type: $type
-            );
-        }
 
         return new DomainObject(
             name: $baseName,

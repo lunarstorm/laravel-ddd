@@ -2,6 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
+use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Enums\LayerType;
+
 class Layer
 {
     public readonly ?string $namespace;
@@ -9,18 +12,20 @@ class Layer
     public readonly ?string $path;
 
     public function __construct(
-        ?string $namespace,
-        ?string $path,
+        string $namespace,
+        ?string $path = null,
+        public ?LayerType $type = null,
     ) {
-        $this->namespace = Path::normalizeNamespace($namespace);
+        $this->namespace = Path::normalizeNamespace(Str::replaceEnd('\\', '', $namespace));
+
         $this->path = is_null($path)
-            ? $this->path()
-            : Path::normalize($path);
+            ? Path::fromNamespace($this->namespace)
+            : Path::normalize(Str::replaceEnd('/', '', $path));
     }
 
     public static function fromNamespace(string $namespace): self
     {
-        return new self($namespace, null);
+        return new self($namespace);
     }
 
     public function path(?string $path = null): string

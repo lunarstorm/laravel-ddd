@@ -15,6 +15,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             return new DomainManager;
         });
 
+        $this->app->scoped(ComposerManager::class, function () {
+            return ComposerManager::make(app()->basePath('composer.json'));
+        });
+
         $this->app->bind('ddd', DomainManager::class);
 
         /*
@@ -27,6 +31,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 Commands\InstallCommand::class,
+                Commands\ConfigCommand::class,
                 Commands\PublishCommand::class,
                 Commands\StubCommand::class,
                 Commands\UpgradeCommand::class,
@@ -69,11 +74,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
-
-        // if ($this->laravelVersion('11.30.0')) {
-        //     $package->hasCommand(Commands\PublishCommand::class);
-        //     $package->hasCommand(Commands\StubCommand::class);
-        // }
     }
 
     protected function laravelVersion($value)

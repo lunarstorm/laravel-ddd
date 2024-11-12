@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Support;
 
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Enums\LayerType;
 
 class DomainResolver
 {
@@ -94,17 +95,23 @@ class DomainResolver
     {
         $layers = config('ddd.layers', []);
 
-        return match (true) {
-            array_key_exists($domain, $layers) => new Layer($domain, $layers[$domain]),
-
-            $type && static::isApplicationLayer($type) => new Layer(
+        // Objects in the application layer take precedence
+        if ($type && static::isApplicationLayer($type)) {
+            return new Layer(
                 static::applicationLayerRootNamespace().'\\'.$domain,
                 Path::join(static::applicationLayerPath(), $domain),
-            ),
+                LayerType::Application,
+            );
+        }
+
+        return match (true) {
+            array_key_exists($domain, $layers)
+            && is_string($layers[$domain]) => new Layer($domain, $layers[$domain], LayerType::Custom),
 
             default => new Layer(
                 static::domainRootNamespace().'\\'.$domain,
                 Path::join(static::domainPath(), $domain),
+                LayerType::Domain,
             )
         };
     }
@@ -118,15 +125,15 @@ class DomainResolver
      */
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $name = null): string
     {
-        $customResolver = app('ddd')->getNamespaceResolver();
+        // $customResolver = app('ddd')->getNamespaceResolver();
 
-        $resolved = is_callable($customResolver)
-            ? $customResolver($domain, $type, app('ddd')->getCommandContext())
-            : null;
+        // $resolved = is_callable($customResolver)
+        //     ? $customResolver($domain, $type, $name, app('ddd')->getCommandContext())
+        //     : null;
 
-        if (! is_null($resolved)) {
-            return $resolved;
-        }
+        // if (! is_null($resolved)) {
+        //     return $resolved;
+        // }
 
         $resolver = function (string $domain, string $type, ?string $name) {
             $layer = static::resolveLayer($domain, $type);

@@ -22,12 +22,12 @@ class DomainFactoryMakeCommand extends FactoryMakeCommand
 
     protected function getNamespace($name)
     {
-        return $this->domain->namespaceFor('factory');
+        return $this->blueprint->getNamespaceFor('factory');
     }
 
     protected function preparePlaceholders(): array
     {
-        $domain = $this->domain;
+        $domain = $this->blueprint->domain;
 
         $name = $this->getNameInput();
 
@@ -51,6 +51,6 @@ class DomainFactoryMakeCommand extends FactoryMakeCommand
             $name = substr($name, 0, -7);
         }
 
-        return $this->domain->model(class_basename($name))->name;
+        return $this->blueprint->domain->model(class_basename($name))->name;
     }
 }

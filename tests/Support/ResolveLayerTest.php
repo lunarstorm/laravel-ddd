@@ -27,7 +27,7 @@ it('can resolve domains to custom layers', function ($domainName, $namespace, $p
     ['Reporting\\Internal', 'Domain\\Reporting\\Internal', 'src/Domain/Reporting/Internal'],
 ]);
 
-it('resolves normally when no matching custom layer is found', function ($domainName, $namespace, $path) {
+it('resolves normally when no custom layer is found', function ($domainName, $namespace, $path) {
     Config::set('ddd.layers', [
         'SupportNotMatching' => 'src/Support',
     ]);

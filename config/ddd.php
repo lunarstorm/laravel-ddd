@@ -31,8 +31,8 @@ return [
     |
     */
     'application' => [
-        'path' => 'app/Modules',
         'namespace' => 'App\Modules',
+        'path' => 'app/Modules',
         'objects' => [
             'controller',
             'request',
@@ -55,7 +55,7 @@ return [
     |
     */
     'layers' => [
-        // 'Infrastructure' => 'src/Infrastructure',
+        'Infrastructure' => 'src/Infrastructure',
         // 'Integrations' => 'src/Integrations',
         // 'Support' => 'src/Support',
     ],

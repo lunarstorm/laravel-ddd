@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\ValueObjects\DomainCommandContext;
+use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
+use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
 
 beforeEach(function () {
     Config::set('ddd.domain_path', 'src/Domain');
@@ -18,16 +19,21 @@ it('can register a custom namespace resolver', function () {
         'namespace' => 'App',
     ]);
 
-    DDD::resolveNamespaceUsing(function (string $domain, string $type, ?DomainCommandContext $context): ?string {
-        if ($type == 'controller' && $context->option('api')) {
-            return "App\\Api\\Controllers\\{$domain}";
+    DDD::resolveObjectSchemaUsing(function (string $domainName, ?string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
+        if ($type === 'controller' && $command->option('api')) {
+            return new ObjectSchema(
+                name: $name = str($nameInput)->replaceEnd('Controller', '')->finish('ApiController')->toString(),
+                namespace: "App\\Api\\Controllers\\{$domainName}",
+                fullyQualifiedName: "App\\Api\\Controllers\\{$domainName}\\{$name}",
+                path: "src/App/Api/Controllers/{$domainName}/{$name}.php",
+            );
         }
 
         return null;
     });
 
     Artisan::call('ddd:controller', [
-        'name' => 'PaymentApiController',
+        'name' => 'PaymentController',
         '--domain' => 'Invoicing',
         '--api' => true,
     ]);
