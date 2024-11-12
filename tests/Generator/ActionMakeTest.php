@@ -55,8 +55,6 @@ it('normalizes generated action object to pascal case', function ($given, $norma
         "{$normalized}.php",
     ]));
 
-    dump($expectedPath);
-
     Artisan::call("ddd:action {$domain}:{$given}");
 
     expect(file_exists($expectedPath))->toBeTrue("ddd:action {$domain}:{$given} -> expected {$expectedPath} to exist.");
