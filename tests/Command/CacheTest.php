@@ -14,6 +14,8 @@ beforeEach(function () {
 
 afterEach(function () {
     $this->artisan('optimize:clear')->execute();
+
+    DomainCache::clear();
 });
 
 it('can cache discovered domain providers, commands, migrations', function () {
