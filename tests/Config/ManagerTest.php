@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 
@@ -11,6 +12,7 @@ beforeEach(function () {
 
 afterEach(function () {
     $this->cleanSlate();
+    Artisan::call('config:clear');
 });
 
 it('can update and merge current config file with latest copy from package', function () {
