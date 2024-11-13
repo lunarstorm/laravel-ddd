@@ -24,7 +24,7 @@
         "laravel/prompts": "^0.1.16|^0.3.1",
         "lorisleiva/lody": "^0.5.0",
         "spatie/laravel-package-tools": "^1.13.0",
-        "symfony/var-exporter": "^7.1"
+        "symfony/var-exporter": "^6|^7.1"
     },
     "require-dev": {
         "larastan/larastan": "^2.0.1",
