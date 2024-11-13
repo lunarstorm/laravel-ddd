@@ -2,9 +2,9 @@
 
 ## From 1.1.x to 1.2.x
 ### Breaking
-- Stubs are now published `to base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
+- Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
 - Published stubs now use `.stub` extension instead of `.php.stub` (following Laravel's convention).
-- If you haven't previously published stubs in your installation, this change will not affect you.
+- If you are using published stubs from pre 1.2, you will need to refactor your stubs accordingly.
 
 ### Update Config
 - Support for Application Layer and Custom Layers was added, introducing changes to the config file.

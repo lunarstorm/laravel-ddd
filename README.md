@@ -40,7 +40,7 @@ Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimiz
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
 
-See **[UPGRADING](UPGRADING.md)** for more details about upgrading from an older versions.
+See **[UPGRADING](UPGRADING.md)** for more details about upgrading across different versions.
 
 <a name="usage"></a>
 
