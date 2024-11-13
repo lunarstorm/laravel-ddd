@@ -9,6 +9,8 @@ beforeEach(function () {
 
     config(['cache.default' => 'file']);
 
+    $this->artisan('optimize:clear')->execute();
+
     DomainCache::clear();
 });
 
