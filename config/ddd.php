@@ -31,8 +31,8 @@ return [
     |
     */
     'application' => [
-        'namespace' => 'App\Modules',
         'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
         'objects' => [
             'controller',
             'request',
@@ -45,13 +45,10 @@ return [
     | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | Mapping of additional top-level namespaces and paths that should
-    | be recognized as layers when generating ddd:* objects.
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
     |
     | e.g., 'Infrastructure' => 'src/Infrastructure',
-    |
-    | When using ddd:* generators, specifying a domain matching a key in
-    | this array will generate objects in that corresponding layer.
     |
     */
     'layers' => [

@@ -3,8 +3,6 @@
 namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\ComposerManager;
@@ -13,6 +11,7 @@ use Lunarstorm\LaravelDDD\Support\Layer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\form;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\multiselect;
@@ -54,6 +53,7 @@ class ConfigCommand extends Command
 
         return match ($action) {
             'wizard' => $this->wizard(),
+            'update' => $this->update(),
             'detect' => $this->detect(),
             'composer' => $this->syncComposer(),
             'layers' => $this->layers(),
@@ -65,6 +65,7 @@ class ConfigCommand extends Command
     {
         $action = select('Laravel-DDD Config Utility', [
             'wizard' => 'Run the configuration wizard',
+            'update' => 'Update and merge ddd.php with latest package version',
             'detect' => 'Detect domain namespace from composer.json',
             'composer' => 'Sync composer.json from ddd.php',
             'exit' => 'Exit',
@@ -72,6 +73,7 @@ class ConfigCommand extends Command
 
         return match ($action) {
             'wizard' => $this->wizard(),
+            'update' => $this->update(),
             'detect' => $this->detect(),
             'composer' => $this->syncComposer(),
             'exit' => $this->exit(),
@@ -114,17 +116,15 @@ class ConfigCommand extends Command
         $applicationLayer = $possibleApplicationLayers->first();
 
         $detected = collect([
-            'domain_namespace' => $domainLayer?->namespace,
             'domain_path' => $domainLayer?->path,
+            'domain_namespace' => $domainLayer?->namespace,
             'application' => [
-                'namespace' => $applicationLayer?->namespace,
                 'path' => $applicationLayer?->path,
+                'namespace' => $applicationLayer?->namespace,
             ],
         ]);
 
         $config = $detected->merge(Config::get('ddd'));
-
-        // dd($config);
 
         info('Detected DDD configuration:');
 
@@ -185,8 +185,6 @@ class ConfigCommand extends Command
             ],
         ];
 
-        // dd($choices['application_namespace']);
-
         $form = form()
             ->add(
                 function ($responses) use ($choices, $detected, $config) {
@@ -218,13 +216,14 @@ class ConfigCommand extends Command
                         label: 'Path to Application Layer',
                         options: $choices['application_path'],
                         hint: "For objects that don't belong in the domain layer (controllers, form requests, etc.)",
-                        placeholder: 'Leave blank to skip and configure later',
+                        placeholder: 'Leave blank to skip and use defaults',
                         scroll: 10,
                     );
                 },
                 name: 'application_path'
             )
-            ->add(
+            ->addIf(
+                fn ($responses) => filled($responses['application_path']),
                 function ($responses) use ($choices, $laravelAppLayer) {
                     $applicationPath = $responses['application_path'];
                     $laravelAppPath = $laravelAppLayer->path;
@@ -240,6 +239,7 @@ class ConfigCommand extends Command
                         options: $choices['application_namespace'],
                         default: $namespace,
                         hint: 'The root application namespace.',
+                        placeholder: 'Leave blank to use defaults',
                     );
                 },
                 name: 'application_namespace'
@@ -247,7 +247,7 @@ class ConfigCommand extends Command
             ->add(
                 function ($responses) use ($choices) {
                     return multiselect(
-                        label: 'Additional Layers (Optional)',
+                        label: 'Custom Layers (Optional)',
                         options: $choices['layers'],
                         hint: 'Layers can be customized in the ddd.php config file at any time.',
                     );
@@ -257,7 +257,11 @@ class ConfigCommand extends Command
 
         $responses = $form->submit();
 
-        // dd($responses);
+        $this->info('Building configuration...');
+
+        DDD::config()->fill($responses)->save();
+
+        $this->info('Configuration updated: '.config_path('ddd.php'));
 
         return self::SUCCESS;
     }
@@ -270,8 +274,8 @@ class ConfigCommand extends Command
 
         foreach ($search as $namespace) {
             if ($path = $this->composer->getAutoloadPath($namespace)) {
-                $detected['domain_namespace'] = $namespace;
                 $detected['domain_path'] = $path;
+                $detected['domain_namespace'] = $namespace;
                 break;
             }
         }
@@ -285,17 +289,33 @@ class ConfigCommand extends Command
                 ->all()
         );
 
+        if (confirm('Update configuration with these values?', true)) {
+            DDD::config()->fill($detected)->save();
+
+            $this->info('Configuration updated: '.config_path('ddd.php'));
+        }
+
         return self::SUCCESS;
     }
 
-    protected function applyConfig(Collection $config)
+    protected function update(): int
     {
-        // $this->composer->update([
-        //     ['domain_namespace', $config['domain_namespace']],
-        //     ['domain_path', $config['domain_path']],
-        //     ['application.namespace', $config['application']['namespace']],
-        //     ['application.path', $config['application']['path']],
-        // ]);
+        $config = DDD::config();
+
+        $confirmed = confirm('Are you sure you want to update ddd.php and merge with latest copy from the package?');
+
+        if (! $confirmed) {
+            $this->info('Configuration update aborted.');
+
+            return self::SUCCESS;
+        }
+
+        $this->info('Merging ddd.php...');
+
+        $config->syncWithLatest()->save();
+
+        $this->info('Configuration updated: '.config_path('ddd.php'));
+        $this->warn('Note: Some values may require manual adjustment.');
 
         return self::SUCCESS;
     }

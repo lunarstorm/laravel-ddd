@@ -7,6 +7,8 @@ use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Lunarstorm\LaravelDDD\Support\Path;
 
+use function Laravel\Prompts\table;
+
 class DomainListCommand extends Command
 {
     protected $name = 'ddd:list';
@@ -29,7 +31,7 @@ class DomainListCommand extends Command
             })
             ->toArray();
 
-        $this->table($headings, $table);
+        table($headings, $table);
 
         $countDomains = count($table);
 

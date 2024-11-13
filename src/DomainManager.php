@@ -45,6 +45,11 @@ class DomainManager
         $this->stubs = new StubManager;
     }
 
+    public function config(): ConfigManager
+    {
+        return app(ConfigManager::class);
+    }
+
     public function composer(): ComposerManager
     {
         return app(ComposerManager::class);

@@ -139,6 +139,13 @@ class ComposerManager
         return $this->get(['autoload', 'psr-4', $namespace]);
     }
 
+    public function unsetPsr4Autoload($namespace)
+    {
+        $namespace = Str::finish($namespace, '\\');
+
+        return $this->forget(['autoload', 'psr-4', $namespace]);
+    }
+
     public function reload()
     {
         $this->output?->writeLn('Reloading composer (dump-autoload)...');

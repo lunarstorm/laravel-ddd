@@ -1,4 +1,4 @@
-# Domain Driven Design toolkit for Laravel
+# Domain Driven Design Toolkit for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -21,16 +21,9 @@ php artisan ddd:install
 
 ### Peer Dependencies
 The following additional packages are suggested (but not required) while working with this package.
+- Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
+- Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
 
-Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
-```bash
-composer require spatie/laravel-data
-```
-
-Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
-```bash
-composer require lorisleiva/laravel-actions
-```
 The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [customize the stubs](#publishing-stubs-advanced) accordingly.
 
 ### Deployment
@@ -38,7 +31,7 @@ In production, run `ddd:optimize` during the deployment process to [optimize aut
 ```bash
 php artisan ddd:optimize
 ```
-Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary.
+Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary. In previous versions of this package, this command was named `ddd:cache`, which will continue to work as an alias.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -393,8 +386,8 @@ return [
     |
     */
     'application' => [
-        'namespace' => 'App\Modules',
         'path' => 'app/Modules',
+        'namespace' => 'App\Modules',
         'objects' => [
             'controller',
             'request',

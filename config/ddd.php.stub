@@ -27,23 +27,27 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure objects that belong in the application layer.
-    |
-    | e.g., App\Modules\Invoicing\Controllers\*
-    |       App\Modules\Invoicing\Requests\*
+    | Configure domain objects in the application layer.
     |
     */
-    'application' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
+    'application' => {{application}},
 
-        // Specify which ddd:* objects belong in the application layer
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Layers
+    |--------------------------------------------------------------------------
+    |
+    | Additional top-level namespaces and paths that should
+    | be recognized as layers when generating ddd:* objects.
+    |
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    | When using ddd:* generators, specifying a domain matching a key in
+    | this array will generate objects in that corresponding layer.
+    |
+    */
+    'layers' => {{layers}},
+
 
     /*
     |--------------------------------------------------------------------------
@@ -61,38 +65,7 @@ return [
     |       Domain\Invoicing\Actions\*
     |
     */
-    'namespaces' => [
-        'model' => {{namespaces.model}},
-        'data_transfer_object' => {{namespaces.data_transfer_object}},
-        'view_model' => {{namespaces.view_model}},
-        'value_object' => {{namespaces.value_object}},
-        'action' => {{namespaces.action}},
-        'cast' => 'Casts',
-        'class' => '',
-        'channel' => 'Channels',
-        'command' => 'Commands',
-        'controller' => 'Controllers',
-        'enum' => 'Enums',
-        'event' => 'Events',
-        'exception' => 'Exceptions',
-        'factory' => 'Database\Factories',
-        'interface' => '',
-        'job' => 'Jobs',
-        'listener' => 'Listeners',
-        'mail' => 'Mail',
-        'middleware' => 'Middleware',
-        'migration' => 'Database\Migrations',
-        'notification' => 'Notifications',
-        'observer' => 'Observers',
-        'policy' => 'Policies',
-        'provider' => 'Providers',
-        'resource' => 'Resources',
-        'request' => 'Requests',
-        'rule' => 'Rules',
-        'scope' => 'Scopes',
-        'seeder' => 'Database\Seeders',
-        'trait' => '',
-    ],
+    'namespaces' => {{namespaces}},
 
     /*
     |--------------------------------------------------------------------------
@@ -152,13 +125,7 @@ return [
     | should be auto-discovered and registered.
     |
     */
-    'autoload' => [
-        'providers' => true,
-        'commands' => true,
-        'policies' => true,
-        'factories' => true,
-        'migrations' => true,
-    ],
+    'autoload' => {{autoload}},
 
     /*
     |--------------------------------------------------------------------------
@@ -175,10 +142,7 @@ return [
     | the AppServiceProvider's boot method.
     |
     */
-    'autoload_ignore' => [
-        'Tests',
-        'Database/Migrations',
-    ],
+    'autoload_ignore' => {{autoload_ignore}},
 
     /*
     |--------------------------------------------------------------------------
@@ -189,5 +153,5 @@ return [
     | autoloading.
     |
     */
-    'cache_directory' => 'bootstrap/cache/ddd',
+    'cache_directory' => {{cache_directory}},
 ];
