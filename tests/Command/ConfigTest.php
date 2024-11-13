@@ -94,14 +94,12 @@ it('can sync composer.json from ddd.php ', function () {
 return [
     'domain_path' => 'src/CustomDomain',
     'domain_namespace' => 'CustomDomain',
-    'application' => [
-        'path' => 'src/CustomApplication',
-        'namespace' => 'CustomApplication',
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
+    'application_path' => 'src/CustomApplication',
+    'application_namespace' => 'CustomApplication',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
     ],
     'layers' => [
         'Infrastructure' => 'src/Infrastructure',

@@ -118,10 +118,8 @@ class ConfigCommand extends Command
         $detected = collect([
             'domain_path' => $domainLayer?->path,
             'domain_namespace' => $domainLayer?->namespace,
-            'application' => [
-                'path' => $applicationLayer?->path,
-                'namespace' => $applicationLayer?->namespace,
-            ],
+            'application_path' => $applicationLayer?->path,
+            'application_namespace' => $applicationLayer?->namespace,
         ]);
 
         $config = $detected->merge(Config::get('ddd'));
@@ -161,7 +159,7 @@ class ConfigCommand extends Command
                 'src/Application' => 'src/Application',
                 'Application' => 'Application',
                 ...[
-                    data_get($config, 'application.path') => data_get($config, 'application.path'),
+                    data_get($config, 'application_path') => data_get($config, 'application_path'),
                 ],
                 ...$possibleApplicationLayers->mapWithKeys(
                     fn (Layer $layer) => [$layer->path => $layer->path]
@@ -172,7 +170,7 @@ class ConfigCommand extends Command
                 'Application' => 'Application',
                 'Modules' => 'Modules',
                 ...[
-                    data_get($config, 'application.namespace') => data_get($config, 'application.namespace'),
+                    data_get($config, 'application_namespace') => data_get($config, 'application_namespace'),
                 ],
                 ...$possibleApplicationLayers->mapWithKeys(
                     fn (Layer $layer) => [$layer->namespace => $layer->namespace]
@@ -324,7 +322,7 @@ class ConfigCommand extends Command
     {
         $namespaces = [
             config('ddd.domain_namespace', 'Domain') => config('ddd.domain_path', 'src/Domain'),
-            config('ddd.application.namespace', 'App\\Modules') => config('ddd.application.path', 'app/Modules'),
+            config('ddd.application_namespace', 'App\\Modules') => config('ddd.application_path', 'app/Modules'),
             ...collect(config('ddd.layers', []))
                 ->all(),
         ];

@@ -3,10 +3,8 @@
 return [
     'domain_path' => 'src/CustomDomainFolder',
     'domain_namespace' => 'CustomDomainNamespace',
-    'application' => [
-        'objects' => [
-            'keepthis',
-        ],
+    'application_objects' => [
+        'keepthis',
     ],
     'namespaces' => [
         'model' => 'CustomModels',

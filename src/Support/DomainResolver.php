@@ -41,7 +41,7 @@ class DomainResolver
      */
     public static function applicationLayerPath(): ?string
     {
-        return config('ddd.application.path');
+        return config('ddd.application_path');
     }
 
     /**
@@ -49,7 +49,7 @@ class DomainResolver
      */
     public static function applicationLayerRootNamespace(): ?string
     {
-        return config('ddd.application.namespace');
+        return config('ddd.application_namespace');
     }
 
     /**
@@ -68,7 +68,7 @@ class DomainResolver
     public static function isApplicationLayer(string $type): bool
     {
         $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
-            $applicationObjects = config('ddd.application.objects', ['controller', 'request']);
+            $applicationObjects = config('ddd.application_objects', ['controller', 'request']);
 
             return in_array($type, $applicationObjects);
         };
@@ -106,7 +106,7 @@ class DomainResolver
 
         return match (true) {
             array_key_exists($domain, $layers)
-            && is_string($layers[$domain]) => new Layer($domain, $layers[$domain], LayerType::Custom),
+                && is_string($layers[$domain]) => new Layer($domain, $layers[$domain], LayerType::Custom),
 
             default => new Layer(
                 static::domainRootNamespace().'\\'.$domain,

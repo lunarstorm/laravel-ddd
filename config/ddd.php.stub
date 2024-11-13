@@ -4,22 +4,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => {{domain_path}},
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => {{domain_namespace}},
 
     /*
@@ -27,23 +18,23 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure domain objects in the application layer.
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'application' => {{application}},
+    'application_path' => {{application_path}},
+    'application_namespace' => {{application_namespace}},
+    'application_objects' => {{application_objects}},
 
     /*
     |--------------------------------------------------------------------------
     | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | Additional top-level namespaces and paths that should
-    | be recognized as layers when generating ddd:* objects.
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
     |
     | e.g., 'Infrastructure' => 'src/Infrastructure',
-    |
-    | When using ddd:* generators, specifying a domain matching a key in
-    | this array will generate objects in that corresponding layer.
     |
     */
     'layers' => {{layers}},
@@ -51,18 +42,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Object Namespaces
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
-    |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
     |
     */
     'namespaces' => {{namespaces}},

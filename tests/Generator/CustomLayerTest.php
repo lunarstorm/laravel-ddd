@@ -59,10 +59,10 @@ it('can generate objects into custom layers', function ($type, $objectName, $exp
 ]);
 
 it('ignores custom layer if object belongs in the application layer', function ($type, $objectName, $expectedNamespace, $expectedPath) {
-    Config::set('ddd.application', [
-        'namespace' => 'Application',
-        'path' => 'src/Application',
-        'objects' => [
+    Config::set([
+        'ddd.application_namespace' => 'Application',
+        'ddd.application_path' => 'src/Application',
+        'ddd.application_objects' => [
             $type,
         ],
     ]);

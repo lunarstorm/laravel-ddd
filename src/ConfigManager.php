@@ -101,7 +101,7 @@ class ConfigManager
         // escaping them as double backslashes.
         $keysWithNamespaces = [
             'domain_namespace',
-            'application.namespace',
+            'application_namespace',
             'layers',
             'namespaces',
             'base_model',
@@ -139,9 +139,15 @@ class ConfigManager
         // Restore namespace slashes
         $content = str_replace('[[BACKSLASH]]', '\\', $content);
 
-        file_put_contents($this->configPath, $content);
+        // Write it to a temporary file first
+        $tempPath = sys_get_temp_dir().'/ddd.php';
+        file_put_contents($tempPath, $content);
 
-        Process::run("./vendor/bin/pint {$this->configPath}");
+        // Format it using pint
+        Process::run("./vendor/bin/pint {$tempPath}");
+
+        // Copy the temporary file to the config path
+        copy($tempPath, $this->configPath);
 
         return $this;
     }

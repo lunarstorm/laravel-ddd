@@ -14,9 +14,9 @@ beforeEach(function () {
 });
 
 it('can register a custom object schema resolver', function () {
-    Config::set('ddd.application', [
-        'path' => 'src/App',
-        'namespace' => 'App',
+    Config::set([
+        'ddd.application_path' => 'src/App',
+        'ddd.application_namespace' => 'App',
     ]);
 
     DDD::resolveObjectSchemaUsing(function (string $domainName, string $nameInput, string $type, CommandContext $command): ?ObjectSchema {

@@ -114,14 +114,12 @@ php artisan ddd:clear
 Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
 ```php
 // In config/ddd.php
-'application' => [
-    'path' => 'app/Modules',
-    'namespace' => 'App\Modules',
-    'objects' => [
-        'controller',
-        'request',
-        'middleware',
-    ],
+'application_path' => 'app/Modules',
+'application_namespace' => 'App\Modules',
+'application_objects' => [
+    'controller',
+    'request',
+    'middleware',
 ],
 ```
 The configuration above will result in the following:
@@ -150,7 +148,6 @@ Often times, additional top-level namespaces are needed to hold shared component
 // In config/ddd.php
 'layers' => [
     'Infrastructure' => 'src/Infrastructure',
-    // 'Support' => 'src/Support',
 ],
 ```
 The configuration above will result in the following:
@@ -359,22 +356,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => 'src/Domain',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => 'Domain',
 
     /*
@@ -382,17 +370,16 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure domain objects in the application layer.
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'application' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
+    'application_path' => 'app/Modules',
+    'application_namespace' => 'App\Modules',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
     ],
 
     /*
@@ -400,34 +387,25 @@ return [
     | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | Mapping of additional top-level namespaces and paths that should
-    | be recognized as layers when generating ddd:* objects.
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
     |
     | e.g., 'Infrastructure' => 'src/Infrastructure',
     |
-    | When using ddd:* generators, specifying a domain matching a key in
-    | this array will generate objects in that corresponding layer.
-    |
     */
     'layers' => [
-        // 'Infrastructure' => 'src/Infrastructure',
+        'Infrastructure' => 'src/Infrastructure',
         // 'Integrations' => 'src/Integrations',
         // 'Support' => 'src/Support',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Object Namespaces
     |--------------------------------------------------------------------------
     |
     | This value contains the default namespaces of ddd:* generated
     | objects relative to the layer of which the object belongs to.
-    |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [

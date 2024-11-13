@@ -4,22 +4,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => 'src/Domain',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => 'Domain',
 
     /*
@@ -27,17 +18,16 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure domain objects in the application layer.
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'application' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
+    'application_path' => 'app/Modules',
+    'application_namespace' => 'App\Modules',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
     ],
 
     /*
@@ -59,17 +49,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Object Namespaces
     |--------------------------------------------------------------------------
     |
     | This value contains the default namespaces of ddd:* generated
     | objects relative to the layer of which the object belongs to.
-    |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
     |
     */
     'namespaces' => [
