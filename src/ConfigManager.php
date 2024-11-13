@@ -32,7 +32,7 @@ class ConfigManager
 
         foreach ($array as $key => $value) {
             $merged[$key] = is_array($value)
-                ? $this->mergeArray([...$path, $key], $value, [...$path, $key])
+                ? $this->mergeArray([...$path, $key], $value)
                 : $this->resolve([...$path, $key], $value);
         }
 
