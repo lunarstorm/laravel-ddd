@@ -177,7 +177,6 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
-        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
         File::ensureDirectoryExists(app_path('Models'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
