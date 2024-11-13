@@ -13,7 +13,7 @@
 
 ### Publishing Stubs
 - Old way (removed): `php artisan vendor:publish --tag="ddd-stubs"`
-- New way, using stub utility command: `php artisan ddd:stub` (see [Customizing Stubs](README.md#customizing-stubs) in README for more details).
+- New way: `php artisan ddd:stub` (see [Customizing Stubs](README.md#customizing-stubs) in README for more details).
 
 ## From 0.x to 1.x
 - Minimum required Laravel version is 10.25.

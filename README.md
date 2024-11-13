@@ -338,7 +338,7 @@ php artisan ddd:stub ... --existing
 # Overwrite any existing files
 php artisan ddd:stub ... --force
 ```
-To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
+To publish multiple stubs with common prefixes at once, use `*` or `.` as a wildcard ending to indicate "stubs that starts with":
 ```bash 
 php artisan ddd:stub listener.
 ```
