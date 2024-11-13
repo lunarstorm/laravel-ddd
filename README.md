@@ -173,7 +173,7 @@ Output:
 ```
 
 ### Custom Layers (since 1.2)
-Often times, additional top-level namespaces are needed to hold shared components, helpers, and things that are not domain-specific. A common example is the `Infrastructure` layer. You may configure these additional layers in the `ddd.layers` configuration.
+Often times, additional top-level namespaces are needed to hold shared components, helpers, and things that are not domain-specific. A common example is the `Infrastructure` layer. You may configure these additional layers in the `ddd.layers` array.
 ```php
 // In config/ddd.php
 'layers' => [
@@ -227,6 +227,18 @@ php artisan ddd:interface Invoicing:Models/Concerns/HasLineItems
 # -> Domain\Invoicing\Models\Concerns\HasLineItems
 ```
 
+### Subdomains (nested domains)
+Subdomains can be specified with dot notation wherever a domain option is accepted.
+```bash
+# Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Internal:MonthlyInvoicesReportViewModel
+
+# Domain/Reporting/Customer/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
+
+# (supported by all commands where a domain option is accepted)
+```
+
 ### Overriding Configured Namespaces at Runtime
 If for some reason you need to generate a domain object under a namespace different to what is configured in `ddd.namespaces.*`,
 you may do so using an absolute name starting with `/`. This will generate the object from the root of the domain.
@@ -246,18 +258,6 @@ php artisan ddd:event Invoicing:/Models/EventDoesNotBelongHere
 # Deep nesting is supported
 php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
 # -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
-```
-
-### Subdomains (nested domains)
-Subdomains can be specified with dot notation wherever a domain option is accepted.
-```bash
-# Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
-php artisan ddd:view-model Reporting.Internal:MonthlyInvoicesReportViewModel
-
-# Domain/Reporting/Customer/ViewModels/MonthlyInvoicesReportViewModel
-php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
-
-# (supported by all commands where a domain option is accepted)
 ```
 
 ### Custom Object Resolution
