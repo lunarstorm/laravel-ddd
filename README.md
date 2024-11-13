@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 
-Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate domain objects since they are typically stored outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
+Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate objects outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
 
 ## Installation
 You can install the package via composer:
@@ -24,7 +24,7 @@ The following additional packages are suggested (but not required) while working
 - Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
 - Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
 
-The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [customize the stubs](#publishing-stubs-advanced) accordingly.
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [publish and customize the stubs](#customizing-stubs) accordingly.
 
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
@@ -40,7 +40,7 @@ Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimiz
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
 
-See **[UPGRADING](UPGRADING.md)** for more details about upgrading from 0.x.
+See **[UPGRADING](UPGRADING.md)** for more details about upgrading from an older versions.
 
 <a name="usage"></a>
 
@@ -96,6 +96,36 @@ The following generators are currently available:
 | `ddd:trait` | Generate a trait (Laravel 11+) | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
 
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
+
+### Config Utility (Since 1.2)
+A configuration utility was introduced in 1.2 to help manage the package's configuration over time. 
+```bash
+php artisan ddd:config
+```
+Output:
+```
+ ┌ Laravel-DDD Config Utility ──────────────────────────────────┐
+ │ › ● Run the configuration wizard                             │
+ │   ○ Update and merge ddd.php with latest package version     │
+ │   ○ Detect domain namespace from composer.json               │
+ │   ○ Sync composer.json from ddd.php                          │
+ │   ○ Exit                                                     │
+ └──────────────────────────────────────────────────────────────┘
+```
+These config tasks are also invokeable directly using arguments:
+```bash
+# Run the configuration wizard
+php artisan ddd:config wizard
+
+# Update and merge ddd.php with latest package version
+php artisan ddd:config update
+
+# Detect domain namespace from composer.json
+php artisan ddd:config detect
+
+# Sync composer.json from ddd.php   
+php artisan ddd:config composer
+```
 
 ### Other Commands
 ```bash
@@ -230,34 +260,83 @@ php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
 # (supported by all commands where a domain option is accepted)
 ```
 
-## Customization
-### Config File
-This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the [config file](#config-file) and generator stubs as needed:
+### Custom Object Resolution
+If you require advanced customization of generated object naming conventions, you may register a custom resolver using `DDD::resolveObjectSchemaUsing()` in your AppServiceProvider's boot method: 
+```php
+use Lunarstorm\LaravelDDD\Facades\DDD;
+use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
+use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
 
+DDD::resolveObjectSchemaUsing(function (string $domainName, string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
+    if ($type === 'controller' && $command->option('api')) {
+        return new ObjectSchema(
+            name: $name = str($nameInput)->replaceEnd('Controller', '')->finish('ApiController')->toString(),
+            namespace: "App\\Api\\Controllers\\{$domainName}",
+            fullyQualifiedName: "App\\Api\\Controllers\\{$domainName}\\{$name}",
+            path: "src/App/Api/Controllers/{$domainName}/{$name}.php",
+        );
+    }
+
+    // Return null to fall back to the default
+    return null;
+});
+```
+The example above will result in the following:
 ```bash
-php artisan ddd:publish --config
-php artisan ddd:publish --stubs
+php artisan ddd:controller Invoicing:PaymentController --api 
+# Controller [src/App/Api/Controllers/Invoicing/PaymentApiController.php] created successfully. 
 ```
 
-### Publishing Stubs (Advanced)
-For more granular management of stubs, you may use the `ddd:stub` command:
-```bash
-# Publish one or more stubs interactively via prompts
-php artisan ddd:stub
+<a name="customizing-stubs"></a>
 
+## Customizing Stubs
+This package ships with a few ddd-specific stubs, while the rest are pulled from the framework. For a quick reference of available stubs and their source, you may use the `ddd:stub --list` command:
+```bash
+php artisan ddd:stub --list
+```
+
+### Stub Priority
+When generating objects using `ddd:*`, stubs are prioritized as follows:
+- Try `stubs/ddd/*.stub` (customized for `ddd:*` only)
+- Try `stubs/*.stub` (shared by both `make:*` and `ddd:*`)
+- Fallback to the package or framework default
+
+### Publishing Stubs
+To publish stubs interactively, you may use the `ddd:stub` command:
+```bash
+php artisan ddd:stub
+```
+```
+ ┌ What do you want to do? ─────────────────────────────────────┐
+ │ › ● Choose stubs to publish                                  │
+ │   ○ Publish all stubs                                        │
+ └──────────────────────────────────────────────────────────────┘
+
+ ┌ Which stub should be published? ─────────────────────────────┐
+ │ policy                                                       │
+ ├──────────────────────────────────────────────────────────────┤
+ │ › ◼ policy.plain.stub                                        │
+ │   ◻ policy.stub                                              │
+ └────────────────────────────────────────────────── 1 selected ┘
+  Use the space bar to select options.
+```
+You may also use shortcuts to skip the interactive steps:
+```bash
 # Publish all stubs
 php artisan ddd:stub --all
 
-# Publish and overwrite only the files that have already been published
-php artisan ddd:stub --all --existing
-
-# Overwrite any existing files
-php artisan ddd:stub --all --force
-
-# Publish one or more stubs specified as arguments
+# Publish one or more stubs specified as arguments (see ddd:stub --list)
 php artisan ddd:stub model
 php artisan ddd:stub model dto action
 php artisan ddd:stub controller controller.plain controller.api
+
+# Options:
+
+# Publish and overwrite only the files that have already been published
+php artisan ddd:stub ... --existing
+
+# Overwrite any existing files
+php artisan ddd:stub ... --force
 ```
 To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
 ```bash 
@@ -269,10 +348,6 @@ Publishing /stubs/ddd/listener.typed.queued.stub
 Publishing /stubs/ddd/listener.queued.stub
 Publishing /stubs/ddd/listener.typed.stub
 Publishing /stubs/ddd/listener.stub
-```
-For a quick reference of available stubs, use the `--list` option:
-```bash
-php artisan ddd:stub --list
 ```
 
 ## Domain Autoloading and Discovery

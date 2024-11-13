@@ -43,6 +43,11 @@ trait ResolvesDomainFromInput
             : parent::getPath($name);
     }
 
+    protected function qualifyClass($name)
+    {
+        return $this->blueprint->qualifyClass($name);
+    }
+
     protected function beforeHandle()
     {
         $nameInput = $this->getNameInput();

@@ -113,6 +113,11 @@ class GeneratorBlueprint
         return Path::normalize(app()->basePath($this->schema->path));
     }
 
+    public function qualifyClass($name)
+    {
+        return $this->schema->fullyQualifiedName;
+    }
+
     public function getFactoryFor(string $name)
     {
         return $this->domain->factory($name);

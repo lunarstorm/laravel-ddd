@@ -92,11 +92,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
 
         $replace = [];
 
-        // Todo: these were attempted tweaks to counteract failing CI tests
-        // on Laravel 10, and should be revisited at some point.
-        // $replace["use {$this->rootNamespace()}Http\Controllers\Controller;\n"] = '';
-        // $replace[' extends Controller'] = '';
-
         $appRootNamespace = $this->laravel->getNamespace();
         $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
 

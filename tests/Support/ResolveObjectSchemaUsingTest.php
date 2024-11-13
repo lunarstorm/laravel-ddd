@@ -46,5 +46,8 @@ it('can register a custom object schema resolver', function () {
     $expectedPath = base_path('src/App/Api/Controllers/Invoicing/PaymentApiController.php');
 
     expect(file_get_contents($expectedPath))
-        ->toContain("namespace App\Api\Controllers\Invoicing;");
+        ->toContain(...[
+            "namespace App\Api\Controllers\Invoicing;",
+            'class PaymentApiController',
+        ]);
 });
