@@ -7,13 +7,13 @@ use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
 use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
 
 beforeEach(function () {
+    $this->setupTestApplication();
+
     Config::set('ddd.domain_path', 'src/Domain');
     Config::set('ddd.domain_namespace', 'Domain');
-
-    $this->setupTestApplication();
 });
 
-it('can register a custom namespace resolver', function () {
+it('can register a custom object schema resolver', function () {
     Config::set('ddd.application', [
         'path' => 'src/App',
         'namespace' => 'App',

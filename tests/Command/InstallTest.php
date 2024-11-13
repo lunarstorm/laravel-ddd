@@ -6,6 +6,10 @@ beforeEach(function () {
     $this->setupTestApplication();
 });
 
+afterEach(function () {
+    $this->setupTestApplication();
+});
+
 it('publishes config', function () {
     $path = config_path('ddd.php');
 

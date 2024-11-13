@@ -20,13 +20,13 @@ afterEach(function () {
     DomainCache::clear();
 });
 
-it('can cache discovered domain providers, commands, migrations', function () {
+it('can optimize discovered domain providers, commands, migrations', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
     $this
-        ->artisan('ddd:cache')
+        ->artisan('ddd:optimize')
         ->expectsOutputToContain('Caching DDD providers, commands, migration paths.')
         ->expectsOutputToContain('domain providers')
         ->expectsOutputToContain('domain commands')
@@ -66,7 +66,7 @@ it('will not be cleared by laravel cache clearing', function () {
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
-    $this->artisan('ddd:cache')->execute();
+    $this->artisan('ddd:optimize')->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
@@ -88,7 +88,7 @@ it('will not be cleared by laravel cache clearing', function () {
 });
 
 describe('laravel optimize', function () {
-    test('optimize will include ddd:cache', function () {
+    test('optimize will include ddd:optimize', function () {
         config(['cache.default' => 'file']);
 
         expect(DomainCache::get('domain-providers'))->toBeNull();
@@ -105,7 +105,7 @@ describe('laravel optimize', function () {
     test('optimize:clear will clear ddd cache', function () {
         config(['cache.default' => 'file']);
 
-        $this->artisan('ddd:cache')->execute();
+        $this->artisan('ddd:optimize')->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
         expect(DomainCache::get('domain-commands'))->not->toBeNull();

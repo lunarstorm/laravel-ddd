@@ -17,9 +17,11 @@ describe('without autoload', function () {
             'ddd.autoload.providers' => false,
         ]);
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        // $this->afterApplicationCreated(function () {
+        //     (new DomainAutoloader)->autoload();
+        // });
+
+        (new DomainAutoloader)->autoload();
     });
 
     it('does not register the provider', function () {
@@ -33,9 +35,11 @@ describe('with autoload', function () {
             'ddd.autoload.providers' => true,
         ]);
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        // $this->afterApplicationCreated(function () {
+        //     (new DomainAutoloader)->autoload();
+        // });
+
+        (new DomainAutoloader)->autoload();
     });
 
     it('registers the provider', function () {

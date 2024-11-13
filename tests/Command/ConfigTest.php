@@ -7,11 +7,13 @@ beforeEach(function () {
     $this->cleanSlate();
     $this->setupTestApplication();
     Artisan::call('config:clear');
-});
+    $this->composerReload();
+})->skip();
 
 afterEach(function () {
     $this->cleanSlate();
     Artisan::call('config:clear');
+    $this->composerReload();
 });
 
 it('can run the config wizard', function () {

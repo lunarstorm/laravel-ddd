@@ -19,19 +19,6 @@ class TestCase extends Orchestra
         $this->afterApplicationCreated(function () {
             $this->cleanSlate();
 
-            // $this->updateComposer(
-            //     set: [
-            //         [['autoload', 'psr-4', 'App\\'], 'vendor/orchestra/testbench-core/laravel/app'],
-            //         [['autoload', 'psr-4', 'Database\\Factories\\'], 'vendor/orchestra/testbench-core/laravel/database/factories'],
-            //         [['autoload', 'psr-4', 'Database\\Seeders\\'], 'vendor/orchestra/testbench-core/laravel/database/seeders'],
-            //         [['autoload', 'psr-4', 'Domain\\'], 'vendor/orchestra/testbench-core/laravel/src/Domain'],
-            //     ],
-            //     forget: [
-            //         ['autoload', 'psr-4', 'Domains\\'],
-            //         ['autoload', 'psr-4', 'Domain\\'],
-            //     ]
-            // );
-
             Factory::guessFactoryNamesUsing(
                 fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
             );
@@ -56,16 +43,6 @@ class TestCase extends Orchestra
                 $config->set($key, $value);
             }
         });
-
-        // $this->updateComposer(
-        //     set: [
-        //         [['autoload', 'psr-4', 'App\\'], 'vendor/orchestra/testbench-core/laravel/app'],
-        //     ],
-        //     forget: [
-        //         ['autoload', 'psr-4', 'Domains\\'],
-        //         ['autoload', 'psr-4', 'Domain\\'],
-        //     ]
-        // );
     }
 
     protected function getComposerFileContents()
@@ -142,24 +119,24 @@ class TestCase extends Orchestra
 
     protected function cleanSlate()
     {
-        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
-
         File::delete(base_path('config/ddd.php'));
 
-        File::cleanDirectory(app_path());
+        // File::cleanDirectory(app_path());
+        File::cleanDirectory(app_path('Models'));
         File::cleanDirectory(base_path('database/factories'));
+        File::cleanDirectory(base_path('src'));
 
         File::deleteDirectory(resource_path('stubs/ddd'));
         File::deleteDirectory(base_path('stubs'));
         File::deleteDirectory(base_path('Custom'));
-        File::cleanDirectory(base_path('src'));
-        File::deleteDirectory(base_path('src/Domain'));
-        File::deleteDirectory(base_path('src/Domains'));
-        File::deleteDirectory(base_path('src/App'));
+        // File::deleteDirectory(base_path('src/Domain'));
+        // File::deleteDirectory(base_path('src/Domains'));
+        // File::deleteDirectory(base_path('src/App'));
+        File::deleteDirectory(app_path('Policies'));
         File::deleteDirectory(app_path('Modules'));
-        File::deleteDirectory(app_path('Models'));
-
         File::deleteDirectory(base_path('bootstrap/cache/ddd'));
+
+        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
 
         return $this;
     }
@@ -173,11 +150,20 @@ class TestCase extends Orchestra
 
     protected function setupTestApplication()
     {
-        File::copyDirectory(__DIR__.'/.skeleton/app', app_path());
-        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
-        File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
-        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
+        $this->cleanSlate();
+
+        File::ensureDirectoryExists(app_path());
         File::ensureDirectoryExists(app_path('Models'));
+
+        $skeletonAppFolders = glob(__DIR__.'/.skeleton/app/*', GLOB_ONLYDIR);
+
+        foreach ($skeletonAppFolders as $folder) {
+            File::copyDirectory($folder, app_path(basename($folder)));
+        }
+
+        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
+        File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
+        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
 
         $this->setDomainPathInComposer('Domain', 'src/Domain');
 

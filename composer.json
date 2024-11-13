@@ -37,6 +37,10 @@
         "phpstan/phpstan-phpunit": "^1.0",
         "spatie/laravel-data": "^4.10"
     },
+    "suggest": {
+        "spatie/laravel-data": "Recommended for Data Transfer Objects.",
+        "lorisleiva/laravel-actions": "Recommended for Actions."
+    },
     "autoload": {
         "psr-4": {
             "Lunarstorm\\LaravelDDD\\": "src",
@@ -57,6 +61,7 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "@composer dump-autoload && vendor/bin/pest",
         "test-coverage": "@composer dump-autoload && vendor/bin/pest --coverage",
+        "purge-skeleton": "vendor/bin/testbench package:purge-skeleton",
         "format": "vendor/bin/pint",
         "lint": "vendor/bin/pint"
     },
