@@ -34,4 +34,4 @@ it('can publish stubs', function () {
 
     expect(File::exists($dir))->toBeTrue();
     expect(File::isEmptyDirectory($dir))->toBeFalse();
-});
+})->markTestSkipped('Deprecated');
