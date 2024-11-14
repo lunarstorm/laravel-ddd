@@ -20,18 +20,27 @@ beforeEach(function () {
         'ddd.layers' => [
             'Infrastructure' => 'src/Infrastructure',
         ],
+        'ddd.autoload_ignore' => [
+            'Tests',
+            'Database/Migrations',
+        ],
+        'cache.default' => 'file',
     ]);
+});
+
+afterEach(function () {
+    DomainCache::clear();
 });
 
 describe('without autoload', function () {
     beforeEach(function () {
         Config::set('ddd.autoload.commands', false);
 
-        $this->setupTestApplication();
-
         $this->afterApplicationCreated(function () {
             (new DomainAutoloader)->autoload();
         });
+
+        $this->setupTestApplication();
     });
 
     it('does not register the command', function ($className, $command) {
@@ -49,18 +58,19 @@ describe('with autoload', function () {
         Config::set('ddd.autoload.commands', true);
 
         $this->setupTestApplication();
+    });
+
+    it('registers existing commands', function ($className, $command, $output) {
+        expect(class_exists($className))->toBeTrue();
 
         $this->afterApplicationCreated(function () {
             (new DomainAutoloader)->autoload();
         });
-    });
 
-    it('registers existing commands', function ($className, $command, $output) {
         expect(collect(Artisan::all()))
             ->has($command)
             ->toBeTrue();
 
-        expect(class_exists($className))->toBeTrue();
         Artisan::call($command);
         expect(Artisan::output())->toContain($output);
     })->with([
@@ -71,6 +81,10 @@ describe('with autoload', function () {
 
     it('registers newly created commands', function () {
         $command = 'app:invoice-void';
+
+        $this->afterApplicationCreated(function () {
+            (new DomainAutoloader)->autoload();
+        });
 
         expect(collect(Artisan::all()))
             ->has($command)
@@ -103,7 +117,7 @@ describe('caching', function () {
             (new DomainAutoloader)->autoload();
         });
 
-        // command should not be recognized due to cached empty-state
+        // commands should not be recognized due to cached empty-state
         expect(fn () => Artisan::call('invoice:deliver'))->toThrow(CommandNotFoundException::class);
         expect(fn () => Artisan::call('log:prune'))->toThrow(CommandNotFoundException::class);
         expect(fn () => Artisan::call('application:sync'))->toThrow(CommandNotFoundException::class);

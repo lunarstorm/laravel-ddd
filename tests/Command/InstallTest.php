@@ -7,7 +7,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    $this->setupTestApplication();
+    $this->setupTestApplication()->composerReload();
 });
 
 it('publishes config', function () {
@@ -57,7 +57,7 @@ it('can initialize composer.json', function ($domainPath, $domainRoot) {
     unlink(config_path('ddd.php'));
 
     // Reset composer back to the factory state
-    $this->setDomainPathInComposer('Domain', 'src/Domain', reload: true);
+    // $this->setAutoloadPathInComposer('Domain', 'src/Domain', reload: true);
 })->with([
     ['src/Domain', 'Domain'],
     ['src/Domains', 'Domains'],

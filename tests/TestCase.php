@@ -162,16 +162,18 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
 
-        $this->setDomainPathInComposer('Domain', 'src/Domain');
+        $this->setAutoloadPathInComposer('Domain', 'src/Domain');
+        $this->setAutoloadPathInComposer('Application', 'src/Application');
+        $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
 
         return $this;
     }
 
-    protected function setDomainPathInComposer($domainNamespace, $domainPath, bool $reload = true)
+    protected function setAutoloadPathInComposer($namespace, $path, bool $reload = true)
     {
         $this->updateComposer(
             set: [
-                [['autoload', 'psr-4', $domainNamespace.'\\'], $domainPath],
+                [['autoload', 'psr-4', $namespace.'\\'], $path],
             ],
         );
 

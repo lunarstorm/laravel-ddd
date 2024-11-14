@@ -3,7 +3,6 @@
 namespace Infrastructure\Commands;
 
 use Illuminate\Console\Command;
-use Infrastructure\Models\AppSession;
 use Infrastructure\Support\Clipboard;
 
 class LogPrune extends Command

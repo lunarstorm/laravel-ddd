@@ -8,8 +8,8 @@ beforeEach(function () {
     Config::set([
         'ddd.domain_path' => 'src/Domain',
         'ddd.domain_namespace' => 'Domain',
-        'ddd.application_namespace' => 'Application',
         'ddd.application_path' => 'src/Application',
+        'ddd.application_namespace' => 'Application',
         'ddd.application_objects' => [
             'controller',
             'request',
@@ -17,6 +17,10 @@ beforeEach(function () {
         ],
     ]);
 
+    $this->setupTestApplication();
+});
+
+afterEach(function () {
     $this->setupTestApplication();
 });
 
