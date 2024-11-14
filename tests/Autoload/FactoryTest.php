@@ -7,7 +7,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-})->skip();
+});
 
 describe('autoload enabled', function () {
     beforeEach(function () {
@@ -46,7 +46,7 @@ describe('autoload enabled', function () {
         expect($modelClass::factory())
             ->toBeInstanceOf('Database\Factories\RegularModelFactory');
     });
-});
+})->skip();
 
 describe('autoload disabled', function () {
     it('cannot resolve factories that rely on autoloading', function ($modelClass) {
@@ -63,4 +63,4 @@ describe('autoload disabled', function () {
         ['Domain\Invoicing\Models\VanillaModel'],
         ['Domain\Internal\Reporting\Models\Report'],
     ]);
-});
+})->skip();

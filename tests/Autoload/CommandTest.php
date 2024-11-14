@@ -10,7 +10,7 @@ uses(BootsTestApplication::class);
 beforeEach(function () {
     $this->setupTestApplication();
     DomainCache::clear();
-})->skip();
+});
 
 afterEach(function () {
     DomainCache::clear();
@@ -33,7 +33,7 @@ describe('without autoload', function () {
         ['Infrastructure\Commands\LogPrune', 'log:prune'],
         ['Application\Commands\ApplicationSync', 'application:sync'],
     ]);
-});
+})->skip();
 
 describe('with autoload', function () {
     it('registers existing commands', function ($className, $command, $output) {
@@ -58,7 +58,7 @@ describe('with autoload', function () {
         ['Infrastructure\Commands\LogPrune', 'log:prune', 'System logs pruned!'],
         ['Application\Commands\ApplicationSync', 'application:sync', 'Application state synced!'],
     ]);
-});
+})->skip();
 
 describe('caching', function () {
     it('remembers the last cached state', function () {
@@ -94,4 +94,4 @@ describe('caching', function () {
         $this->artisan('log:prune')->assertSuccessful();
         $this->artisan('application:sync')->assertSuccessful();
     });
-});
+})->skip();

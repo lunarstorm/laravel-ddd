@@ -9,7 +9,7 @@ uses(BootsTestApplication::class);
 beforeEach(function () {
     $this->setupTestApplication();
     DomainCache::clear();
-})->skip();
+});
 
 afterEach(function () {
     DomainCache::clear();
@@ -33,7 +33,7 @@ describe('without autoload', function () {
         ['application-layer'],
         ['infrastructure-layer'],
     ]);
-});
+})->skip();
 
 describe('with autoload', function () {
     it('registers the provider in domain layer', function () {
@@ -74,7 +74,7 @@ describe('with autoload', function () {
         expect(app('infrastructure-layer'))->toEqual('infrastructure-layer-singleton');
         $this->artisan('log:prune')->expectsOutputToContain('infrastructure-secret');
     });
-});
+})->skip();
 
 describe('caching', function () {
     it('remembers the last cached state', function () {
@@ -114,4 +114,4 @@ describe('caching', function () {
         expect(app('infrastructure-layer'))->toEqual('infrastructure-layer-singleton');
         $this->artisan('log:prune')->expectsOutputToContain('infrastructure-secret');
     });
-});
+})->skip();
