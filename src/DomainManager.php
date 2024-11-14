@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Lunarstorm\LaravelDDD\Support\Autoloader;
 use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
 use Lunarstorm\LaravelDDD\Support\Path;
 
@@ -35,14 +36,21 @@ class DomainManager
 
     protected ?GeneratorBlueprint $commandContext;
 
-    protected StubManager $stubs;
-
     public function __construct()
     {
         $this->autoloadFilter = null;
         $this->applicationLayerFilter = null;
         $this->commandContext = null;
-        $this->stubs = new StubManager;
+    }
+
+    public function autoloader(): Autoloader
+    {
+        return app(Autoloader::class);
+    }
+
+    public function composer(): ComposerManager
+    {
+        return app(ComposerManager::class);
     }
 
     public function config(): ConfigManager
@@ -50,9 +58,9 @@ class DomainManager
         return app(ConfigManager::class);
     }
 
-    public function composer(): ComposerManager
+    public function stubs(): StubManager
     {
-        return app(ComposerManager::class);
+        return app(StubManager::class);
     }
 
     public function filterAutoloadPathsUsing(callable $filter): void
@@ -93,10 +101,5 @@ class DomainManager
     public function laravelVersion($value)
     {
         return version_compare(app()->version(), $value, '>=');
-    }
-
-    public function stubs(): StubManager
-    {
-        return $this->stubs;
     }
 }

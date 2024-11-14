@@ -14,6 +14,8 @@ class TestCase extends Orchestra
 {
     public static $configValues = [];
 
+    public $appConfig = [];
+
     protected function setUp(): void
     {
         $this->afterApplicationCreated(function () {
@@ -36,13 +38,65 @@ class TestCase extends Orchestra
         static::$configValues = $values;
     }
 
+    public static function resetConfig()
+    {
+        static::$configValues = [];
+    }
+
+    protected function defineConfigBeforeEnvironment() {}
+
     protected function defineEnvironment($app)
     {
+        if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {
+            static::$configValues = [
+                'ddd.domain_path' => 'src/Domain',
+                'ddd.domain_namespace' => 'Domain',
+                'ddd.application_namespace' => 'Application',
+                'ddd.application_path' => 'src/Application',
+                'ddd.application_objects' => [
+                    'controller',
+                    'request',
+                    'middleware',
+                ],
+                'ddd.layers' => [
+                    'Infrastructure' => 'src/Infrastructure',
+                ],
+                'ddd.autoload_ignore' => [
+                    'Tests',
+                    'Database/Migrations',
+                ],
+                'cache.default' => 'file',
+                ...static::$configValues,
+            ];
+        }
+
         tap($app['config'], function (Repository $config) {
             foreach (static::$configValues as $key => $value) {
                 $config->set($key, $value);
             }
+
+            foreach ($this->appConfig as $key => $value) {
+                $config->set($key, $value);
+            }
         });
+    }
+
+    protected function refreshApplicationWithConfig(array $config)
+    {
+        $this->appConfig = $config;
+
+        $this->refreshApplication();
+
+        $this->afterApplicationRefreshed(fn () => $this->appConfig = []);
+
+        return $this;
+    }
+
+    protected function withConfig(array $config)
+    {
+        $this->appConfig = $config;
+
+        return $this;
     }
 
     protected function getComposerFileContents()
@@ -161,6 +215,7 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
+        // File::copy(__DIR__ . '/.skeleton/config/ddd.php', config_path('ddd.php'));
 
         $this->setAutoloadPathInComposer('Domain', 'src/Domain');
         $this->setAutoloadPathInComposer('Application', 'src/Application');

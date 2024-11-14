@@ -5,29 +5,12 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 use Symfony\Component\Finder\SplFileInfo;
 
-beforeEach(function () {
-    Config::set([
-        'ddd.domain_path' => 'src/Domain',
-        'ddd.domain_namespace' => 'Domain',
-        'ddd.application_namespace' => 'Application',
-        'ddd.application_path' => 'src/Application',
-        'ddd.application_objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-        'ddd.layers' => [
-            'Infrastructure' => 'src/Infrastructure',
-        ],
-        'ddd.autoload_ignore' => [
-            'Tests',
-            'Database/Migrations',
-        ],
-        'cache.default' => 'file',
-    ]);
+uses(BootsTestApplication::class);
 
+beforeEach(function () {
     $this->setupTestApplication();
 });
 

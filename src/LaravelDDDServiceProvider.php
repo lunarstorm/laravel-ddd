@@ -3,7 +3,7 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Lunarstorm\LaravelDDD\Support\Autoloader;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -16,15 +16,27 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             return new DomainManager;
         });
 
-        $this->app->scoped(ConfigManager::class, function () {
-            return new ConfigManager(config_path('ddd.php'));
+        $this->app->scoped(Autoloader::class, function () {
+            return new Autoloader;
         });
 
         $this->app->scoped(ComposerManager::class, function () {
             return ComposerManager::make(app()->basePath('composer.json'));
         });
 
+        $this->app->scoped(ConfigManager::class, function () {
+            return new ConfigManager(config_path('ddd.php'));
+        });
+
+        $this->app->scoped(StubManager::class, function () {
+            return new StubManager;
+        });
+
         $this->app->bind('ddd', DomainManager::class);
+        $this->app->bind('ddd.autoloader', Autoloader::class);
+        $this->app->bind('ddd.config', ConfigManager::class);
+        $this->app->bind('ddd.composer', ComposerManager::class);
+        $this->app->bind('ddd.stubs', StubManager::class);
 
         /*
          * This class is a Package Service Provider
@@ -120,12 +132,16 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 key: 'laravel-ddd',
             );
         }
+
+        // dump([
+        //     'package booted' => config('ddd')
+        // ]);
+
+        app('ddd.autoloader')->boot();
     }
 
     public function packageRegistered()
     {
-        (new DomainAutoloader)->autoload();
-
         $this->registerMigrations();
     }
 }

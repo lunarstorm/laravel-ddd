@@ -1,15 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Models\DomainModel;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
-    Config::set('ddd.base_model', DomainModel::class);
+    config([
+        'ddd.domain_path' => 'src/Domain',
+        'ddd.domain_namespace' => 'Domain',
+        'ddd.base_model' => DomainModel::class,
+        'ddd.application_namespace' => 'App\Modules',
+        'ddd.application_path' => 'app/Modules',
+        'ddd.application_objects' => [
+            'controller',
+        ],
+    ]);
 
     $this->setupTestApplication();
 });

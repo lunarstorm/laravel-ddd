@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Conditionable;
 use Lorisleiva\Lody\Lody;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
@@ -19,42 +20,51 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
-class DomainAutoloader
+class Autoloader
 {
+    use Conditionable;
+
+    protected string $appNamespace;
+
+    protected array $discoveredCommands = [];
+
+    protected array $discoveredProviders = [];
+
     public function __construct()
     {
-        //
+        $this->appNamespace = $this->resolveAppNamespace();
     }
 
-    public function autoload(): void
+    public function boot(): void
     {
         if (! config()->has('ddd.autoload')) {
             return;
         }
 
-        $this->handleProviders();
+        // if ($discoveredCommands = $this->getDiscoveredCommands()) {
+        //     dump('Commands were already discovered', $discoveredCommands);
+        // }
 
-        if (app()->runningInConsole()) {
-            $this->handleCommands();
-        }
+        // if ($discoveredProviders = $this->getDiscoveredProviders()) {
+        //     dump('Providers were already discovered', $discoveredProviders);
+        // }
 
-        if (config('ddd.autoload.policies') === true) {
-            $this->handlePolicies();
-        }
-
-        if (config('ddd.autoload.factories') === true) {
-            $this->handleFactories();
-        }
+        $this
+            ->handleProviders()
+            ->when(app()->runningInConsole(), fn ($autoloader) => $autoloader->handleProviders())
+            ->when(config('ddd.autoload.commands') === true, fn ($autoloader) => $autoloader->handleCommands())
+            ->when(config('ddd.autoload.policies') === true, fn ($autoloader) => $autoloader->handlePolicies())
+            ->when(config('ddd.autoload.factories') === true, fn ($autoloader) => $autoloader->handleFactories());
     }
 
-    protected static function normalizePaths($path): array
+    protected function normalizePaths($path): array
     {
         return collect($path)
             ->filter(fn ($path) => is_dir($path))
             ->toArray();
     }
 
-    protected static function getAllLayerPaths(): array
+    public function getAllLayerPaths(): array
     {
         return collect([
             DomainResolver::domainPath(),
@@ -63,33 +73,49 @@ class DomainAutoloader
         ])->map(fn ($path) => app()->basePath($path))->toArray();
     }
 
-    protected static function getCustomLayerPaths(): array
+    protected function getCustomLayerPaths(): array
     {
         return collect([
             ...array_values(config('ddd.layers', [])),
         ])->map(fn ($path) => app()->basePath($path))->toArray();
     }
 
-    protected function handleProviders(): void
+    protected function handleProviders()
     {
         $providers = DomainCache::has('domain-providers')
             ? DomainCache::get('domain-providers')
-            : static::discoverProviders();
+            : $this->discoverProviders();
 
         foreach ($providers as $provider) {
+            $this->discoveredProviders[$provider] = $provider;
             app()->register($provider);
         }
+
+        return $this;
     }
 
-    protected function handleCommands(): void
+    protected function handleCommands()
     {
         $commands = DomainCache::has('domain-commands')
             ? DomainCache::get('domain-commands')
-            : static::discoverCommands();
+            : $this->discoverCommands();
 
         foreach ($commands as $command) {
+            $this->discoveredCommands[$command] = $command;
             $this->registerCommand($command);
         }
+
+        return $this;
+    }
+
+    public function getDiscoveredCommands(): array
+    {
+        return $this->discoveredCommands;
+    }
+
+    public function getDiscoveredProviders(): array
+    {
+        return $this->discoveredProviders;
     }
 
     protected function registerCommand($class)
@@ -99,7 +125,7 @@ class DomainAutoloader
         });
     }
 
-    protected function handlePolicies(): void
+    protected function handlePolicies()
     {
         Gate::guessPolicyNamesUsing(static function (string $class): array|string {
             if ($model = DomainObject::fromClass($class, 'model')) {
@@ -120,26 +146,28 @@ class DomainAutoloader
                 return class_exists($class);
             }) ?: [$classDirname.'\\Policies\\'.class_basename($class).'Policy']);
         });
+
+        return $this;
     }
 
-    protected function handleFactories(): void
+    protected function handleFactories()
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
                 return $factoryName;
             }
 
-            $appNamespace = static::appNamespace();
-
-            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
-                ? Str::after($modelName, $appNamespace.'Models\\')
-                : Str::after($modelName, $appNamespace);
+            $modelName = Str::startsWith($modelName, $this->appNamespace.'Models\\')
+                ? Str::after($modelName, $this->appNamespace.'Models\\')
+                : Str::after($modelName, $this->appNamespace);
 
             return 'Database\\Factories\\'.$modelName.'Factory';
         });
+
+        return $this;
     }
 
-    protected static function finder($paths)
+    protected function finder($paths)
     {
         $filter = app('ddd')->getAutoloadFilter() ?? function (SplFileInfo $file) {
             $pathAfterDomain = str($file->getRelativePath())
@@ -161,7 +189,7 @@ class DomainAutoloader
             ->filter($filter);
     }
 
-    protected static function discoverProviders(): array
+    protected function discoverProviders(): array
     {
         $configValue = config('ddd.autoload.providers');
 
@@ -169,9 +197,9 @@ class DomainAutoloader
             return [];
         }
 
-        $paths = static::normalizePaths(
+        $paths = $this->normalizePaths(
             $configValue === true
-                ? static::getAllLayerPaths()
+                ? $this->getAllLayerPaths()
                 : $configValue
         );
 
@@ -179,13 +207,13 @@ class DomainAutoloader
             return [];
         }
 
-        return Lody::classesFromFinder(static::finder($paths))
+        return Lody::classesFromFinder($this->finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(ServiceProvider::class)
             ->toArray();
     }
 
-    protected static function discoverCommands(): array
+    protected function discoverCommands(): array
     {
         $configValue = config('ddd.autoload.commands');
 
@@ -193,9 +221,9 @@ class DomainAutoloader
             return [];
         }
 
-        $paths = static::normalizePaths(
+        $paths = $this->normalizePaths(
             $configValue === true ?
-                static::getAllLayerPaths()
+                $this->getAllLayerPaths()
                 : $configValue
         );
 
@@ -203,23 +231,32 @@ class DomainAutoloader
             return [];
         }
 
-        return Lody::classesFromFinder(static::finder($paths))
+        return Lody::classesFromFinder($this->finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(Command::class)
             ->toArray();
     }
 
-    public static function cacheProviders(): void
+    public function cacheProviders()
     {
-        DomainCache::set('domain-providers', static::discoverProviders());
+        DomainCache::set('domain-providers', $this->discoverProviders());
+
+        return $this;
     }
 
-    public static function cacheCommands(): void
+    public function cacheCommands()
     {
-        DomainCache::set('domain-commands', static::discoverCommands());
+        DomainCache::set('domain-commands', $this->discoverCommands());
+
+        return $this;
     }
 
-    protected static function appNamespace()
+    protected function flush()
+    {
+        return $this;
+    }
+
+    protected function resolveAppNamespace()
     {
         try {
             return Container::getInstance()

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void filterAutoloadPathsUsing(callable $filter)
  * @method static void resolveObjectSchemaUsing(callable $resolver)
  * @method static string packagePath(string $path = '')
+ * @method static \Lunarstorm\LaravelDDD\Support\Autoloader autoloader()
  * @method static \Lunarstorm\LaravelDDD\ConfigManager config()
  * @method static \Lunarstorm\LaravelDDD\StubManager stubs()
  * @method static \Lunarstorm\LaravelDDD\ComposerManager composer()

@@ -1,33 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+
+uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-
-    Config::set([
-        'ddd.domain_path' => 'src/Domain',
-        'ddd.domain_namespace' => 'Domain',
-        'ddd.application_namespace' => 'Application',
-        'ddd.application_path' => 'src/Application',
-        'ddd.application_objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-        'ddd.layers' => [
-            'Infrastructure' => 'src/Infrastructure',
-        ],
-        'ddd.autoload_ignore' => [
-            'Tests',
-            'Database/Migrations',
-        ],
-        'cache.default' => 'file',
-    ]);
 
     $this->artisan('optimize:clear')->execute();
 
@@ -44,10 +25,6 @@ it('can optimize discovered domain providers, commands, migrations', function ()
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
-
-    // $this->afterApplicationCreated(function () {
-    //     (new DomainAutoloader)->autoload();
-    // });
 
     $this
         ->artisan('ddd:optimize')
@@ -113,8 +90,6 @@ it('will not be cleared by laravel cache clearing', function () {
 
 describe('laravel optimize', function () {
     test('optimize will include ddd:optimize', function () {
-        config(['cache.default' => 'file']);
-
         expect(DomainCache::get('domain-providers'))->toBeNull();
         expect(DomainCache::get('domain-commands'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
@@ -127,8 +102,6 @@ describe('laravel optimize', function () {
     });
 
     test('optimize:clear will clear ddd cache', function () {
-        config(['cache.default' => 'file']);
-
         $this->artisan('ddd:optimize')->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();

@@ -1,31 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
+uses(BootsTestApplication::class);
+
 beforeEach(function () {
-    Config::set([
-        'ddd.domain_path' => 'src/Domain',
-        'ddd.domain_namespace' => 'Domain',
-        'ddd.application_namespace' => 'Application',
-        'ddd.application_path' => 'src/Application',
-        'ddd.application_objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-        'ddd.layers' => [
-            'Infrastructure' => 'src/Infrastructure',
-        ],
-        'ddd.autoload_ignore' => [
-            'Tests',
-            'Database/Migrations',
-        ],
-        'cache.default' => 'file',
-    ]);
+    $this->setupTestApplication();
 });
 
 afterEach(function () {
@@ -33,17 +16,11 @@ afterEach(function () {
 });
 
 describe('without autoload', function () {
-    beforeEach(function () {
-        Config::set('ddd.autoload.commands', false);
-
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
-
-        $this->setupTestApplication();
-    });
-
     it('does not register the command', function ($className, $command) {
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.commands' => false,
+        ]);
+
         expect(class_exists($className))->toBeTrue();
         expect(fn () => Artisan::call($command))->toThrow(CommandNotFoundException::class);
     })->with([
@@ -54,18 +31,16 @@ describe('without autoload', function () {
 });
 
 describe('with autoload', function () {
-    beforeEach(function () {
-        Config::set('ddd.autoload.commands', true);
-
-        $this->setupTestApplication();
-    });
-
     it('registers existing commands', function ($className, $command, $output) {
-        expect(class_exists($className))->toBeTrue();
-
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
+            app('ddd.autoloader')->boot();
         });
+
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.commands' => true,
+        ]);
+
+        expect(class_exists($className))->toBeTrue();
 
         expect(collect(Artisan::all()))
             ->has($command)
@@ -78,44 +53,19 @@ describe('with autoload', function () {
         ['Infrastructure\Commands\LogPrune', 'log:prune', 'System logs pruned!'],
         ['Application\Commands\ApplicationSync', 'application:sync', 'Application state synced!'],
     ]);
-
-    it('registers newly created commands', function () {
-        $command = 'app:invoice-void';
-
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
-
-        expect(collect(Artisan::all()))
-            ->has($command)
-            ->toBeFalse();
-
-        Artisan::call('ddd:command', [
-            'name' => 'InvoiceVoid',
-            '--domain' => 'Invoicing',
-        ]);
-
-        expect(collect(Artisan::all()))
-            ->has($command)
-            ->toBeTrue();
-
-        $this->artisan($command)->assertSuccessful();
-    })->skip("Can't get this to work, might not be test-able without a real app environment.");
 });
 
 describe('caching', function () {
-    beforeEach(function () {
-        Config::set('ddd.autoload.commands', true);
-
-        $this->setupTestApplication();
-    });
-
     it('remembers the last cached state', function () {
         DomainCache::set('domain-commands', []);
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
+            app('ddd.autoloader')->boot();
         });
+
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.commands' => true,
+        ]);
 
         // commands should not be recognized due to cached empty-state
         expect(fn () => Artisan::call('invoice:deliver'))->toThrow(CommandNotFoundException::class);
@@ -128,8 +78,12 @@ describe('caching', function () {
         DomainCache::clear();
 
         $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
+            app('ddd.autoloader')->boot();
         });
+
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.commands' => true,
+        ]);
 
         $this->artisan('invoice:deliver')->assertSuccessful();
         $this->artisan('log:prune')->assertSuccessful();
