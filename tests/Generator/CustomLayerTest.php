@@ -7,7 +7,7 @@ beforeEach(function () {
     $this->cleanSlate();
 
     Config::set('ddd.layers', [
-        'Infrastructure' => 'src/Infrastructure',
+        'CustomLayer' => 'src/CustomLayer',
     ]);
 });
 
@@ -25,7 +25,7 @@ it('can generate objects into custom layers', function ($type, $objectName, $exp
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    $command = "ddd:{$type} Infrastructure:{$objectName}";
+    $command = "ddd:{$type} CustomLayer:{$objectName}";
 
     Artisan::call($command);
 
@@ -35,27 +35,27 @@ it('can generate objects into custom layers', function ($type, $objectName, $exp
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with([
-    'action' => ['action', 'SomeAction', 'Infrastructure\Actions', 'src/Infrastructure/Actions/SomeAction.php'],
-    'cast' => ['cast', 'SomeCast', 'Infrastructure\Casts', 'src/Infrastructure/Casts/SomeCast.php'],
-    'channel' => ['channel', 'SomeChannel', 'Infrastructure\Channels', 'src/Infrastructure/Channels/SomeChannel.php'],
-    'command' => ['command', 'SomeCommand', 'Infrastructure\Commands', 'src/Infrastructure/Commands/SomeCommand.php'],
-    'event' => ['event', 'SomeEvent', 'Infrastructure\Events', 'src/Infrastructure/Events/SomeEvent.php'],
-    'exception' => ['exception', 'SomeException', 'Infrastructure\Exceptions', 'src/Infrastructure/Exceptions/SomeException.php'],
-    'job' => ['job', 'SomeJob', 'Infrastructure\Jobs', 'src/Infrastructure/Jobs/SomeJob.php'],
-    'listener' => ['listener', 'SomeListener', 'Infrastructure\Listeners', 'src/Infrastructure/Listeners/SomeListener.php'],
-    'mail' => ['mail', 'SomeMail', 'Infrastructure\Mail', 'src/Infrastructure/Mail/SomeMail.php'],
-    'notification' => ['notification', 'SomeNotification', 'Infrastructure\Notifications', 'src/Infrastructure/Notifications/SomeNotification.php'],
-    'observer' => ['observer', 'SomeObserver', 'Infrastructure\Observers', 'src/Infrastructure/Observers/SomeObserver.php'],
-    'policy' => ['policy', 'SomePolicy', 'Infrastructure\Policies', 'src/Infrastructure/Policies/SomePolicy.php'],
-    'provider' => ['provider', 'SomeProvider', 'Infrastructure\Providers', 'src/Infrastructure/Providers/SomeProvider.php'],
-    'resource' => ['resource', 'SomeResource', 'Infrastructure\Resources', 'src/Infrastructure/Resources/SomeResource.php'],
-    'rule' => ['rule', 'SomeRule', 'Infrastructure\Rules', 'src/Infrastructure/Rules/SomeRule.php'],
-    'scope' => ['scope', 'SomeScope', 'Infrastructure\Scopes', 'src/Infrastructure/Scopes/SomeScope.php'],
-    'seeder' => ['seeder', 'SomeSeeder', 'Infrastructure\Database\Seeders', 'src/Infrastructure/Database/Seeders/SomeSeeder.php'],
-    'class' => ['class', 'SomeClass', 'Infrastructure', 'src/Infrastructure/SomeClass.php'],
-    'enum' => ['enum', 'SomeEnum', 'Infrastructure\Enums', 'src/Infrastructure/Enums/SomeEnum.php'],
-    'interface' => ['interface', 'SomeInterface', 'Infrastructure', 'src/Infrastructure/SomeInterface.php'],
-    'trait' => ['trait', 'SomeTrait', 'Infrastructure', 'src/Infrastructure/SomeTrait.php'],
+    'action' => ['action', 'SomeAction', 'CustomLayer\Actions', 'src/CustomLayer/Actions/SomeAction.php'],
+    'cast' => ['cast', 'SomeCast', 'CustomLayer\Casts', 'src/CustomLayer/Casts/SomeCast.php'],
+    'channel' => ['channel', 'SomeChannel', 'CustomLayer\Channels', 'src/CustomLayer/Channels/SomeChannel.php'],
+    'command' => ['command', 'SomeCommand', 'CustomLayer\Commands', 'src/CustomLayer/Commands/SomeCommand.php'],
+    'event' => ['event', 'SomeEvent', 'CustomLayer\Events', 'src/CustomLayer/Events/SomeEvent.php'],
+    'exception' => ['exception', 'SomeException', 'CustomLayer\Exceptions', 'src/CustomLayer/Exceptions/SomeException.php'],
+    'job' => ['job', 'SomeJob', 'CustomLayer\Jobs', 'src/CustomLayer/Jobs/SomeJob.php'],
+    'listener' => ['listener', 'SomeListener', 'CustomLayer\Listeners', 'src/CustomLayer/Listeners/SomeListener.php'],
+    'mail' => ['mail', 'SomeMail', 'CustomLayer\Mail', 'src/CustomLayer/Mail/SomeMail.php'],
+    'notification' => ['notification', 'SomeNotification', 'CustomLayer\Notifications', 'src/CustomLayer/Notifications/SomeNotification.php'],
+    'observer' => ['observer', 'SomeObserver', 'CustomLayer\Observers', 'src/CustomLayer/Observers/SomeObserver.php'],
+    'policy' => ['policy', 'SomePolicy', 'CustomLayer\Policies', 'src/CustomLayer/Policies/SomePolicy.php'],
+    'provider' => ['provider', 'SomeProvider', 'CustomLayer\Providers', 'src/CustomLayer/Providers/SomeProvider.php'],
+    'resource' => ['resource', 'SomeResource', 'CustomLayer\Resources', 'src/CustomLayer/Resources/SomeResource.php'],
+    'rule' => ['rule', 'SomeRule', 'CustomLayer\Rules', 'src/CustomLayer/Rules/SomeRule.php'],
+    'scope' => ['scope', 'SomeScope', 'CustomLayer\Scopes', 'src/CustomLayer/Scopes/SomeScope.php'],
+    'seeder' => ['seeder', 'SomeSeeder', 'CustomLayer\Database\Seeders', 'src/CustomLayer/Database/Seeders/SomeSeeder.php'],
+    'class' => ['class', 'SomeClass', 'CustomLayer', 'src/CustomLayer/SomeClass.php'],
+    'enum' => ['enum', 'SomeEnum', 'CustomLayer\Enums', 'src/CustomLayer/Enums/SomeEnum.php'],
+    'interface' => ['interface', 'SomeInterface', 'CustomLayer', 'src/CustomLayer/SomeInterface.php'],
+    'trait' => ['trait', 'SomeTrait', 'CustomLayer', 'src/CustomLayer/SomeTrait.php'],
 ]);
 
 it('ignores custom layer if object belongs in the application layer', function ($type, $objectName, $expectedNamespace, $expectedPath) {
@@ -76,7 +76,7 @@ it('ignores custom layer if object belongs in the application layer', function (
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    $command = "ddd:{$type} Infrastructure:{$objectName}";
+    $command = "ddd:{$type} CustomLayer:{$objectName}";
 
     Artisan::call($command);
 
@@ -86,7 +86,7 @@ it('ignores custom layer if object belongs in the application layer', function (
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with([
-    'request' => ['request', 'SomeRequest', 'Application\Infrastructure\Requests', 'src/Application/Infrastructure/Requests/SomeRequest.php'],
-    'controller' => ['controller', 'SomeController', 'Application\Infrastructure\Controllers', 'src/Application/Infrastructure/Controllers/SomeController.php'],
-    'middleware' => ['middleware', 'SomeMiddleware', 'Application\Infrastructure\Middleware', 'src/Application/Infrastructure/Middleware/SomeMiddleware.php'],
+    'request' => ['request', 'SomeRequest', 'Application\CustomLayer\Requests', 'src/Application/CustomLayer/Requests/SomeRequest.php'],
+    'controller' => ['controller', 'SomeController', 'Application\CustomLayer\Controllers', 'src/Application/CustomLayer/Controllers/SomeController.php'],
+    'middleware' => ['middleware', 'SomeMiddleware', 'Application\CustomLayer\Middleware', 'src/Application/CustomLayer/Middleware/SomeMiddleware.php'],
 ]);

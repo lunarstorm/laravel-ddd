@@ -5,8 +5,17 @@ use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 
 beforeEach(function () {
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
+    Config::set([
+        'ddd.domain_path' => 'src/Domain',
+        'ddd.domain_namespace' => 'Domain',
+        'ddd.application_namespace' => 'Application',
+        'ddd.application_path' => 'src/Application',
+        'ddd.application_objects' => [
+            'controller',
+            'request',
+            'middleware',
+        ],
+    ]);
 
     $this->setupTestApplication();
 });
@@ -16,10 +25,6 @@ describe('without autoload', function () {
         config([
             'ddd.autoload.providers' => false,
         ]);
-
-        // $this->afterApplicationCreated(function () {
-        //     (new DomainAutoloader)->autoload();
-        // });
 
         (new DomainAutoloader)->autoload();
     });
@@ -35,16 +40,22 @@ describe('with autoload', function () {
             'ddd.autoload.providers' => true,
         ]);
 
-        // $this->afterApplicationCreated(function () {
-        //     (new DomainAutoloader)->autoload();
-        // });
-
         (new DomainAutoloader)->autoload();
     });
 
-    it('registers the provider', function () {
+    it('registers the provider in domain layer', function () {
         expect(app('invoicing'))->toEqual('invoicing-singleton');
         $this->artisan('invoice:deliver')->expectsOutputToContain('invoice-secret');
+    });
+
+    it('registers the provider in application layer', function () {
+        expect(app('application-layer'))->toEqual('application-layer-singleton');
+        $this->artisan('application:sync')->expectsOutputToContain('application-secret');
+    });
+
+    it('registers the provider in custom layer', function () {
+        expect(app('infrastructure-layer'))->toEqual('infrastructure-layer-singleton');
+        $this->artisan('log:prune')->expectsOutputToContain('infrastructure-secret');
     });
 });
 
@@ -65,6 +76,8 @@ describe('caching', function () {
         });
 
         expect(fn () => app('invoicing'))->toThrow(Exception::class);
+        expect(fn () => app('application-layer'))->toThrow(Exception::class);
+        expect(fn () => app('infrastructure-layer'))->toThrow(Exception::class);
     });
 
     it('can bust the cache', function () {
@@ -77,5 +90,11 @@ describe('caching', function () {
 
         expect(app('invoicing'))->toEqual('invoicing-singleton');
         $this->artisan('invoice:deliver')->expectsOutputToContain('invoice-secret');
+
+        expect(app('application-layer'))->toEqual('application-layer-singleton');
+        $this->artisan('application:sync')->expectsOutputToContain('application-secret');
+
+        expect(app('infrastructure-layer'))->toEqual('infrastructure-layer-singleton');
+        $this->artisan('log:prune')->expectsOutputToContain('infrastructure-secret');
     });
 });

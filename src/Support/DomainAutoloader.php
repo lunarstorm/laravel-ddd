@@ -54,6 +54,22 @@ class DomainAutoloader
             ->toArray();
     }
 
+    protected static function getAllLayerPaths(): array
+    {
+        return collect([
+            DomainResolver::domainPath(),
+            DomainResolver::applicationLayerPath(),
+            ...array_values(config('ddd.layers', [])),
+        ])->map(fn ($path) => app()->basePath($path))->toArray();
+    }
+
+    protected static function getCustomLayerPaths(): array
+    {
+        return collect([
+            ...array_values(config('ddd.layers', [])),
+        ])->map(fn ($path) => app()->basePath($path))->toArray();
+    }
+
     protected function handleProviders(): void
     {
         $providers = DomainCache::has('domain-providers')
@@ -155,7 +171,7 @@ class DomainAutoloader
 
         $paths = static::normalizePaths(
             $configValue === true
-                ? app()->basePath(DomainResolver::domainPath())
+                ? static::getAllLayerPaths()
                 : $configValue
         );
 
@@ -179,7 +195,7 @@ class DomainAutoloader
 
         $paths = static::normalizePaths(
             $configValue === true ?
-                app()->basePath(DomainResolver::domainPath())
+                static::getAllLayerPaths()
                 : $configValue
         );
 

@@ -125,16 +125,6 @@ class DomainResolver
      */
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $name = null): string
     {
-        // $customResolver = app('ddd')->getNamespaceResolver();
-
-        // $resolved = is_callable($customResolver)
-        //     ? $customResolver($domain, $type, $name, app('ddd')->getCommandContext())
-        //     : null;
-
-        // if (! is_null($resolved)) {
-        //     return $resolved;
-        // }
-
         $resolver = function (string $domain, string $type, ?string $name) {
             $layer = static::resolveLayer($domain, $type);
 

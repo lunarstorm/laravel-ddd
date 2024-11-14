@@ -7,8 +7,20 @@ use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 beforeEach(function () {
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
+    Config::set([
+        'ddd.domain_path' => 'src/Domain',
+        'ddd.domain_namespace' => 'Domain',
+        'ddd.application_namespace' => 'Application',
+        'ddd.application_path' => 'src/Application',
+        'ddd.application_objects' => [
+            'controller',
+            'request',
+            'middleware',
+        ],
+        'ddd.layers' => [
+            'Infrastructure' => 'src/Infrastructure',
+        ],
+    ]);
 });
 
 describe('without autoload', function () {
@@ -22,10 +34,14 @@ describe('without autoload', function () {
         });
     });
 
-    it('does not register the command', function () {
-        expect(class_exists('Domain\Invoicing\Commands\InvoiceDeliver'))->toBeTrue();
-        expect(fn () => Artisan::call('invoice:deliver'))->toThrow(CommandNotFoundException::class);
-    });
+    it('does not register the command', function ($className, $command) {
+        expect(class_exists($className))->toBeTrue();
+        expect(fn () => Artisan::call($command))->toThrow(CommandNotFoundException::class);
+    })->with([
+        ['Domain\Invoicing\Commands\InvoiceDeliver', 'invoice:deliver'],
+        ['Infrastructure\Commands\LogPrune', 'log:prune'],
+        ['Application\Commands\ApplicationSync', 'application:sync'],
+    ]);
 });
 
 describe('with autoload', function () {
@@ -39,17 +55,19 @@ describe('with autoload', function () {
         });
     });
 
-    it('registers existing commands', function () {
-        $command = 'invoice:deliver';
-
+    it('registers existing commands', function ($className, $command, $output) {
         expect(collect(Artisan::all()))
             ->has($command)
             ->toBeTrue();
 
-        expect(class_exists('Domain\Invoicing\Commands\InvoiceDeliver'))->toBeTrue();
+        expect(class_exists($className))->toBeTrue();
         Artisan::call($command);
-        expect(Artisan::output())->toContain('Invoice delivered!');
-    });
+        expect(Artisan::output())->toContain($output);
+    })->with([
+        ['Domain\Invoicing\Commands\InvoiceDeliver', 'invoice:deliver', 'Invoice delivered!'],
+        ['Infrastructure\Commands\LogPrune', 'log:prune', 'System logs pruned!'],
+        ['Application\Commands\ApplicationSync', 'application:sync', 'Application state synced!'],
+    ]);
 
     it('registers newly created commands', function () {
         $command = 'app:invoice-void';
@@ -87,6 +105,8 @@ describe('caching', function () {
 
         // command should not be recognized due to cached empty-state
         expect(fn () => Artisan::call('invoice:deliver'))->toThrow(CommandNotFoundException::class);
+        expect(fn () => Artisan::call('log:prune'))->toThrow(CommandNotFoundException::class);
+        expect(fn () => Artisan::call('application:sync'))->toThrow(CommandNotFoundException::class);
     });
 
     it('can bust the cache', function () {
@@ -98,5 +118,7 @@ describe('caching', function () {
         });
 
         $this->artisan('invoice:deliver')->assertSuccessful();
+        $this->artisan('log:prune')->assertSuccessful();
+        $this->artisan('application:sync')->assertSuccessful();
     });
 });
