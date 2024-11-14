@@ -17,10 +17,6 @@ afterEach(function () {
 
 describe('without autoload', function () {
     it('does not register the provider', function ($binding) {
-        // setConfigValues([
-        //     'ddd.autoload.providers' => false,
-        // ]);
-
         $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
