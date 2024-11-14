@@ -42,7 +42,7 @@ describe('without autoload', function () {
     });
 
     it('does not register the provider', function () {
-        expect(fn () => app('invoicing'))->toThrow(Exception::class);
+        expect(fn() => app('invoicing'))->toThrow(Exception::class);
     });
 });
 
@@ -51,21 +51,31 @@ describe('with autoload', function () {
         config([
             'ddd.autoload.providers' => true,
         ]);
-
-        (new DomainAutoloader)->autoload();
     });
 
     it('registers the provider in domain layer', function () {
+        $this->afterApplicationCreated(function () {
+            (new DomainAutoloader)->autoload();
+        });
+
         expect(app('invoicing'))->toEqual('invoicing-singleton');
         $this->artisan('invoice:deliver')->expectsOutputToContain('invoice-secret');
     });
 
     it('registers the provider in application layer', function () {
+        $this->afterApplicationCreated(function () {
+            (new DomainAutoloader)->autoload();
+        });
+
         expect(app('application-layer'))->toEqual('application-layer-singleton');
         $this->artisan('application:sync')->expectsOutputToContain('application-secret');
     });
 
     it('registers the provider in custom layer', function () {
+        $this->afterApplicationCreated(function () {
+            (new DomainAutoloader)->autoload();
+        });
+
         expect(app('infrastructure-layer'))->toEqual('infrastructure-layer-singleton');
         $this->artisan('log:prune')->expectsOutputToContain('infrastructure-secret');
     });
@@ -87,9 +97,9 @@ describe('caching', function () {
             (new DomainAutoloader)->autoload();
         });
 
-        expect(fn () => app('invoicing'))->toThrow(Exception::class);
-        expect(fn () => app('application-layer'))->toThrow(Exception::class);
-        expect(fn () => app('infrastructure-layer'))->toThrow(Exception::class);
+        expect(fn() => app('invoicing'))->toThrow(Exception::class);
+        expect(fn() => app('application-layer'))->toThrow(Exception::class);
+        expect(fn() => app('infrastructure-layer'))->toThrow(Exception::class);
     });
 
     it('can bust the cache', function () {
