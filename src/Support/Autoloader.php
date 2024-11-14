@@ -40,6 +40,7 @@ class Autoloader
     public function boot(): void
     {
         if ($this->isBooted) {
+            // dump('Autoloader Already booted');
             return;
         }
 

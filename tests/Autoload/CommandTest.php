@@ -64,7 +64,7 @@ describe('caching', function () {
     it('remembers the last cached state', function () {
         DomainCache::set('domain-commands', []);
 
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
@@ -82,7 +82,7 @@ describe('caching', function () {
         DomainCache::set('domain-commands', []);
         DomainCache::clear();
 
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
