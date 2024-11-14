@@ -50,8 +50,7 @@ class Autoloader
 
         $this
             ->handleProviders()
-            ->when(app()->runningInConsole(), fn ($autoloader) => $autoloader->handleProviders())
-            ->when(config('ddd.autoload.commands') === true, fn ($autoloader) => $autoloader->handleCommands())
+            ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn ($autoloader) => $autoloader->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn ($autoloader) => $autoloader->handlePolicies())
             ->when(config('ddd.autoload.factories') === true, fn ($autoloader) => $autoloader->handleFactories());
 

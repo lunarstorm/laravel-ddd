@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
+use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Support\Autoloader;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
@@ -137,7 +138,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         //     'package booted' => config('ddd')
         // ]);
 
-        app('ddd.autoloader')->boot();
+        DDD::autoloader()->boot();
     }
 
     public function packageRegistered()
