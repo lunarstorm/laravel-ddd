@@ -134,10 +134,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             );
         }
 
-        // dump([
-        //     'package booted' => config('ddd')
-        // ]);
-
         DDD::autoloader()->boot();
     }
 
