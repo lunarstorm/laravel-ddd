@@ -20,7 +20,11 @@ beforeEach(function () {
         'ddd.layers' => [
             'Infrastructure' => 'src/Infrastructure',
         ],
-        'ddd.autoload.factories' => true,
+        'ddd.autoload_ignore' => [
+            'Tests',
+            'Database/Migrations',
+        ],
+        'cache.default' => 'file',
     ]);
 
     $this->afterApplicationCreated(function () {

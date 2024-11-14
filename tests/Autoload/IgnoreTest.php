@@ -21,6 +21,11 @@ beforeEach(function () {
         'ddd.layers' => [
             'Infrastructure' => 'src/Infrastructure',
         ],
+        'ddd.autoload_ignore' => [
+            'Tests',
+            'Database/Migrations',
+        ],
+        'cache.default' => 'file',
     ]);
 
     $this->setupTestApplication();
