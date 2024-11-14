@@ -61,6 +61,13 @@ class TestCase extends Orchestra
                 'ddd.layers' => [
                     'Infrastructure' => 'src/Infrastructure',
                 ],
+                'ddd.autoload' => [
+                    'providers' => true,
+                    'commands' => true,
+                    'policies' => true,
+                    'factories' => true,
+                    'migrations' => true,
+                ],
                 'ddd.autoload_ignore' => [
                     'Tests',
                     'Database/Migrations',
