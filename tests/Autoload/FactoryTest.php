@@ -1,21 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+
+uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-
-    Config::set('ddd.domain_namespace', 'Domain');
 });
 
 describe('autoload enabled', function () {
     beforeEach(function () {
-        Config::set('ddd.autoload.factories', true);
-
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
+
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.factories' => true,
+        ]);
     });
 
     it('can resolve domain factory', function ($modelClass, $expectedFactoryClass) {
@@ -48,11 +50,13 @@ describe('autoload enabled', function () {
 
 describe('autoload disabled', function () {
     beforeEach(function () {
-        Config::set('ddd.autoload.factories', false);
-
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
+
+        $this->refreshApplicationWithConfig([
+            'ddd.autoload.factories' => false,
+        ]);
     });
 
     it('cannot resolve factories that rely on autoloading', function ($modelClass) {

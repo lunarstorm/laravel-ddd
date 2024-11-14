@@ -9,6 +9,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
+    DomainCache::clear();
 });
 
 afterEach(function () {
@@ -17,6 +18,10 @@ afterEach(function () {
 
 describe('without autoload', function () {
     it('does not register the command', function ($className, $command) {
+        $this->afterApplicationRefreshed(function () {
+            app('ddd.autoloader')->boot();
+        });
+
         $this->refreshApplicationWithConfig([
             'ddd.autoload.commands' => false,
         ]);
@@ -32,7 +37,7 @@ describe('without autoload', function () {
 
 describe('with autoload', function () {
     it('registers existing commands', function ($className, $command, $output) {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 

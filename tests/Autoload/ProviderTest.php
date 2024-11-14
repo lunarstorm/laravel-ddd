@@ -60,7 +60,7 @@ describe('without autoload', function () {
 
 describe('with autoload', function () {
     it('registers the provider in domain layer', function () {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
@@ -73,7 +73,7 @@ describe('with autoload', function () {
     });
 
     it('registers the provider in application layer', function () {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 

@@ -30,6 +30,8 @@ class Autoloader
 
     protected array $discoveredProviders = [];
 
+    protected bool $isBooted = false;
+
     public function __construct()
     {
         $this->appNamespace = $this->resolveAppNamespace();
@@ -37,17 +39,13 @@ class Autoloader
 
     public function boot(): void
     {
-        if (! config()->has('ddd.autoload')) {
+        if ($this->isBooted) {
             return;
         }
 
-        // if ($discoveredCommands = $this->getDiscoveredCommands()) {
-        //     dump('Commands were already discovered', $discoveredCommands);
-        // }
-
-        // if ($discoveredProviders = $this->getDiscoveredProviders()) {
-        //     dump('Providers were already discovered', $discoveredProviders);
-        // }
+        if (! config()->has('ddd.autoload')) {
+            return;
+        }
 
         $this
             ->handleProviders()
@@ -55,6 +53,8 @@ class Autoloader
             ->when(config('ddd.autoload.commands') === true, fn ($autoloader) => $autoloader->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn ($autoloader) => $autoloader->handlePolicies())
             ->when(config('ddd.autoload.factories') === true, fn ($autoloader) => $autoloader->handleFactories());
+
+        $this->isBooted = true;
     }
 
     protected function normalizePaths($path): array
@@ -248,11 +248,6 @@ class Autoloader
     {
         DomainCache::set('domain-commands', $this->discoverCommands());
 
-        return $this;
-    }
-
-    protected function flush()
-    {
         return $this;
     }
 
