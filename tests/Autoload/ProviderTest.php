@@ -42,7 +42,7 @@ describe('without autoload', function () {
     });
 
     it('does not register the provider', function () {
-        expect(fn() => app('invoicing'))->toThrow(Exception::class);
+        expect(fn () => app('invoicing'))->toThrow(Exception::class);
     });
 });
 
@@ -97,9 +97,9 @@ describe('caching', function () {
             (new DomainAutoloader)->autoload();
         });
 
-        expect(fn() => app('invoicing'))->toThrow(Exception::class);
-        expect(fn() => app('application-layer'))->toThrow(Exception::class);
-        expect(fn() => app('infrastructure-layer'))->toThrow(Exception::class);
+        expect(fn () => app('invoicing'))->toThrow(Exception::class);
+        expect(fn () => app('application-layer'))->toThrow(Exception::class);
+        expect(fn () => app('infrastructure-layer'))->toThrow(Exception::class);
     });
 
     it('can bust the cache', function () {
