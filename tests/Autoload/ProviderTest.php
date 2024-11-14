@@ -7,32 +7,13 @@ use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 uses(BootsTestApplication::class);
 
 beforeEach(function () {
-    // $this->refreshApplicationWithConfig([
-    //     'ddd.domain_path' => 'src/Domain',
-    //     'ddd.domain_namespace' => 'Domain',
-    //     'ddd.application_namespace' => 'Application',
-    //     'ddd.application_path' => 'src/Application',
-    //     'ddd.application_objects' => [
-    //         'controller',
-    //         'request',
-    //         'middleware',
-    //     ],
-    //     'ddd.layers' => [
-    //         'Infrastructure' => 'src/Infrastructure',
-    //     ],
-    //     'ddd.autoload_ignore' => [
-    //         'Tests',
-    //         'Database/Migrations',
-    //     ],
-    //     'cache.default' => 'file',
-    // ]);
-
     $this->setupTestApplication();
+    DomainCache::clear();
 });
 
-// afterEach(function () {
-//     $this->setupTestApplication();
-// });
+afterEach(function () {
+    DomainCache::clear();
+});
 
 describe('without autoload', function () {
     it('does not register the provider', function ($binding) {
@@ -86,7 +67,7 @@ describe('with autoload', function () {
     });
 
     it('registers the provider in custom layer', function () {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
@@ -103,7 +84,7 @@ describe('caching', function () {
     it('remembers the last cached state', function () {
         DomainCache::set('domain-providers', []);
 
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
@@ -120,7 +101,7 @@ describe('caching', function () {
         DomainCache::set('domain-providers', []);
         DomainCache::clear();
 
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
 
