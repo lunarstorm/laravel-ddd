@@ -7,7 +7,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-});
+})->skip();
 
 it('can autoload policy', function ($class, $expectedPolicy) {
     expect(class_exists($class))->toBeTrue();

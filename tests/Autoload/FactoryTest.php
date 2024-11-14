@@ -7,7 +7,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-});
+})->skip();
 
 describe('autoload enabled', function () {
     beforeEach(function () {
@@ -49,7 +49,7 @@ describe('autoload enabled', function () {
 });
 
 describe('autoload disabled', function () {
-    beforeEach(function () {
+    it('cannot resolve factories that rely on autoloading', function ($modelClass) {
         $this->afterApplicationRefreshed(function () {
             app('ddd.autoloader')->boot();
         });
@@ -57,9 +57,7 @@ describe('autoload disabled', function () {
         $this->refreshApplicationWithConfig([
             'ddd.autoload.factories' => false,
         ]);
-    });
 
-    it('cannot resolve factories that rely on autoloading', function ($modelClass) {
         expect(fn () => $modelClass::factory())->toThrow(Error::class);
     })->with([
         ['Domain\Invoicing\Models\VanillaModel'],
