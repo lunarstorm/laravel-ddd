@@ -1,13 +1,33 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
+use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
     $this->setupTestApplication();
 
-    config(['cache.default' => 'file']);
+    Config::set([
+        'ddd.domain_path' => 'src/Domain',
+        'ddd.domain_namespace' => 'Domain',
+        'ddd.application_namespace' => 'Application',
+        'ddd.application_path' => 'src/Application',
+        'ddd.application_objects' => [
+            'controller',
+            'request',
+            'middleware',
+        ],
+        'ddd.layers' => [
+            'Infrastructure' => 'src/Infrastructure',
+        ],
+        'ddd.autoload_ignore' => [
+            'Tests',
+            'Database/Migrations',
+        ],
+        'cache.default' => 'file',
+    ]);
 
     $this->artisan('optimize:clear')->execute();
 
@@ -24,6 +44,10 @@ it('can optimize discovered domain providers, commands, migrations', function ()
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
+
+    // $this->afterApplicationCreated(function () {
+    //     (new DomainAutoloader)->autoload();
+    // });
 
     $this
         ->artisan('ddd:optimize')
