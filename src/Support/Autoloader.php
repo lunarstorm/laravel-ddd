@@ -26,9 +26,9 @@ class Autoloader
 
     protected string $appNamespace;
 
-    protected array $discoveredCommands = [];
+    protected array $registeredCommands = [];
 
-    protected array $discoveredProviders = [];
+    protected array $registeredProviders = [];
 
     protected bool $isBooted = false;
 
@@ -37,25 +37,36 @@ class Autoloader
         $this->appNamespace = $this->resolveAppNamespace();
     }
 
-    public function boot(): void
+    public function boot()
     {
-        // if ($this->isBooted) {
-        //     // dump('Autoloader Already booted');
-        //     return;
-        // }
-
         if (! config()->has('ddd.autoload')) {
-            return;
+            return $this;
         }
 
+        // if ($this->isBooted) {
+        //     return $this;
+        // }
+
         $this
-            ->when(config('ddd.autoload.providers') === true, fn ($autoloader) => $autoloader->handleProviders())
-            ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn ($autoloader) => $autoloader->handleCommands())
-            ->when(config('ddd.autoload.policies') === true, fn ($autoloader) => $autoloader->handlePolicies())
-            ->when(config('ddd.autoload.factories') === true, fn ($autoloader) => $autoloader->handleFactories());
+            ->when(config('ddd.autoload.providers') === true, fn () => $this->handleProviders())
+            ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
+            ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
+            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
+
+        if (app()->runningInConsole()) {
+            ConsoleApplication::starting(function ($artisan) {
+                foreach ($this->registeredCommands as $command) {
+                    $artisan->resolve($command);
+                }
+            });
+        }
 
         $this->isBooted = true;
+
+        return $this;
     }
+
+    public function run() {}
 
     protected function normalizePaths($path): array
     {
@@ -86,8 +97,10 @@ class Autoloader
             ? DomainCache::get('domain-providers')
             : $this->discoverProviders();
 
+        $this->registeredProviders = [];
+
         foreach ($providers as $provider) {
-            $this->discoveredProviders[$provider] = $provider;
+            $this->registeredProviders[$provider] = $provider;
             app()->register($provider);
         }
 
@@ -100,29 +113,32 @@ class Autoloader
             ? DomainCache::get('domain-commands')
             : $this->discoverCommands();
 
+        $this->registeredCommands = [];
+
         foreach ($commands as $command) {
-            $this->discoveredCommands[$command] = $command;
+            $this->registeredCommands[$command] = $command;
             $this->registerCommand($command);
         }
 
         return $this;
     }
 
-    public function getDiscoveredCommands(): array
+    public function getRegisteredCommands(): array
     {
-        return $this->discoveredCommands;
+        return $this->registeredCommands;
     }
 
-    public function getDiscoveredProviders(): array
+    public function getRegisteredProviders(): array
     {
-        return $this->discoveredProviders;
+        return $this->registeredProviders;
     }
 
     protected function registerCommand($class)
     {
-        ConsoleApplication::starting(function ($artisan) use ($class) {
-            $artisan->resolve($class);
-        });
+        // ConsoleApplication::starting(function ($artisan) use ($class) {
+        //     dump('resolving command', $class, $this->registeredCommands);
+        //     $artisan->resolve($class);
+        // });
     }
 
     protected function handlePolicies()
@@ -222,8 +238,8 @@ class Autoloader
         }
 
         $paths = $this->normalizePaths(
-            $configValue === true ?
-                $this->getAllLayerPaths()
+            $configValue === true
+                ? $this->getAllLayerPaths()
                 : $configValue
         );
 

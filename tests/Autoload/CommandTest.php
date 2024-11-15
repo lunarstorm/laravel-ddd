@@ -7,21 +7,21 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 uses(BootsTestApplication::class);
 
-beforeEach(function () {
-    $this->setupTestApplication();
-    DomainCache::clear();
-});
-
 afterEach(function () {
     DomainCache::clear();
 });
 
 describe('without autoload', function () {
-    it('does not register the command', function ($className, $command) {
+    beforeEach(function () {
+        DomainCache::clear();
+
         $this->afterApplicationRefreshed(function () {
+            $this->setupTestApplication();
             app('ddd.autoloader')->boot();
         });
+    });
 
+    it('does not register the command', function ($className, $command) {
         $this->refreshApplicationWithConfig([
             'ddd.autoload.commands' => false,
         ]);
@@ -33,14 +33,19 @@ describe('without autoload', function () {
         ['Infrastructure\Commands\LogPrune', 'log:prune'],
         ['Application\Commands\ApplicationSync', 'application:sync'],
     ]);
-})->skip();
+});
 
 describe('with autoload', function () {
-    it('registers existing commands', function ($className, $command, $output) {
+    beforeEach(function () {
+        DomainCache::clear();
+
         $this->afterApplicationRefreshed(function () {
+            $this->setupTestApplication();
             app('ddd.autoloader')->boot();
         });
+    });
 
+    it('registers existing commands', function ($className, $command, $output) {
         $this->refreshApplicationWithConfig([
             'ddd.autoload.commands' => true,
         ]);
@@ -58,13 +63,13 @@ describe('with autoload', function () {
         ['Infrastructure\Commands\LogPrune', 'log:prune', 'System logs pruned!'],
         ['Application\Commands\ApplicationSync', 'application:sync', 'Application state synced!'],
     ]);
-})->skip();
+});
 
 describe('caching', function () {
     it('remembers the last cached state', function () {
-        DomainCache::set('domain-commands', []);
-
         $this->afterApplicationRefreshed(function () {
+            $this->setupTestApplication();
+            DomainCache::set('domain-commands', []);
             app('ddd.autoloader')->boot();
         });
 
@@ -79,10 +84,10 @@ describe('caching', function () {
     });
 
     it('can bust the cache', function () {
-        DomainCache::set('domain-commands', []);
-        DomainCache::clear();
-
         $this->afterApplicationRefreshed(function () {
+            $this->setupTestApplication();
+            DomainCache::set('domain-commands', []);
+            DomainCache::clear();
             app('ddd.autoloader')->boot();
         });
 
@@ -94,4 +99,4 @@ describe('caching', function () {
         $this->artisan('log:prune')->assertSuccessful();
         $this->artisan('application:sync')->assertSuccessful();
     });
-})->skip();
+});

@@ -92,9 +92,11 @@ class TestCase extends Orchestra
     {
         $this->appConfig = $config;
 
-        $this->refreshApplication();
+        // $this->afterApplicationRefreshed(fn () => $this->appConfig = []);
 
-        $this->afterApplicationRefreshed(fn () => $this->appConfig = []);
+        $this->reloadApplication();
+
+        $this->appConfig = [];
 
         return $this;
     }

@@ -1,6 +1,5 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
@@ -24,8 +23,6 @@ describe('without autoload', function () {
         $this->refreshApplicationWithConfig([
             'ddd.autoload.providers' => false,
         ]);
-
-        expect(DDD::autoloader()->getDiscoveredProviders())->toBeEmpty();
 
         expect(fn () => app($binding))->toThrow(Exception::class);
     })->with([

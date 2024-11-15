@@ -46,7 +46,7 @@ it('can optimize discovered domain providers, commands, migrations', function ()
 });
 
 it('can clear the cache', function () {
-    Artisan::call('ddd:cache');
+    Artisan::call('ddd:optimize');
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
