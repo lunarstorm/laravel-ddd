@@ -2,9 +2,8 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Illuminate\Database\Migrations\MigrationCreator;
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\Support\Autoloader;
+use Lunarstorm\LaravelDDD\Facades\Autoload;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -17,8 +16,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             return new DomainManager;
         });
 
-        $this->app->scoped(Autoloader::class, function () {
-            return new Autoloader;
+        $this->app->scoped(AutoloadManager::class, function () {
+            return new AutoloadManager;
         });
 
         $this->app->scoped(ComposerManager::class, function () {
@@ -34,7 +33,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         });
 
         $this->app->bind('ddd', DomainManager::class);
-        $this->app->bind('ddd.autoloader', Autoloader::class);
+        $this->app->bind('ddd.autoloader', AutoloadManager::class);
         $this->app->bind('ddd.config', ConfigManager::class);
         $this->app->bind('ddd.composer', ComposerManager::class);
         $this->app->bind('ddd.stubs', StubManager::class);
@@ -92,6 +91,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
+
+        if ($this->app->runningUnitTests()) {
+            $package->hasRoutes(['testing']);
+        }
     }
 
     protected function laravelVersion($value)
@@ -111,21 +114,11 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
         });
 
-        // $this->app->when(MigrationCreator::class)
-        //     ->needs('$customStubPath')
-        //     ->give(function ($app) {
-        //         return $app->basePath('stubs');
-        //     });
-
         $this->loadMigrationsFrom(DomainMigration::paths());
     }
 
     public function packageBooted()
     {
-        // $this->publishes([
-        //     $this->package->basePath('/../stubs') => $this->app->basePath("stubs/{$this->package->shortName()}"),
-        // ], "{$this->package->shortName()}-stubs");
-
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
             $this->optimizes(
                 optimize: 'ddd:optimize',
@@ -134,7 +127,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             );
         }
 
-        DDD::autoloader()->boot();
+        Autoload::boot();
     }
 
     public function packageRegistered()

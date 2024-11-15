@@ -2,7 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Lunarstorm\LaravelDDD\Support\Autoloader;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
 use Lunarstorm\LaravelDDD\Support\Path;
 
@@ -43,9 +43,9 @@ class DomainManager
         $this->commandContext = null;
     }
 
-    public function autoloader(): Autoloader
+    public function autoloader(): AutoloadManager
     {
-        return app(Autoloader::class);
+        return app(AutoloadManager::class);
     }
 
     public function composer(): ComposerManager

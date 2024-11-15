@@ -1,13 +1,13 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Support\Autoloader;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 
 beforeEach(function () {
     $this->setupTestApplication();
 });
 
 it('can run', function () {
-    $autoloader = new Autoloader;
+    $autoloader = new AutoloadManager;
 
     $autoloader->boot();
 })->throwsNoExceptions();
@@ -39,7 +39,7 @@ beforeEach(function () {
 });
 
 it('can discover paths to all layers', function () {
-    $autoloader = new Autoloader;
+    $autoloader = new AutoloadManager;
 
     $expected = [
         app()->basePath('src/Domain'),

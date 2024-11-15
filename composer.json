@@ -80,7 +80,7 @@
                 "Lunarstorm\\LaravelDDD\\LaravelDDDServiceProvider"
             ],
             "aliases": {
-                "LaravelDDD": "Lunarstorm\\LaravelDDD\\Facades\\LaravelDDD"
+                "DDD": "Lunarstorm\\LaravelDDD\\Facades\\DDD"
             }
         }
     },

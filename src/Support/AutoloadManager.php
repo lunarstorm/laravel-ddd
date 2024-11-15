@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
-class Autoloader
+class AutoloadManager
 {
     use Conditionable;
 
@@ -30,7 +30,13 @@ class Autoloader
 
     protected array $registeredProviders = [];
 
-    protected bool $isBooted = false;
+    protected array $resolvedPolicies = [];
+
+    protected array $resolvedFactories = [];
+
+    protected bool $booted = false;
+
+    protected bool $consoleBooted = false;
 
     public function __construct()
     {
@@ -43,30 +49,43 @@ class Autoloader
             return $this;
         }
 
-        // if ($this->isBooted) {
-        //     return $this;
-        // }
-
         $this
+            ->flush()
             ->when(config('ddd.autoload.providers') === true, fn () => $this->handleProviders())
             ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
-            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
+            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories())
+            ->run();
 
-        if (app()->runningInConsole()) {
-            ConsoleApplication::starting(function ($artisan) {
-                foreach ($this->registeredCommands as $command) {
-                    $artisan->resolve($command);
-                }
-            });
+        $this->booted = true;
+    }
+
+    public function isBooted(): bool
+    {
+        return $this->booted;
+    }
+
+    public function isConsoleBooted(): bool
+    {
+        return $this->consoleBooted;
+    }
+
+    protected function flush()
+    {
+        foreach ($this->registeredProviders as $provider) {
+            app()->forgetInstance($provider);
         }
 
-        $this->isBooted = true;
+        $this->registeredProviders = [];
+
+        $this->registeredCommands = [];
+
+        $this->resolvedPolicies = [];
+
+        $this->resolvedFactories = [];
 
         return $this;
     }
-
-    public function run() {}
 
     protected function normalizePaths($path): array
     {
@@ -97,6 +116,10 @@ class Autoloader
             ? DomainCache::get('domain-providers')
             : $this->discoverProviders();
 
+        foreach ($this->registeredProviders as $provider) {
+            app()->forgetInstance($provider);
+        }
+
         $this->registeredProviders = [];
 
         foreach ($providers as $provider) {
@@ -117,7 +140,25 @@ class Autoloader
 
         foreach ($commands as $command) {
             $this->registeredCommands[$command] = $command;
-            $this->registerCommand($command);
+        }
+
+        return $this;
+    }
+
+    protected function run()
+    {
+        foreach ($this->registeredProviders as $provider) {
+            app()->register($provider);
+        }
+
+        if (app()->runningInConsole() && ! $this->isConsoleBooted()) {
+            ConsoleApplication::starting(function ($artisan) {
+                foreach ($this->registeredCommands as $command) {
+                    $artisan->resolve($command);
+                }
+            });
+
+            $this->consoleBooted = true;
         }
 
         return $this;
@@ -133,21 +174,31 @@ class Autoloader
         return $this->registeredProviders;
     }
 
-    protected function registerCommand($class)
+    public function getResolvedPolicies(): array
     {
-        // ConsoleApplication::starting(function ($artisan) use ($class) {
-        //     dump('resolving command', $class, $this->registeredCommands);
-        //     $artisan->resolve($class);
-        // });
+        return $this->resolvedPolicies;
+    }
+
+    public function getResolvedFactories(): array
+    {
+        return $this->resolvedFactories;
     }
 
     protected function handlePolicies()
     {
-        Gate::guessPolicyNamesUsing(static function (string $class): array|string {
+        Gate::guessPolicyNamesUsing(function (string $class): array|string {
+            if (array_key_exists($class, $this->resolvedPolicies)) {
+                return $this->resolvedPolicies[$class];
+            }
+
             if ($model = DomainObject::fromClass($class, 'model')) {
-                return (new Domain($model->domain))
+                $resolved = (new Domain($model->domain))
                     ->object('policy', "{$model->name}Policy")
                     ->fullyQualifiedName;
+
+                $this->resolvedPolicies[$class] = $resolved;
+
+                return $resolved;
             }
 
             $classDirname = str_replace('/', '\\', dirname(str_replace('\\', '/', $class)));
@@ -169,7 +220,13 @@ class Autoloader
     protected function handleFactories()
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
+            if (array_key_exists($modelName, $this->resolvedFactories)) {
+                return $this->resolvedFactories[$modelName];
+            }
+
             if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
+                $this->resolvedFactories[$modelName] = $factoryName;
+
                 return $factoryName;
             }
 
@@ -253,16 +310,16 @@ class Autoloader
             ->toArray();
     }
 
-    public function cacheProviders()
+    public function cacheCommands()
     {
-        DomainCache::set('domain-providers', $this->discoverProviders());
+        DomainCache::set('domain-commands', $this->discoverCommands());
 
         return $this;
     }
 
-    public function cacheCommands()
+    public function cacheProviders()
     {
-        DomainCache::set('domain-commands', $this->discoverCommands());
+        DomainCache::set('domain-providers', $this->discoverProviders());
 
         return $this;
     }

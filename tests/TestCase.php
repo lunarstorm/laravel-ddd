@@ -43,8 +43,6 @@ class TestCase extends Orchestra
         static::$configValues = [];
     }
 
-    protected function defineConfigBeforeEnvironment() {}
-
     protected function defineEnvironment($app)
     {
         if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {

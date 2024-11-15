@@ -11,19 +11,32 @@ use Symfony\Component\Finder\SplFileInfo;
 uses(BootsTestApplication::class);
 
 beforeEach(function () {
+    $this->providers = [
+        'Domain\Invoicing\Providers\InvoiceServiceProvider',
+        'Application\Providers\ApplicationServiceProvider',
+        'Infrastructure\Providers\InfrastructureServiceProvider',
+    ];
+
+    $this->commands = [
+        'invoice:deliver' => 'Domain\Invoicing\Commands\InvoiceDeliver',
+        'log:prune' => 'Infrastructure\Commands\LogPrune',
+        'application:sync' => 'Application\Commands\ApplicationSync',
+    ];
+
     $this->setupTestApplication();
-})->skip();
+    DomainCache::clear();
+});
+
+afterEach(function () {
+    DomainCache::clear();
+});
 
 it('can ignore folders when autoloading', function () {
     Artisan::call('ddd:optimize');
 
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
-        'Domain\Invoicing\Commands\InvoiceDeliver',
-        'Application\Providers\ApplicationServiceProvider',
-        'Application\Commands\ApplicationSync',
-        'Infrastructure\Providers\InfrastructureServiceProvider',
-        'Infrastructure\Commands\LogPrune',
+        ...array_values($this->providers),
+        ...array_values($this->commands),
     ];
 
     $cached = [
@@ -38,9 +51,7 @@ it('can ignore folders when autoloading', function () {
     Artisan::call('ddd:optimize');
 
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
-        'Application\Providers\ApplicationServiceProvider',
-        'Infrastructure\Providers\InfrastructureServiceProvider',
+        ...array_values($this->providers),
     ];
 
     $cached = [
@@ -55,9 +66,7 @@ it('can ignore folders when autoloading', function () {
     Artisan::call('ddd:optimize');
 
     $expected = [
-        'Domain\Invoicing\Commands\InvoiceDeliver',
-        'Application\Commands\ApplicationSync',
-        'Infrastructure\Commands\LogPrune',
+        ...array_values($this->commands),
     ];
 
     $cached = [
@@ -65,19 +74,15 @@ it('can ignore folders when autoloading', function () {
         ...DomainCache::get('domain-commands'),
     ];
 
-    expect($cached)->toEqual($expected);
+    expect($cached)->toEqualCanonicalizing($expected);
 });
 
 it('can register a custom autoload filter', function () {
     Artisan::call('ddd:optimize');
 
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
-        'Domain\Invoicing\Commands\InvoiceDeliver',
-        'Application\Providers\ApplicationServiceProvider',
-        'Application\Commands\ApplicationSync',
-        'Infrastructure\Providers\InfrastructureServiceProvider',
-        'Infrastructure\Commands\LogPrune',
+        ...array_values($this->providers),
+        ...array_values($this->commands),
     ];
 
     $cached = [

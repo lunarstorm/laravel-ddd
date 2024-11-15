@@ -1,102 +1,123 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+use Mockery\MockInterface;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 uses(BootsTestApplication::class);
+
+beforeEach(function () {
+    $this->commands = [
+        'invoice:deliver' => 'Domain\Invoicing\Commands\InvoiceDeliver',
+        'log:prune' => 'Infrastructure\Commands\LogPrune',
+        'application:sync' => 'Application\Commands\ApplicationSync',
+    ];
+
+    $this->setupTestApplication();
+    DomainCache::clear();
+});
 
 afterEach(function () {
     DomainCache::clear();
 });
 
-describe('without autoload', function () {
-    beforeEach(function () {
-        DomainCache::clear();
+describe('when ddd.autoload.commands = false', function () {
+    it('skips handling commands', function () {
+        config()->set('ddd.autoload.commands', false);
 
-        $this->afterApplicationRefreshed(function () {
-            $this->setupTestApplication();
-            app('ddd.autoloader')->boot();
+        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods()
+                ->shouldNotReceive('handleCommands');
         });
+
+        $mock->boot();
+
+        $artisanCommands = collect(Artisan::all());
+
+        expect($artisanCommands)->not->toHaveKeys(array_keys($this->commands));
     });
 
-    it('does not register the command', function ($className, $command) {
-        $this->refreshApplicationWithConfig([
-            'ddd.autoload.commands' => false,
-        ]);
+    it('does not register the commands', function () {
+        config()->set('ddd.autoload.commands', false);
 
-        expect(class_exists($className))->toBeTrue();
-        expect(fn () => Artisan::call($command))->toThrow(CommandNotFoundException::class);
-    })->with([
-        ['Domain\Invoicing\Commands\InvoiceDeliver', 'invoice:deliver'],
-        ['Infrastructure\Commands\LogPrune', 'log:prune'],
-        ['Application\Commands\ApplicationSync', 'application:sync'],
-    ]);
+        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods()
+                ->shouldNotReceive('handleCommands');
+        });
+
+        $mock->boot();
+
+        expect($mock->getRegisteredCommands())->toBeEmpty();
+
+        $artisanCommands = collect(Artisan::all());
+
+        expect($artisanCommands)->not->toHaveKeys(array_keys($this->commands));
+    });
 });
 
-describe('with autoload', function () {
-    beforeEach(function () {
-        DomainCache::clear();
+describe('when ddd.autoload.commands = true', function () {
+    it('registers the commands', function () {
+        config()->set('ddd.autoload.commands', true);
 
-        $this->afterApplicationRefreshed(function () {
-            $this->setupTestApplication();
-            app('ddd.autoloader')->boot();
+        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods();
         });
+
+        $mock->boot();
+
+        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+
+        $artisanCommands = collect(Artisan::all());
+
+        expect($artisanCommands)->toHaveKeys(array_keys($this->commands));
     });
-
-    it('registers existing commands', function ($className, $command, $output) {
-        $this->refreshApplicationWithConfig([
-            'ddd.autoload.commands' => true,
-        ]);
-
-        expect(class_exists($className))->toBeTrue();
-
-        expect(collect(Artisan::all()))
-            ->has($command)
-            ->toBeTrue();
-
-        Artisan::call($command);
-        expect(Artisan::output())->toContain($output);
-    })->with([
-        ['Domain\Invoicing\Commands\InvoiceDeliver', 'invoice:deliver', 'Invoice delivered!'],
-        ['Infrastructure\Commands\LogPrune', 'log:prune', 'System logs pruned!'],
-        ['Application\Commands\ApplicationSync', 'application:sync', 'Application state synced!'],
-    ]);
 });
 
 describe('caching', function () {
     it('remembers the last cached state', function () {
-        $this->afterApplicationRefreshed(function () {
-            $this->setupTestApplication();
-            DomainCache::set('domain-commands', []);
-            app('ddd.autoloader')->boot();
+        DomainCache::set('domain-commands', []);
+
+        config()->set('ddd.autoload.commands', true);
+
+        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods();
         });
 
-        $this->refreshApplicationWithConfig([
-            'ddd.autoload.commands' => true,
-        ]);
+        $mock->boot();
+
+        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing([]);
+
+        $artisanCommands = collect(Artisan::all());
+
+        expect($artisanCommands)->not->toHaveKeys(array_keys($this->commands));
 
         // commands should not be recognized due to cached empty-state
-        expect(fn () => Artisan::call('invoice:deliver'))->toThrow(CommandNotFoundException::class);
-        expect(fn () => Artisan::call('log:prune'))->toThrow(CommandNotFoundException::class);
-        expect(fn () => Artisan::call('application:sync'))->toThrow(CommandNotFoundException::class);
+        foreach ($this->commands as $command => $class) {
+            expect(fn () => Artisan::call($command))->toThrow(CommandNotFoundException::class);
+        }
     });
 
     it('can bust the cache', function () {
-        $this->afterApplicationRefreshed(function () {
-            $this->setupTestApplication();
-            DomainCache::set('domain-commands', []);
-            DomainCache::clear();
-            app('ddd.autoloader')->boot();
+        DomainCache::set('domain-commands', []);
+        DomainCache::clear();
+
+        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+            $mock->shouldAllowMockingProtectedMethods();
         });
 
-        $this->refreshApplicationWithConfig([
-            'ddd.autoload.commands' => true,
-        ]);
+        $mock->boot();
 
-        $this->artisan('invoice:deliver')->assertSuccessful();
-        $this->artisan('log:prune')->assertSuccessful();
-        $this->artisan('application:sync')->assertSuccessful();
+        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+
+        $artisanCommands = collect(Artisan::all());
+
+        expect($artisanCommands)->toHaveKeys(array_keys($this->commands));
+
+        foreach ($this->commands as $command => $class) {
+            $this->artisan($command)->assertSuccessful();
+        }
     });
 });
