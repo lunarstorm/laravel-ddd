@@ -17,6 +17,9 @@ it('can publish config file', function () {
     ]);
 
     expect(file_exists($expectedPath))->toBeTrue();
+
+    // Delete it
+    unlink($expectedPath);
 });
 
 it('can publish stubs', function () {
