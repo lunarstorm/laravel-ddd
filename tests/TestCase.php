@@ -5,6 +5,7 @@ namespace Lunarstorm\LaravelDDD\Tests;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
@@ -25,11 +26,14 @@ class TestCase extends Orchestra
             Factory::guessFactoryNamesUsing(
                 fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
             );
+
+            DomainCache::clear();
+            Artisan::call('optimize:clear');
         });
 
-        // $this->beforeApplicationDestroyed(function () {
-        //     $this->cleanSlate();
-        // });
+        $this->beforeApplicationDestroyed(function () {
+            $this->cleanSlate();
+        });
 
         parent::setUp();
     }
