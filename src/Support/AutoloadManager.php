@@ -26,13 +26,13 @@ class AutoloadManager
 
     protected string $appNamespace;
 
-    protected array $registeredCommands = [];
+    protected static array $registeredCommands = [];
 
-    protected array $registeredProviders = [];
+    protected static array $registeredProviders = [];
 
-    protected array $resolvedPolicies = [];
+    protected static array $resolvedPolicies = [];
 
-    protected array $resolvedFactories = [];
+    protected static array $resolvedFactories = [];
 
     protected bool $booted = false;
 
@@ -72,17 +72,17 @@ class AutoloadManager
 
     protected function flush()
     {
-        foreach ($this->registeredProviders as $provider) {
+        foreach (static::$registeredProviders as $provider) {
             app()->forgetInstance($provider);
         }
 
-        $this->registeredProviders = [];
+        static::$registeredProviders = [];
 
-        $this->registeredCommands = [];
+        static::$registeredCommands = [];
 
-        $this->resolvedPolicies = [];
+        static::$resolvedPolicies = [];
 
-        $this->resolvedFactories = [];
+        static::$resolvedFactories = [];
 
         return $this;
     }
@@ -116,14 +116,14 @@ class AutoloadManager
             ? DomainCache::get('domain-providers')
             : $this->discoverProviders();
 
-        foreach ($this->registeredProviders as $provider) {
+        foreach (static::$registeredProviders as $provider) {
             app()->forgetInstance($provider);
         }
 
-        $this->registeredProviders = [];
+        static::$registeredProviders = [];
 
         foreach ($providers as $provider) {
-            $this->registeredProviders[$provider] = $provider;
+            static::$registeredProviders[$provider] = $provider;
             app()->register($provider);
         }
 
@@ -136,10 +136,10 @@ class AutoloadManager
             ? DomainCache::get('domain-commands')
             : $this->discoverCommands();
 
-        $this->registeredCommands = [];
+        static::$registeredCommands = [];
 
         foreach ($commands as $command) {
-            $this->registeredCommands[$command] = $command;
+            static::$registeredCommands[$command] = $command;
         }
 
         return $this;
@@ -147,13 +147,13 @@ class AutoloadManager
 
     protected function run()
     {
-        foreach ($this->registeredProviders as $provider) {
+        foreach (static::$registeredProviders as $provider) {
             app()->register($provider);
         }
 
         if (app()->runningInConsole() && ! $this->isConsoleBooted()) {
             ConsoleApplication::starting(function (ConsoleApplication $artisan) {
-                foreach ($this->registeredCommands as $command) {
+                foreach (static::$registeredCommands as $command) {
                     $artisan->resolve($command);
                 }
             });
@@ -166,29 +166,29 @@ class AutoloadManager
 
     public function getRegisteredCommands(): array
     {
-        return $this->registeredCommands;
+        return static::$registeredCommands;
     }
 
     public function getRegisteredProviders(): array
     {
-        return $this->registeredProviders;
+        return static::$registeredProviders;
     }
 
     public function getResolvedPolicies(): array
     {
-        return $this->resolvedPolicies;
+        return static::$resolvedPolicies;
     }
 
     public function getResolvedFactories(): array
     {
-        return $this->resolvedFactories;
+        return static::$resolvedFactories;
     }
 
     protected function handlePolicies()
     {
         Gate::guessPolicyNamesUsing(function (string $class): array|string {
-            if (array_key_exists($class, $this->resolvedPolicies)) {
-                return $this->resolvedPolicies[$class];
+            if (array_key_exists($class, static::$resolvedPolicies)) {
+                return static::$resolvedPolicies[$class];
             }
 
             if ($model = DomainObject::fromClass($class, 'model')) {
@@ -196,7 +196,7 @@ class AutoloadManager
                     ->object('policy', "{$model->name}Policy")
                     ->fullyQualifiedName;
 
-                $this->resolvedPolicies[$class] = $resolved;
+                static::$resolvedPolicies[$class] = $resolved;
 
                 return $resolved;
             }
@@ -220,12 +220,12 @@ class AutoloadManager
     protected function handleFactories()
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
-            if (array_key_exists($modelName, $this->resolvedFactories)) {
-                return $this->resolvedFactories[$modelName];
+            if (array_key_exists($modelName, static::$resolvedFactories)) {
+                return static::$resolvedFactories[$modelName];
             }
 
             if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
-                $this->resolvedFactories[$modelName] = $factoryName;
+                static::$resolvedFactories[$modelName] = $factoryName;
 
                 return $factoryName;
             }

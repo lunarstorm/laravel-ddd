@@ -39,7 +39,7 @@ describe('when ddd.autoload.commands = false', function () {
         $artisanCommands = collect(Artisan::all());
 
         expect($artisanCommands)->not->toHaveKeys(array_keys($this->commands));
-    })->only();
+    });
 
     it('does not register the commands', function () {
         config()->set('ddd.autoload.commands', false);
