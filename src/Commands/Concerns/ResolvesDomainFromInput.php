@@ -4,13 +4,15 @@ namespace Lunarstorm\LaravelDDD\Commands\Concerns;
 
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
 use Symfony\Component\Console\Input\InputOption;
 
+use function Laravel\Prompts\suggest;
+
 trait ResolvesDomainFromInput
 {
-    use CanPromptForDomain,
-        HandleHooks,
+    use HandleHooks,
         HasGeneratorBlueprint,
         QualifiesDomainModels;
 
@@ -48,6 +50,30 @@ trait ResolvesDomainFromInput
         return $this->blueprint->qualifyClass($name);
     }
 
+    protected function promptForDomainName(): string
+    {
+        $choices = collect(DomainResolver::domainChoices())
+            ->mapWithKeys(fn ($name) => [Str::lower($name) => $name]);
+
+        // Prompt for the domain
+        $domainName = suggest(
+            label: 'What is the domain?',
+            options: fn ($value) => collect($choices)
+                ->filter(fn ($name) => Str::contains($name, $value, ignoreCase: true))
+                ->toArray(),
+            placeholder: 'Start typing to search...',
+            required: true
+        );
+
+        // Normalize the case of the domain name
+        // if it is an existing domain.
+        if ($match = $choices->get(Str::lower($domainName))) {
+            $domainName = $match;
+        }
+
+        return $domainName;
+    }
+
     protected function beforeHandle()
     {
         $nameInput = $this->getNameInput();
@@ -72,9 +98,11 @@ trait ResolvesDomainFromInput
         };
 
         $this->blueprint = new GeneratorBlueprint(
+            commandName: $this->getName(),
             nameInput: $nameInput,
             domainName: $domainName,
-            command: $this,
+            arguments: $this->arguments(),
+            options: $this->options(),
         );
 
         $this->input->setArgument('name', $this->blueprint->nameInput);

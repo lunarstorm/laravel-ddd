@@ -11,6 +11,10 @@ class GeneratorBlueprint
 {
     public string $nameInput;
 
+    public string $normalizedName;
+
+    public string $baseName;
+
     public string $domainName;
 
     public ?Domain $domain = null;
@@ -26,26 +30,41 @@ class GeneratorBlueprint
     public string $type;
 
     public function __construct(
+        string $commandName,
         string $nameInput,
         string $domainName,
-        Command $command,
+        array $arguments = [],
+        array $options = [],
     ) {
-        $this->nameInput = str($nameInput)->studly()->replace(['.', '\\', '/'], '/')->toString();
+        $this->command = new CommandContext($commandName, $arguments, $options);
 
-        $this->domain = new Domain($domainName);
-
-        $this->domainName = $this->domain->domainWithSubdomain;
-
-        $this->command = new CommandContext($command->getName(), $command->arguments(), $command->options());
+        $this->nameInput = str($nameInput)->toString();
 
         $this->isAbsoluteName = str($this->nameInput)->startsWith('/');
 
         $this->type = $this->guessObjectType();
 
+        $this->normalizedName = Path::normalizeNamespace(
+            str($nameInput)
+                ->studly()
+                ->replace(['.', '\\', '/'], '\\')
+                ->trim('\\')
+                ->when($this->type === 'factory', fn ($name) => $name->finish('Factory'))
+                ->toString()
+        );
+
+        $this->baseName = class_basename($this->normalizedName);
+
+        $this->domain = new Domain($domainName);
+
+        $this->domainName = $this->domain->domainWithSubdomain;
+
         $this->layer = DomainResolver::resolveLayer($this->domainName, $this->type);
 
         $this->schema = $this->resolveSchema();
     }
+
+    public static function capture(Command $command) {}
 
     protected function guessObjectType(): string
     {
@@ -82,16 +101,12 @@ class GeneratorBlueprint
             default => $this->layer->namespaceFor($this->type),
         };
 
-        $baseName = str($this->nameInput)
-            ->replace(['\\', '/'], '\\')
-            ->trim('\\')
-            ->when($this->type === 'factory', fn ($name) => $name->finish('Factory'))
+        $fullyQualifiedName = str($this->normalizedName)
+            ->start($namespace.'\\')
             ->toString();
 
-        $fullyQualifiedName = $namespace.'\\'.$baseName;
-
         return new ObjectSchema(
-            name: $this->nameInput,
+            name: $this->normalizedName,
             namespace: $namespace,
             fullyQualifiedName: $fullyQualifiedName,
             path: $this->layer->path($fullyQualifiedName),

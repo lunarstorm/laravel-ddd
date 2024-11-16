@@ -28,6 +28,8 @@ it('can describe a domain model', function ($domainName, $name, $expectedFQN, $e
         ->path->toBe(Path::normalize($expectedPath));
 })->with([
     ['Reporting', 'InvoiceReport', 'Domain\\Reporting\\Models\\InvoiceReport', 'src/Domain/Reporting/Models/InvoiceReport.php'],
+    ['Reporting', 'ReportingLog', 'Domain\\Reporting\\Models\\ReportingLog', 'src/Domain/Reporting/Models/ReportingLog.php'],
+    ['Reporting', 'Reporting\Log', 'Domain\\Reporting\\Models\\Reporting\\Log', 'src/Domain/Reporting/Models/Reporting/Log.php'],
     ['Reporting.Internal', 'InvoiceReport', 'Domain\\Reporting\\Internal\\Models\\InvoiceReport', 'src/Domain/Reporting/Internal/Models/InvoiceReport.php'],
 ]);
 
