@@ -4,7 +4,6 @@ use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
-use Mockery\MockInterface;
 
 uses(BootsTestApplication::class);
 
@@ -26,12 +25,11 @@ describe('when ddd.autoload.providers = false', function () {
     it('skips handling providers', function () {
         config()->set('ddd.autoload.providers', false);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldNotReceive('handleProviders');
-        });
-
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldNotReceive('handleProviders');
         $mock->boot();
+
+        // Autoload::boot();
 
         // collect($this->providers)->each(
         //     fn ($provider) => expect(app()->getProvider($provider))->toBeNull()
@@ -41,19 +39,16 @@ describe('when ddd.autoload.providers = false', function () {
     it('does not register the providers', function () {
         config()->set('ddd.autoload.providers', false);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
-        // $mock->boot();
+        expect($mock->getRegisteredProviders())->toBeEmpty();
 
-        // expect($mock->getRegisteredProviders())->toBeEmpty();
+        // Autoload::boot();
 
-        Autoload::boot();
-
-        collect($this->providers)->each(
-            fn ($provider) => expect(app()->getProvider($provider))->toBeNull()
-        );
+        // collect($this->providers)->each(
+        //     fn($provider) => expect(app()->getProvider($provider))->toBeNull()
+        // );
     });
 });
 
@@ -61,30 +56,24 @@ describe('when ddd.autoload.providers = true', function () {
     it('handles the providers', function () {
         config()->set('ddd.autoload.providers', true);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldReceive('handleProviders')->once();
-        });
-
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldReceive('handleProviders')->once();
         $mock->boot();
     });
 
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
-        // $mock->boot();
+        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
 
-        // expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
+        // Autoload::boot();
 
-        Autoload::boot();
-
-        collect($this->providers)->each(
-            fn ($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
-        );
+        // collect($this->providers)->each(
+        //     fn($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
+        // );
     });
 });
 
@@ -94,19 +83,16 @@ describe('caching', function () {
 
         config()->set('ddd.autoload.providers', true);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
-        // $mock->boot();
+        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing([]);
 
-        // expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing([]);
+        // Autoload::boot();
 
-        Autoload::boot();
-
-        collect($this->providers)->each(
-            fn ($provider) => expect(app()->getProvider($provider))->toBeNull()
-        );
+        // collect($this->providers)->each(
+        //     fn($provider) => expect(app()->getProvider($provider))->toBeNull()
+        // );
     });
 
     it('can bust the cache', function () {
@@ -115,18 +101,15 @@ describe('caching', function () {
 
         config()->set('ddd.autoload.providers', true);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
-        // $mock->boot();
+        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
 
-        // expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
+        // Autoload::boot();
 
-        Autoload::boot();
-
-        collect($this->providers)->each(
-            fn ($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
-        );
+        // collect($this->providers)->each(
+        //     fn($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
+        // );
     });
 });

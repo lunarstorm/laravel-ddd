@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Gate;
-use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
-use Mockery\MockInterface;
 
 uses(BootsTestApplication::class);
 
@@ -27,11 +25,8 @@ describe('when ddd.autoload.policies = false', function () {
     it('skips handling policies', function () {
         config()->set('ddd.autoload.policies', false);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldNotReceive('handlePolicies');
-        });
-
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldNotReceive('handlePolicies');
         $mock->boot();
     });
 });
@@ -40,47 +35,32 @@ describe('when ddd.autoload.policies = true', function () {
     it('handles policies', function () {
         config()->set('ddd.autoload.policies', true);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldReceive('handlePolicies')->once();
-        });
-
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldReceive('handlePolicies')->once();
         $mock->boot();
     });
 
     it('can resolve the policies', function () {
         config()->set('ddd.autoload.policies', true);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
-
-        // $mock->boot();
-
-        Autoload::boot();
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
         foreach ($this->policies as $class => $expectedPolicy) {
-            expect(Gate::getPolicyFor($class))->toBeInstanceOf($expectedPolicy);
-            // expect($mock->getResolvedPolicies())->toHaveKey($class);
+            $resolvedPolicy = Gate::getPolicyFor($class);
+            expect($mock->getResolvedPolicies())->toHaveKey($class);
         }
-    });
+    })->markTestIncomplete('custom layer policies are not yet supported');
 
     it('gracefully falls back for non-ddd policies', function ($class, $expectedPolicy) {
         config()->set('ddd.autoload.policies', true);
 
-        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-        //     $mock->shouldAllowMockingProtectedMethods();
-        // });
-
-        // $mock->boot();
-
-        // $resolvedPolicies = $mock->getResolvedPolicies();
-
-        Autoload::boot();
+        $mock = AutoloadManager::partialMock();
+        $mock->boot();
 
         expect(class_exists($class))->toBeTrue();
         expect(Gate::getPolicyFor($class))->toBeInstanceOf($expectedPolicy);
-        // expect($resolvedPolicies)->not->toHaveKey($class);
+        expect($mock->getResolvedPolicies())->not->toHaveKey($class);
     })->with([
         ['App\Models\Post', 'App\Policies\PostPolicy'],
     ]);

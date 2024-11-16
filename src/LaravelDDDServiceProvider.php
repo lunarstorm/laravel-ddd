@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Illuminate\Foundation\Application;
 use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
@@ -89,6 +90,51 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         });
 
         $this->loadMigrationsFrom(DomainMigration::paths());
+
+        return $this;
+    }
+
+    protected function registerBindings()
+    {
+        $this->app->scoped(DomainManager::class, function () {
+            return new DomainManager;
+        });
+
+        $this->app->scoped(ComposerManager::class, function () {
+            return ComposerManager::make(app()->basePath('composer.json'));
+        });
+
+        $this->app->scoped(ConfigManager::class, function () {
+            return new ConfigManager(config_path('ddd.php'));
+        });
+
+        $this->app->scoped(StubManager::class, function () {
+            return new StubManager;
+        });
+
+        $this->app->scoped(AutoloadManager::class, function () {
+            return new AutoloadManager;
+        });
+
+        $this->app->bind('ddd', DomainManager::class);
+        $this->app->bind('ddd.autoloader', AutoloadManager::class);
+        $this->app->bind('ddd.config', ConfigManager::class);
+        $this->app->bind('ddd.composer', ComposerManager::class);
+        $this->app->bind('ddd.stubs', StubManager::class);
+
+        if ($this->app->runningUnitTests()) {
+            // $this->app->when(AutoloadManager::class)
+            //     ->needs(Application::class)
+            //     ->give(function () {
+            //         return $this->app;
+            //     });
+
+            $this->app->resolving(AutoloadManager::class, function (AutoloadManager $atuoloader, Application $app) {
+                // dump('App resolving autoloader');
+            });
+        }
+
+        return $this;
     }
 
     public function packageBooted()
@@ -106,32 +152,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        $this->app->scoped(DomainManager::class, function () {
-            return new DomainManager;
-        });
-
-        $this->app->scoped(AutoloadManager::class, function ($app) {
-            return new AutoloadManager($app);
-        });
-
-        $this->app->scoped(ComposerManager::class, function () {
-            return ComposerManager::make(app()->basePath('composer.json'));
-        });
-
-        $this->app->scoped(ConfigManager::class, function () {
-            return new ConfigManager(config_path('ddd.php'));
-        });
-
-        $this->app->scoped(StubManager::class, function () {
-            return new StubManager;
-        });
-
-        $this->app->bind('ddd', DomainManager::class);
-        $this->app->bind('ddd.autoloader', AutoloadManager::class);
-        $this->app->bind('ddd.config', ConfigManager::class);
-        $this->app->bind('ddd.composer', ComposerManager::class);
-        $this->app->bind('ddd.stubs', StubManager::class);
-
-        $this->registerMigrations();
+        $this->registerMigrations()
+            ->registerBindings();
     }
 }

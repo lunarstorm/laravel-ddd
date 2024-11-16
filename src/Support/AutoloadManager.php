@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
+use Closure;
 use Illuminate\Console\Application as ConsoleApplication;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
@@ -16,6 +17,7 @@ use Illuminate\Support\Traits\Conditionable;
 use Lorisleiva\Lody\Lody;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
+use Mockery;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
@@ -36,29 +38,24 @@ class AutoloadManager
 
     protected static array $resolvedFactories = [];
 
+    protected static ?Closure $policyResolver = null;
+
+    protected static ?Closure $factoryResolver = null;
+
     protected bool $booted = false;
 
     protected bool $consoleBooted = false;
 
     protected bool $ran = false;
 
-    /**
-     * Create a new autoloader instance.
-     *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @return void
-     */
-    public function __construct($app = null)
+    public function __construct(protected ?Container $container = null)
     {
-        $this->app = $app ?? Container::getInstance()->make(Application::class);
+        $this->container = $container ?? Container::getInstance();
+
+        $this->app = $this->container->make(Application::class);
 
         $this->appNamespace = $this->app->getNamespace();
     }
-
-    // public function __construct(protected \Illuminate\Contracts\Foundation\Application $app)
-    // {
-    //     $this->appNamespace = $this->resolveAppNamespace();
-    // }
 
     public function boot()
     {
@@ -168,9 +165,9 @@ class AutoloadManager
 
     public function run()
     {
-        if ($this->hasRun()) {
-            return $this;
-        }
+        // if ($this->hasRun()) {
+        //     return $this;
+        // }
 
         if (! $this->isBooted()) {
             $this->boot();
@@ -217,11 +214,7 @@ class AutoloadManager
 
     protected function handlePolicies()
     {
-        Gate::guessPolicyNamesUsing(function (string $class): array|string {
-            if (array_key_exists($class, static::$resolvedPolicies)) {
-                return static::$resolvedPolicies[$class];
-            }
-
+        Gate::guessPolicyNamesUsing(static::$policyResolver = function (string $class): array|string {
             if ($model = DomainObject::fromClass($class, 'model')) {
                 $resolved = (new Domain($model->domain))
                     ->object('policy', "{$model->name}Policy")
@@ -250,11 +243,7 @@ class AutoloadManager
 
     protected function handleFactories()
     {
-        Factory::guessFactoryNamesUsing(function (string $modelName) {
-            if (array_key_exists($modelName, static::$resolvedFactories)) {
-                return static::$resolvedFactories[$modelName];
-            }
-
+        Factory::guessFactoryNamesUsing(static::$factoryResolver = function (string $modelName) {
             if ($factoryName = DomainFactory::resolveFactoryName($modelName)) {
                 static::$resolvedFactories[$modelName] = $factoryName;
 
@@ -364,5 +353,12 @@ class AutoloadManager
         } catch (Throwable) {
             return 'App\\';
         }
+    }
+
+    public static function partialMock()
+    {
+        return Mockery::mock(AutoloadManager::class, [null])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
     }
 }
