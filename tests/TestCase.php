@@ -186,8 +186,8 @@ class TestCase extends Orchestra
         // File::cleanDirectory(app_path());
         File::cleanDirectory(app_path('Models'));
         File::cleanDirectory(base_path('database/factories'));
-        File::cleanDirectory(base_path('src'));
 
+        File::deleteDirectory(base_path('src'));
         File::deleteDirectory(resource_path('stubs/ddd'));
         File::deleteDirectory(base_path('stubs'));
         File::deleteDirectory(base_path('Custom'));
@@ -219,6 +219,13 @@ class TestCase extends Orchestra
         foreach ($skeletonAppFolders as $folder) {
             File::copyDirectory($folder, app_path(basename($folder)));
         }
+
+        // $skeletonSrcFolders = glob(__DIR__.'/.skeleton/src/*', GLOB_ONLYDIR);
+
+        // foreach ($skeletonSrcFolders as $folder) {
+        //     File::deleteDirectory(base_path('src/'.basename($folder)));
+        //     File::copyDirectory($folder, base_path('src/'.basename($folder)));
+        // }
 
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
