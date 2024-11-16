@@ -38,6 +38,8 @@ class AutoloadManager
 
     protected bool $consoleBooted = false;
 
+    protected bool $ran = false;
+
     public function __construct()
     {
         $this->appNamespace = $this->resolveAppNamespace();
@@ -68,6 +70,11 @@ class AutoloadManager
     public function isConsoleBooted(): bool
     {
         return $this->consoleBooted;
+    }
+
+    public function hasRun(): bool
+    {
+        return $this->ran;
     }
 
     protected function flush()
@@ -147,6 +154,10 @@ class AutoloadManager
 
     protected function run()
     {
+        if ($this->hasRun()) {
+            return $this;
+        }
+
         foreach (static::$registeredProviders as $provider) {
             app()->register($provider);
         }
@@ -160,6 +171,8 @@ class AutoloadManager
 
             $this->consoleBooted = true;
         }
+
+        $this->ran = true;
 
         return $this;
     }
