@@ -56,8 +56,7 @@ class AutoloadManager
             ->when(config('ddd.autoload.providers') === true, fn () => $this->handleProviders())
             ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
-            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories())
-            ->run();
+            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
 
         $this->booted = true;
     }
@@ -152,7 +151,7 @@ class AutoloadManager
         return $this;
     }
 
-    protected function run()
+    public function run()
     {
         if ($this->hasRun()) {
             return $this;

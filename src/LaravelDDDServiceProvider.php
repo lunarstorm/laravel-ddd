@@ -119,6 +119,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
+        Autoload::boot();
+
+        Autoload::run();
+
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
             $this->optimizes(
                 optimize: 'ddd:optimize',
@@ -126,8 +130,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 key: 'laravel-ddd',
             );
         }
-
-        Autoload::boot();
     }
 
     public function packageRegistered()
