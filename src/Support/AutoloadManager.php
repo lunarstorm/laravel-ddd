@@ -48,9 +48,9 @@ class AutoloadManager
      * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return void
      */
-    public function __construct($app)
+    public function __construct($app = null)
     {
-        $this->app = $app;
+        $this->app = $app ?? Container::getInstance()->make(Application::class);
 
         $this->appNamespace = $this->app->getNamespace();
     }
