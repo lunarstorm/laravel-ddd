@@ -10,6 +10,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
+    Artisan::call('optimize:clear');
 });
 
 afterEach(function () {

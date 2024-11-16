@@ -24,7 +24,9 @@ beforeEach(function () {
     ];
 
     $this->setupTestApplication();
-})->skip();
+
+    Artisan::call('optimize:clear');
+});
 
 afterEach(function () {
     DomainCache::clear();

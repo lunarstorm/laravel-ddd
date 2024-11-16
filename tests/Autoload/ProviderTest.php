@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
@@ -15,6 +16,8 @@ beforeEach(function () {
     ];
 
     $this->setupTestApplication();
+
+    Artisan::call('optimize:clear');
 });
 
 afterEach(function () {
