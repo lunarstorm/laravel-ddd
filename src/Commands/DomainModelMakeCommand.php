@@ -92,7 +92,10 @@ class DomainModelMakeCommand extends ModelMakeCommand
 
         $domain = DomainResolver::guessDomainFromClass($baseModel);
 
-        $name = Str::after($baseModel, $domain);
+        $name = str($baseModel)
+            ->after($domain)
+            ->replace(['\\', '/'], '/')
+            ->toString();
 
         $this->call(DomainBaseModelMakeCommand::class, [
             '--domain' => $domain,
