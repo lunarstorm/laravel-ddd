@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
@@ -31,12 +30,6 @@ describe('when ddd.autoload.providers = false', function () {
         $mock = AutoloadManager::partialMock();
         $mock->shouldNotReceive('handleProviders');
         $mock->boot();
-
-        // Autoload::boot();
-
-        // collect($this->providers)->each(
-        //     fn ($provider) => expect(app()->getProvider($provider))->toBeNull()
-        // );
     });
 
     it('does not register the providers', function () {
@@ -46,12 +39,6 @@ describe('when ddd.autoload.providers = false', function () {
         $mock->boot();
 
         expect($mock->getRegisteredProviders())->toBeEmpty();
-
-        // Autoload::boot();
-
-        // collect($this->providers)->each(
-        //     fn($provider) => expect(app()->getProvider($provider))->toBeNull()
-        // );
     });
 });
 
@@ -71,12 +58,6 @@ describe('when ddd.autoload.providers = true', function () {
         $mock->boot();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
-
-        // Autoload::boot();
-
-        // collect($this->providers)->each(
-        //     fn($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
-        // );
     });
 });
 
@@ -90,12 +71,6 @@ describe('caching', function () {
         $mock->boot();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing([]);
-
-        // Autoload::boot();
-
-        // collect($this->providers)->each(
-        //     fn($provider) => expect(app()->getProvider($provider))->toBeNull()
-        // );
     });
 
     it('can bust the cache', function () {
@@ -108,11 +83,5 @@ describe('caching', function () {
         $mock->boot();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
-
-        // Autoload::boot();
-
-        // collect($this->providers)->each(
-        //     fn($provider) => expect(app()->getProvider($provider))->toBeInstanceOf($provider)
-        // );
     });
 });
