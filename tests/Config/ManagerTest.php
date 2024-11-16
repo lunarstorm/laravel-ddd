@@ -11,8 +11,8 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    $this->cleanSlate();
-    Artisan::call('config:clear');
+    $this->setupTestApplication();
+    Artisan::call('optimize:clear');
 });
 
 it('can update and merge current config file with latest copy from package', function () {
@@ -50,4 +50,6 @@ it('can update and merge current config file with latest copy from package', fun
 
     // Expect the updated config to have all top-level keys from the latest config
     expect($updatedConfig)->toHaveKeys(array_keys($this->latestConfig));
+
+    unlink(config_path('ddd.php'));
 });
