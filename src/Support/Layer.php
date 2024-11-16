@@ -34,10 +34,14 @@ class Layer
             return $this->path;
         }
 
+        $baseName = class_basename($path);
+
         $relativePath = str($path)
-            ->replace($this->namespace, '')
+            ->beforeLast($baseName)
+            ->replaceStart($this->namespace, '')
             ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
-            ->append('.php')
+            ->append($baseName)
+            ->finish('.php')
             ->toString();
 
         return Path::join($this->path, $relativePath);

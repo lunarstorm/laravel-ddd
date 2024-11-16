@@ -35,27 +35,27 @@ it('can generate objects into custom layers', function ($type, $objectName, $exp
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with([
-    'action' => ['action', 'SomeAction', 'CustomLayer\Actions', 'src/CustomLayer/Actions/SomeAction.php'],
-    'cast' => ['cast', 'SomeCast', 'CustomLayer\Casts', 'src/CustomLayer/Casts/SomeCast.php'],
-    'channel' => ['channel', 'SomeChannel', 'CustomLayer\Channels', 'src/CustomLayer/Channels/SomeChannel.php'],
-    'command' => ['command', 'SomeCommand', 'CustomLayer\Commands', 'src/CustomLayer/Commands/SomeCommand.php'],
-    'event' => ['event', 'SomeEvent', 'CustomLayer\Events', 'src/CustomLayer/Events/SomeEvent.php'],
-    'exception' => ['exception', 'SomeException', 'CustomLayer\Exceptions', 'src/CustomLayer/Exceptions/SomeException.php'],
-    'job' => ['job', 'SomeJob', 'CustomLayer\Jobs', 'src/CustomLayer/Jobs/SomeJob.php'],
-    'listener' => ['listener', 'SomeListener', 'CustomLayer\Listeners', 'src/CustomLayer/Listeners/SomeListener.php'],
-    'mail' => ['mail', 'SomeMail', 'CustomLayer\Mail', 'src/CustomLayer/Mail/SomeMail.php'],
-    'notification' => ['notification', 'SomeNotification', 'CustomLayer\Notifications', 'src/CustomLayer/Notifications/SomeNotification.php'],
-    'observer' => ['observer', 'SomeObserver', 'CustomLayer\Observers', 'src/CustomLayer/Observers/SomeObserver.php'],
-    'policy' => ['policy', 'SomePolicy', 'CustomLayer\Policies', 'src/CustomLayer/Policies/SomePolicy.php'],
-    'provider' => ['provider', 'SomeProvider', 'CustomLayer\Providers', 'src/CustomLayer/Providers/SomeProvider.php'],
-    'resource' => ['resource', 'SomeResource', 'CustomLayer\Resources', 'src/CustomLayer/Resources/SomeResource.php'],
-    'rule' => ['rule', 'SomeRule', 'CustomLayer\Rules', 'src/CustomLayer/Rules/SomeRule.php'],
-    'scope' => ['scope', 'SomeScope', 'CustomLayer\Scopes', 'src/CustomLayer/Scopes/SomeScope.php'],
-    'seeder' => ['seeder', 'SomeSeeder', 'CustomLayer\Database\Seeders', 'src/CustomLayer/Database/Seeders/SomeSeeder.php'],
-    'class' => ['class', 'SomeClass', 'CustomLayer', 'src/CustomLayer/SomeClass.php'],
-    'enum' => ['enum', 'SomeEnum', 'CustomLayer\Enums', 'src/CustomLayer/Enums/SomeEnum.php'],
-    'interface' => ['interface', 'SomeInterface', 'CustomLayer', 'src/CustomLayer/SomeInterface.php'],
-    'trait' => ['trait', 'SomeTrait', 'CustomLayer', 'src/CustomLayer/SomeTrait.php'],
+    'action' => ['action', 'CustomLayerAction', 'CustomLayer\Actions', 'src/CustomLayer/Actions/CustomLayerAction.php'],
+    'cast' => ['cast', 'CustomLayerCast', 'CustomLayer\Casts', 'src/CustomLayer/Casts/CustomLayerCast.php'],
+    'channel' => ['channel', 'CustomLayerChannel', 'CustomLayer\Channels', 'src/CustomLayer/Channels/CustomLayerChannel.php'],
+    'command' => ['command', 'CustomLayerCommand', 'CustomLayer\Commands', 'src/CustomLayer/Commands/CustomLayerCommand.php'],
+    'event' => ['event', 'CustomLayerEvent', 'CustomLayer\Events', 'src/CustomLayer/Events/CustomLayerEvent.php'],
+    'exception' => ['exception', 'CustomLayerException', 'CustomLayer\Exceptions', 'src/CustomLayer/Exceptions/CustomLayerException.php'],
+    'job' => ['job', 'CustomLayerJob', 'CustomLayer\Jobs', 'src/CustomLayer/Jobs/CustomLayerJob.php'],
+    'listener' => ['listener', 'CustomLayerListener', 'CustomLayer\Listeners', 'src/CustomLayer/Listeners/CustomLayerListener.php'],
+    'mail' => ['mail', 'CustomLayerMail', 'CustomLayer\Mail', 'src/CustomLayer/Mail/CustomLayerMail.php'],
+    'notification' => ['notification', 'CustomLayerNotification', 'CustomLayer\Notifications', 'src/CustomLayer/Notifications/CustomLayerNotification.php'],
+    'observer' => ['observer', 'CustomLayerObserver', 'CustomLayer\Observers', 'src/CustomLayer/Observers/CustomLayerObserver.php'],
+    'policy' => ['policy', 'CustomLayerPolicy', 'CustomLayer\Policies', 'src/CustomLayer/Policies/CustomLayerPolicy.php'],
+    'provider' => ['provider', 'CustomLayerServiceProvider', 'CustomLayer\Providers', 'src/CustomLayer/Providers/CustomLayerServiceProvider.php'],
+    'resource' => ['resource', 'CustomLayerResource', 'CustomLayer\Resources', 'src/CustomLayer/Resources/CustomLayerResource.php'],
+    'rule' => ['rule', 'CustomLayerRule', 'CustomLayer\Rules', 'src/CustomLayer/Rules/CustomLayerRule.php'],
+    'scope' => ['scope', 'CustomLayerScope', 'CustomLayer\Scopes', 'src/CustomLayer/Scopes/CustomLayerScope.php'],
+    'seeder' => ['seeder', 'CustomLayerSeeder', 'CustomLayer\Database\Seeders', 'src/CustomLayer/Database/Seeders/CustomLayerSeeder.php'],
+    'class' => ['class', 'CustomLayerClass', 'CustomLayer', 'src/CustomLayer/CustomLayerClass.php'],
+    'enum' => ['enum', 'CustomLayerEnum', 'CustomLayer\Enums', 'src/CustomLayer/Enums/CustomLayerEnum.php'],
+    'interface' => ['interface', 'CustomLayerInterface', 'CustomLayer', 'src/CustomLayer/CustomLayerInterface.php'],
+    'trait' => ['trait', 'CustomLayerTrait', 'CustomLayer', 'src/CustomLayer/CustomLayerTrait.php'],
 ]);
 
 it('ignores custom layer if object belongs in the application layer', function ($type, $objectName, $expectedNamespace, $expectedPath) {
@@ -86,7 +86,7 @@ it('ignores custom layer if object belongs in the application layer', function (
 
     expect(file_get_contents($expectedPath))->toContain("namespace {$expectedNamespace};");
 })->with([
-    'request' => ['request', 'SomeRequest', 'Application\CustomLayer\Requests', 'src/Application/CustomLayer/Requests/SomeRequest.php'],
-    'controller' => ['controller', 'SomeController', 'Application\CustomLayer\Controllers', 'src/Application/CustomLayer/Controllers/SomeController.php'],
-    'middleware' => ['middleware', 'SomeMiddleware', 'Application\CustomLayer\Middleware', 'src/Application/CustomLayer/Middleware/SomeMiddleware.php'],
+    'request' => ['request', 'CustomLayerRequest', 'Application\CustomLayer\Requests', 'src/Application/CustomLayer/Requests/CustomLayerRequest.php'],
+    'controller' => ['controller', 'CustomLayerController', 'Application\CustomLayer\Controllers', 'src/Application/CustomLayer/Controllers/CustomLayerController.php'],
+    'middleware' => ['middleware', 'CustomLayerMiddleware', 'Application\CustomLayer\Middleware', 'src/Application/CustomLayer/Middleware/CustomLayerMiddleware.php'],
 ]);

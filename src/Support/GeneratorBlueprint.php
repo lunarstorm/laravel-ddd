@@ -82,7 +82,7 @@ class GeneratorBlueprint
             default => $this->layer->namespaceFor($this->type),
         };
 
-        $baseName = str($this->nameInput)->replace($namespace, '')
+        $baseName = str($this->nameInput)
             ->replace(['\\', '/'], '\\')
             ->trim('\\')
             ->when($this->type === 'factory', fn ($name) => $name->finish('Factory'))
