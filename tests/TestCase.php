@@ -27,11 +27,18 @@ class TestCase extends Orchestra
             );
         });
 
-        $this->beforeApplicationDestroyed(function () {
-            $this->cleanSlate();
-        });
+        // $this->beforeApplicationDestroyed(function () {
+        //     $this->cleanSlate();
+        // });
 
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->cleanSlate();
+
+        parent::tearDown();
     }
 
     public static function configValues(array $values)
@@ -181,21 +188,22 @@ class TestCase extends Orchestra
 
     protected function cleanSlate()
     {
-        File::delete(base_path('config/ddd.php'));
+        $basePath = $this->getBasePath();
 
-        // File::cleanDirectory(app_path());
-        File::cleanDirectory(app_path('Models'));
-        File::cleanDirectory(base_path('database/factories'));
+        File::delete($basePath.'/config/ddd.php');
 
-        File::deleteDirectory(base_path('src'));
-        File::deleteDirectory(resource_path('stubs/ddd'));
-        File::deleteDirectory(base_path('stubs'));
-        File::deleteDirectory(base_path('Custom'));
-        File::deleteDirectory(app_path('Policies'));
-        File::deleteDirectory(app_path('Modules'));
-        File::deleteDirectory(base_path('bootstrap/cache/ddd'));
+        File::cleanDirectory($basePath.'/app/Models');
+        File::cleanDirectory($basePath.'/database/factories');
 
-        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
+        File::deleteDirectory($basePath.'/src');
+        File::deleteDirectory($basePath.'/resources/stubs/ddd');
+        File::deleteDirectory($basePath.'/stubs');
+        File::deleteDirectory($basePath.'/Custom');
+        File::deleteDirectory($basePath.'/app/Policies');
+        File::deleteDirectory($basePath.'/app/Modules');
+        File::deleteDirectory($basePath.'/bootstrap/cache/ddd');
+
+        File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
 
         return $this;
     }
