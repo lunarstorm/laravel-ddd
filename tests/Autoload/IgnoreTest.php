@@ -24,7 +24,6 @@ beforeEach(function () {
     ];
 
     $this->setupTestApplication();
-    DomainCache::clear();
 });
 
 afterEach(function () {

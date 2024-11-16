@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD\Tests;
 
+use Illuminate\Console\Application as ConsoleApplication;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
@@ -227,6 +228,15 @@ class TestCase extends Orchestra
         $this->setAutoloadPathInComposer('Domain', 'src/Domain');
         $this->setAutoloadPathInComposer('Application', 'src/Application');
         $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
+
+        $this->resetArtisan();
+
+        return $this;
+    }
+
+    protected function resetArtisan()
+    {
+        ConsoleApplication::forgetBootstrappers();
 
         return $this;
     }

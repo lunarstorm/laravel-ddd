@@ -152,7 +152,7 @@ class AutoloadManager
         }
 
         if (app()->runningInConsole() && ! $this->isConsoleBooted()) {
-            ConsoleApplication::starting(function ($artisan) {
+            ConsoleApplication::starting(function (ConsoleApplication $artisan) {
                 foreach ($this->registeredCommands as $command) {
                     $artisan->resolve($command);
                 }
