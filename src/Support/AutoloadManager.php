@@ -134,15 +134,8 @@ class AutoloadManager
             ? DomainCache::get('domain-providers')
             : $this->discoverProviders();
 
-        foreach (static::$registeredProviders as $provider) {
-            $this->app->forgetInstance($provider);
-        }
-
-        static::$registeredProviders = [];
-
         foreach ($providers as $provider) {
             static::$registeredProviders[$provider] = $provider;
-            $this->app->register($provider);
         }
 
         return $this;
@@ -153,8 +146,6 @@ class AutoloadManager
         $commands = DomainCache::has('domain-commands')
             ? DomainCache::get('domain-commands')
             : $this->discoverCommands();
-
-        static::$registeredCommands = [];
 
         foreach ($commands as $command) {
             static::$registeredCommands[$command] = $command;
