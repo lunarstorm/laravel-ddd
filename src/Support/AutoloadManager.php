@@ -24,6 +24,8 @@ class AutoloadManager
 {
     use Conditionable;
 
+    protected $app;
+
     protected string $appNamespace;
 
     protected static array $registeredCommands = [];
@@ -40,10 +42,23 @@ class AutoloadManager
 
     protected bool $ran = false;
 
-    public function __construct()
+    /**
+     * Create a new autoloader instance.
+     *
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @return void
+     */
+    public function __construct($app)
     {
-        $this->appNamespace = $this->resolveAppNamespace();
+        $this->app = $app;
+
+        $this->appNamespace = $this->app->getNamespace();
     }
+
+    // public function __construct(protected \Illuminate\Contracts\Foundation\Application $app)
+    // {
+    //     $this->appNamespace = $this->resolveAppNamespace();
+    // }
 
     public function boot()
     {
@@ -54,7 +69,7 @@ class AutoloadManager
         $this
             ->flush()
             ->when(config('ddd.autoload.providers') === true, fn () => $this->handleProviders())
-            ->when(app()->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
+            ->when($this->app->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
             ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
 
@@ -79,7 +94,7 @@ class AutoloadManager
     protected function flush()
     {
         foreach (static::$registeredProviders as $provider) {
-            app()->forgetInstance($provider);
+            $this->app?->forgetInstance($provider);
         }
 
         static::$registeredProviders = [];
@@ -106,14 +121,14 @@ class AutoloadManager
             DomainResolver::domainPath(),
             DomainResolver::applicationLayerPath(),
             ...array_values(config('ddd.layers', [])),
-        ])->map(fn ($path) => app()->basePath($path))->toArray();
+        ])->map(fn ($path) => $this->app->basePath($path))->toArray();
     }
 
     protected function getCustomLayerPaths(): array
     {
         return collect([
             ...array_values(config('ddd.layers', [])),
-        ])->map(fn ($path) => app()->basePath($path))->toArray();
+        ])->map(fn ($path) => $this->app->basePath($path))->toArray();
     }
 
     protected function handleProviders()
@@ -123,14 +138,14 @@ class AutoloadManager
             : $this->discoverProviders();
 
         foreach (static::$registeredProviders as $provider) {
-            app()->forgetInstance($provider);
+            $this->app->forgetInstance($provider);
         }
 
         static::$registeredProviders = [];
 
         foreach ($providers as $provider) {
             static::$registeredProviders[$provider] = $provider;
-            app()->register($provider);
+            $this->app->register($provider);
         }
 
         return $this;
@@ -157,11 +172,15 @@ class AutoloadManager
             return $this;
         }
 
-        foreach (static::$registeredProviders as $provider) {
-            app()->register($provider);
+        if (! $this->isBooted()) {
+            $this->boot();
         }
 
-        if (app()->runningInConsole() && ! $this->isConsoleBooted()) {
+        foreach (static::$registeredProviders as $provider) {
+            $this->app->register($provider);
+        }
+
+        if ($this->app->runningInConsole() && ! $this->isConsoleBooted()) {
             ConsoleApplication::starting(function (ConsoleApplication $artisan) {
                 foreach (static::$registeredCommands as $command) {
                     $artisan->resolve($command);

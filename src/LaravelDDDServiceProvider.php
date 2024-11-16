@@ -12,32 +12,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        $this->app->scoped(DomainManager::class, function () {
-            return new DomainManager;
-        });
-
-        $this->app->scoped(AutoloadManager::class, function () {
-            return new AutoloadManager;
-        });
-
-        $this->app->scoped(ComposerManager::class, function () {
-            return ComposerManager::make(app()->basePath('composer.json'));
-        });
-
-        $this->app->scoped(ConfigManager::class, function () {
-            return new ConfigManager(config_path('ddd.php'));
-        });
-
-        $this->app->scoped(StubManager::class, function () {
-            return new StubManager;
-        });
-
-        $this->app->bind('ddd', DomainManager::class);
-        $this->app->bind('ddd.autoloader', AutoloadManager::class);
-        $this->app->bind('ddd.config', ConfigManager::class);
-        $this->app->bind('ddd.composer', ComposerManager::class);
-        $this->app->bind('ddd.stubs', StubManager::class);
-
         /*
          * This class is a Package Service Provider
          *
@@ -119,8 +93,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
-        Autoload::boot();
-
         Autoload::run();
 
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
@@ -134,6 +106,32 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
+        $this->app->scoped(DomainManager::class, function () {
+            return new DomainManager;
+        });
+
+        $this->app->scoped(AutoloadManager::class, function ($app) {
+            return new AutoloadManager($app);
+        });
+
+        $this->app->scoped(ComposerManager::class, function () {
+            return ComposerManager::make(app()->basePath('composer.json'));
+        });
+
+        $this->app->scoped(ConfigManager::class, function () {
+            return new ConfigManager(config_path('ddd.php'));
+        });
+
+        $this->app->scoped(StubManager::class, function () {
+            return new StubManager;
+        });
+
+        $this->app->bind('ddd', DomainManager::class);
+        $this->app->bind('ddd.autoloader', AutoloadManager::class);
+        $this->app->bind('ddd.config', ConfigManager::class);
+        $this->app->bind('ddd.composer', ComposerManager::class);
+        $this->app->bind('ddd.stubs', StubManager::class);
+
         $this->registerMigrations();
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 
 beforeEach(function () {
@@ -7,9 +8,7 @@ beforeEach(function () {
 });
 
 it('can run', function () {
-    $autoloader = new AutoloadManager;
-
-    $autoloader->boot();
+    Autoload::run();
 })->throwsNoExceptions();
 
 beforeEach(function () {
@@ -39,7 +38,7 @@ beforeEach(function () {
 });
 
 it('can discover paths to all layers', function () {
-    $autoloader = new AutoloadManager;
+    $autoloader = app(AutoloadManager::class);
 
     $expected = [
         app()->basePath('src/Domain'),
