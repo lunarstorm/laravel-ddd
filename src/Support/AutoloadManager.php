@@ -59,8 +59,10 @@ class AutoloadManager
 
     public function boot()
     {
+        $this->booted = true;
+
         if (! config()->has('ddd.autoload')) {
-            return $this;
+            return $this->flush();
         }
 
         $this
@@ -70,7 +72,7 @@ class AutoloadManager
             ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
             ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
 
-        $this->booted = true;
+        return $this;
     }
 
     public function isBooted(): bool
