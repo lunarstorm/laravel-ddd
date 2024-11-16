@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
+use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
@@ -227,6 +228,8 @@ class TestCase extends Orchestra
         $this->setAutoloadPathInComposer('Domain', 'src/Domain');
         $this->setAutoloadPathInComposer('Application', 'src/Application');
         $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
+
+        DomainCache::clear();
 
         return $this;
     }

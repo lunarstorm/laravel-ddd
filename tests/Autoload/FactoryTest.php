@@ -33,11 +33,12 @@ describe('when ddd.autoload.factories = true', function () {
     it('can resolve domain factory', function ($modelClass, $expectedFactoryClass) {
         config()->set('ddd.autoload.factories', true);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods();
-        });
+        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+        //     $mock->shouldAllowMockingProtectedMethods();
+        // });
 
-        $mock->boot();
+        // $mock->boot();
+        Autoload::boot();
 
         expect($modelClass::factory())->toBeInstanceOf($expectedFactoryClass);
     })->with([
@@ -85,11 +86,13 @@ describe('when ddd.autoload.factories = false', function () {
     it('cannot resolve factories that rely on autoloading', function ($modelClass) {
         config()->set('ddd.autoload.factories', false);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods();
-        });
+        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+        //     $mock->shouldAllowMockingProtectedMethods();
+        // });
 
-        $mock->boot();
+        // $mock->boot();
+
+        Autoload::boot();
 
         expect(fn () => $modelClass::factory())->toThrow(Error::class);
     })->with([

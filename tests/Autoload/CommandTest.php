@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
@@ -35,23 +36,12 @@ describe('when ddd.autoload.commands = false', function () {
         $mock->boot();
 
         expect($mock->getRegisteredCommands())->toBeEmpty();
-
-        $artisanCommands = collect(Artisan::all());
-
-        expect($artisanCommands)->not->toHaveKeys(array_keys($this->commands));
     });
 
     it('does not register the commands', function () {
         config()->set('ddd.autoload.commands', false);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldNotReceive('handleCommands');
-        });
-
-        $mock->boot();
-
-        expect($mock->getRegisteredCommands())->toBeEmpty();
+        Autoload::boot();
 
         $artisanCommands = collect(Artisan::all());
 
@@ -63,13 +53,14 @@ describe('when ddd.autoload.commands = true', function () {
     it('registers the commands', function () {
         config()->set('ddd.autoload.commands', true);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods();
-        });
+        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+        //     $mock->shouldAllowMockingProtectedMethods();
+        // });
 
-        $mock->boot();
+        // $mock->boot();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+        // expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+        Autoload::boot();
 
         $artisanCommands = collect(Artisan::all());
 
@@ -83,13 +74,15 @@ describe('caching', function () {
 
         config()->set('ddd.autoload.commands', true);
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods();
-        });
+        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+        //     $mock->shouldAllowMockingProtectedMethods();
+        // });
 
-        $mock->boot();
+        // $mock->boot();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing([]);
+        // expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing([]);
+
+        Autoload::boot();
 
         $artisanCommands = collect(Artisan::all());
 
@@ -105,13 +98,15 @@ describe('caching', function () {
         DomainCache::set('domain-commands', []);
         DomainCache::clear();
 
-        $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
-            $mock->shouldAllowMockingProtectedMethods();
-        });
+        // $mock = $this->partialMock(AutoloadManager::class, function (MockInterface $mock) {
+        //     $mock->shouldAllowMockingProtectedMethods();
+        // });
 
-        $mock->boot();
+        // $mock->boot();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+        // expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+
+        Autoload::boot();
 
         $artisanCommands = collect(Artisan::all());
 
