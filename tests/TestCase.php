@@ -249,21 +249,17 @@ class TestCase extends Orchestra
             File::copyDirectory($folder, app_path(basename($folder)));
         }
 
-        // $skeletonSrcFolders = glob(__DIR__.'/.skeleton/src/*', GLOB_ONLYDIR);
-
-        // foreach ($skeletonSrcFolders as $folder) {
-        //     File::deleteDirectory(base_path('src/'.basename($folder)));
-        //     File::copyDirectory($folder, base_path('src/'.basename($folder)));
-        // }
-
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
         File::copy(__DIR__.'/.skeleton/config/ddd.php', config_path('ddd.php'));
+        File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
 
-        $this->setAutoloadPathInComposer('Domain', 'src/Domain');
-        $this->setAutoloadPathInComposer('Application', 'src/Application');
-        $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
+        $this->composerReload();
+
+        // $this->setAutoloadPathInComposer('Domain', 'src/Domain');
+        // $this->setAutoloadPathInComposer('Application', 'src/Application');
+        // $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
 
         DomainCache::clear();
 
