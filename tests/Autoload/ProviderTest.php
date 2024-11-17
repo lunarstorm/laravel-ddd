@@ -19,6 +19,11 @@ beforeEach(function () {
 
     DomainCache::clear();
     Artisan::call('ddd:clear');
+
+    expect(config('ddd.autoload_ignore'))->toEqualCanonicalizing([
+        'Tests',
+        'Database/Migrations',
+    ]);
 });
 
 afterEach(function () {

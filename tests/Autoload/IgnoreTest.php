@@ -42,6 +42,11 @@ beforeEach(function () {
         Path::normalize(base_path('src/Application')),
         Path::normalize(base_path('src/Infrastructure')),
     ]);
+
+    expect(config('ddd.autoload_ignore'))->toEqualCanonicalizing([
+        'Tests',
+        'Database/Migrations',
+    ]);
 });
 
 afterEach(function () {
