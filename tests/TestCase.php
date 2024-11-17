@@ -61,8 +61,8 @@ class TestCase extends Orchestra
             static::$configValues = [
                 'ddd.domain_path' => 'src/Domain',
                 'ddd.domain_namespace' => 'Domain',
-                'ddd.application_namespace' => 'Application',
                 'ddd.application_path' => 'src/Application',
+                'ddd.application_namespace' => 'Application',
                 'ddd.application_objects' => [
                     'controller',
                     'request',
