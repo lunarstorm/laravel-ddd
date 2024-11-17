@@ -28,7 +28,6 @@ class TestCase extends Orchestra
             );
 
             DomainCache::clear();
-            Artisan::call('ddd:clear');
         });
 
         $this->beforeApplicationDestroyed(function () {
