@@ -9,6 +9,7 @@ use Lunarstorm\LaravelDDD\Support\AutoloadManager;
  * @see \Lunarstorm\LaravelDDD\Support\AutoloadManager
  *
  * @method static void boot()
+ * @method static void run()
  * @method static array getAllLayerPaths()
  * @method static array getCustomLayerPaths()
  * @method static array getRegisteredCommands()
