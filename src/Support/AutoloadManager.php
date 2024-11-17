@@ -275,7 +275,7 @@ class AutoloadManager
             ->filter($filter);
     }
 
-    protected function discoverProviders(): array
+    public function discoverProviders(): array
     {
         $configValue = config('ddd.autoload.providers');
 
@@ -299,7 +299,7 @@ class AutoloadManager
             ->toArray();
     }
 
-    protected function discoverCommands(): array
+    public function discoverCommands(): array
     {
         $configValue = config('ddd.autoload.commands');
 

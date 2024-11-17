@@ -43,69 +43,57 @@ afterEach(function () {
 });
 
 it('can ignore folders when autoloading', function () {
-    Artisan::call('ddd:optimize');
-
     $expected = [
         ...array_values($this->providers),
         ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqualCanonicalizing($expected);
-
-    DomainCache::clear();
+    expect($discovered)->toEqualCanonicalizing($expected);
 
     Config::set('ddd.autoload_ignore', ['Commands']);
 
-    Artisan::call('ddd:optimize');
-
     $expected = [
         ...array_values($this->providers),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqualCanonicalizing($expected);
+    expect($discovered)->toEqualCanonicalizing($expected);
 
     Config::set('ddd.autoload_ignore', ['Providers']);
 
-    Artisan::call('ddd:optimize');
-
     $expected = [
         ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqualCanonicalizing($expected);
+    expect($discovered)->toEqualCanonicalizing($expected);
 });
 
 it('can register a custom autoload filter', function () {
-    Artisan::call('ddd:optimize');
-
     $expected = [
         ...array_values($this->providers),
         ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqualCanonicalizing($expected);
-
-    DomainCache::clear();
+    expect($discovered)->toEqualCanonicalizing($expected);
 
     $secret = null;
 
@@ -126,14 +114,12 @@ it('can register a custom autoload filter', function () {
         }
     });
 
-    Artisan::call('ddd:optimize');
-
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual([]);
+    expect($discovered)->toEqual([]);
 
     expect($secret)->toEqual('i-was-invoked');
 });
