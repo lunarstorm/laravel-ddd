@@ -27,6 +27,14 @@ beforeEach(function () {
 
     DomainCache::clear();
     Artisan::call('ddd:clear');
+
+    Config::set('ddd.autoload', [
+        'providers' => true,
+        'commands' => true,
+        'factories' => true,
+        'policies' => true,
+        'migrations' => true,
+    ]);
 });
 
 afterEach(function () {
@@ -48,6 +56,8 @@ it('can ignore folders when autoloading', function () {
     ];
 
     expect($cached)->toEqualCanonicalizing($expected);
+
+    DomainCache::clear();
 
     Config::set('ddd.autoload_ignore', ['Commands']);
 
@@ -94,6 +104,8 @@ it('can register a custom autoload filter', function () {
     ];
 
     expect($cached)->toEqualCanonicalizing($expected);
+
+    DomainCache::clear();
 
     $secret = null;
 
