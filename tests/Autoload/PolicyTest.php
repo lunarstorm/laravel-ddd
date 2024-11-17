@@ -32,7 +32,7 @@ describe('when ddd.autoload.policies = false', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->shouldNotReceive('handlePolicies');
-        $mock->boot();
+        $mock->run();
     });
 });
 
@@ -42,14 +42,14 @@ describe('when ddd.autoload.policies = true', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->shouldReceive('handlePolicies')->once();
-        $mock->boot();
+        $mock->run();
     });
 
     it('can resolve the policies', function () {
         config()->set('ddd.autoload.policies', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         foreach ($this->policies as $class => $expectedPolicy) {
             $resolvedPolicy = Gate::getPolicyFor($class);
@@ -61,7 +61,7 @@ describe('when ddd.autoload.policies = true', function () {
         config()->set('ddd.autoload.policies', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(class_exists($class))->toBeTrue();
         expect(Gate::getPolicyFor($class))->toBeInstanceOf($expectedPolicy);

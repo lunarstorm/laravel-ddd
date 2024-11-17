@@ -31,14 +31,14 @@ describe('when ddd.autoload.providers = false', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->shouldNotReceive('handleProviders');
-        $mock->boot();
+        $mock->run();
     });
 
     it('does not register the providers', function () {
         config()->set('ddd.autoload.providers', false);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect($mock->getRegisteredProviders())->toBeEmpty();
     });
@@ -50,14 +50,14 @@ describe('when ddd.autoload.providers = true', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->shouldReceive('handleProviders')->once();
-        $mock->boot();
+        $mock->run();
     });
 
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
     });
@@ -70,7 +70,7 @@ describe('caching', function () {
         config()->set('ddd.autoload.providers', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing([]);
     });
@@ -82,7 +82,7 @@ describe('caching', function () {
         config()->set('ddd.autoload.providers', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
     });

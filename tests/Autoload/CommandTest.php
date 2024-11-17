@@ -31,7 +31,7 @@ describe('when ddd.autoload.commands = false', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->shouldNotReceive('handleCommands');
-        $mock->boot();
+        $mock->run();
 
         expect($mock->getRegisteredCommands())->toBeEmpty();
     });
@@ -42,7 +42,7 @@ describe('when ddd.autoload.commands = true', function () {
         config()->set('ddd.autoload.commands', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
     });
@@ -55,7 +55,7 @@ describe('caching', function () {
         config()->set('ddd.autoload.commands', true);
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing([]);
     });
@@ -65,7 +65,7 @@ describe('caching', function () {
         DomainCache::clear();
 
         $mock = AutoloadManager::partialMock();
-        $mock->boot();
+        $mock->run();
 
         expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
     });
