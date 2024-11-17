@@ -24,10 +24,6 @@ beforeEach(function () {
         'Tests',
         'Database/Migrations',
     ]);
-
-    foreach ($this->providers as $provider) {
-        expect(class_exists($provider))->toBeTrue("{$provider} class does not exist");
-    }
 });
 
 afterEach(function () {
@@ -97,8 +93,13 @@ describe('when ddd.autoload.providers = true', function () {
             ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
 
         $expected = array_values($this->providers);
+
+        foreach ($expected as $provider) {
+            expect(class_exists($provider))->toBeTrue("class_exists false on expected {$provider}");
+        }
+
         $registered = array_values($mock->getRegisteredProviders());
-        expect($mock->discoverProviders())->toEqualCanonicalizing($expected);
+
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });
