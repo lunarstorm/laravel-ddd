@@ -52,6 +52,9 @@ describe('when ddd.autoload.providers = false', function () {
             Path::normalize(base_path('src/Infrastructure')),
         ]);
 
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
+
         expect($mock->getRegisteredProviders())->toBeEmpty();
     });
 });
@@ -69,6 +72,9 @@ describe('when ddd.autoload.providers = true', function () {
             Path::normalize(base_path('src/Application')),
             Path::normalize(base_path('src/Infrastructure')),
         ]);
+
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
     });
 
     it('registers the providers', function () {
@@ -82,6 +88,9 @@ describe('when ddd.autoload.providers = true', function () {
             Path::normalize(base_path('src/Application')),
             Path::normalize(base_path('src/Infrastructure')),
         ]);
+
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());
@@ -106,6 +115,9 @@ describe('caching', function () {
             Path::normalize(base_path('src/Infrastructure')),
         ]);
 
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
+
         $registered = array_values($mock->getRegisteredProviders());
         expect($registered)->toHaveCount(0);
     });
@@ -124,6 +136,9 @@ describe('caching', function () {
             Path::normalize(base_path('src/Application')),
             Path::normalize(base_path('src/Infrastructure')),
         ]);
+
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());

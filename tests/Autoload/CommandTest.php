@@ -56,6 +56,9 @@ describe('when ddd.autoload.commands = true', function () {
             Path::normalize(base_path('src/Infrastructure')),
         ]);
 
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
+
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
         expect($mock->discoverCommands())->toEqualCanonicalizing($expected);
@@ -79,6 +82,9 @@ describe('caching', function () {
             Path::normalize(base_path('src/Infrastructure')),
         ]);
 
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
+
         $registered = array_values($mock->getRegisteredCommands());
         expect($registered)->toHaveCount(0);
     });
@@ -97,6 +103,9 @@ describe('caching', function () {
             Path::normalize(base_path('src/Application')),
             Path::normalize(base_path('src/Infrastructure')),
         ]);
+
+        collect($mock->getAllLayerPaths())
+            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
 
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
