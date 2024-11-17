@@ -62,6 +62,9 @@ describe('when ddd.autoload.factories = true', function () {
 
         expect(Factory::resolveFactoryName($modelClass))
             ->toEqual('Database\Factories\RegularModelFactory');
+
+        expect($modelClass::factory())
+            ->toBeInstanceOf('Database\Factories\RegularModelFactory');
     });
 });
 
