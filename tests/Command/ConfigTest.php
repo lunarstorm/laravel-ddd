@@ -20,6 +20,8 @@ afterEach(function () {
     $this->cleanSlate();
 
     file_put_contents(base_path('composer.json'), $this->originalComposerContents);
+
+    $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 it('can run the config wizard', function () {

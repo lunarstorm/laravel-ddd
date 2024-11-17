@@ -46,6 +46,9 @@ class TestCase extends Orchestra
 
     protected function tearDown(): void
     {
+        $this->artisan('clear-compiled')->assertSuccessful()->execute();
+        $this->artisan('optimize:clear')->assertSuccessful()->execute();
+
         $basePath = $this->getBasePath();
 
         $this->cleanSlate();
