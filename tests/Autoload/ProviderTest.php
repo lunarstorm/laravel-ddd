@@ -80,8 +80,12 @@ describe('when ddd.autoload.providers = true', function () {
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
 
+        expect(DomainCache::has('domain-providers'))->toBeFalse();
+
         $mock = AutoloadManager::partialMock();
         $mock->run();
+
+        expect(DomainCache::has('domain-providers'))->toBeFalse();
 
         expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
             Path::normalize(base_path('src/Domain')),
