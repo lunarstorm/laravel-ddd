@@ -350,8 +350,12 @@ class AutoloadManager
 
     public static function partialMock()
     {
-        return Mockery::mock(AutoloadManager::class, [null])
+        $mock = Mockery::mock(AutoloadManager::class, [null])
             ->makePartial()
             ->shouldAllowMockingProtectedMethods();
+
+        $mock->shouldReceive('isBooted')->andReturn(false);
+
+        return $mock;
     }
 }
