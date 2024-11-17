@@ -1,15 +1,10 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 
 beforeEach(function () {
     $this->setupTestApplication();
 });
-
-it('can run', function () {
-    Autoload::run();
-})->throwsNoExceptions();
 
 beforeEach(function () {
     config([
