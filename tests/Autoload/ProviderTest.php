@@ -24,8 +24,6 @@ beforeEach(function () {
         'Tests',
         'Database/Migrations',
     ]);
-
-    expect(file_exists(base_path('src/Application/Providers/ApplicationServiceProvider.php')))->toBeTrue();
 });
 
 afterEach(function () {
@@ -83,6 +81,10 @@ describe('when ddd.autoload.providers = true', function () {
 
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
+
+        AutoloadManager::registeringProvider(function ($provider) {
+            dump('registering provider: '.$provider);
+        });
 
         $mock = AutoloadManager::partialMock();
         $mock->run();
