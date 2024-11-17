@@ -66,6 +66,7 @@ it('can ignore folders when autoloading', function () {
         ...DDD::autoloader()->discoverCommands(),
     ];
 
+    expect($discovered)->toHaveCount(count($expected));
     expect($discovered)->each(fn ($item) => $item->toBeIn($expected));
 
     Config::set('ddd.autoload_ignore', ['Providers']);
@@ -79,6 +80,7 @@ it('can ignore folders when autoloading', function () {
         ...DDD::autoloader()->discoverCommands(),
     ];
 
+    expect($discovered)->toHaveCount(count($expected));
     expect($discovered)->each(fn ($item) => $item->toBeIn($expected));
 });
 
@@ -93,6 +95,7 @@ it('can register a custom autoload filter', function () {
         ...DDD::autoloader()->discoverCommands(),
     ];
 
+    expect($discovered)->toHaveCount(count($expected));
     expect($discovered)->each(fn ($item) => $item->toBeIn($expected));
 
     $secret = null;
@@ -119,7 +122,7 @@ it('can register a custom autoload filter', function () {
         ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($discovered)->toEqual([]);
+    expect($discovered)->toHaveCount(0);
 
     expect($secret)->toEqual('i-was-invoked');
 });
