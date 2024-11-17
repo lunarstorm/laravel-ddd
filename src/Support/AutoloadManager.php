@@ -296,6 +296,7 @@ class AutoloadManager
         return Lody::classesFromFinder($this->finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(ServiceProvider::class)
+            ->values()
             ->toArray();
     }
 
@@ -320,6 +321,7 @@ class AutoloadManager
         return Lody::classesFromFinder($this->finder($paths))
             ->isNotAbstract()
             ->isInstanceOf(Command::class)
+            ->values()
             ->toArray();
     }
 
