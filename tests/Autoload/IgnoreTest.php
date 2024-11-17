@@ -43,6 +43,12 @@ afterEach(function () {
 });
 
 it('can ignore folders when autoloading', function () {
+    expect(config('ddd.domain_path'))->toEqual('src/Domain');
+    expect(config('ddd.domain_namespace'))->toEqual('Domain');
+    expect(config('ddd.application_path'))->toEqual('src/Application');
+    expect(config('ddd.application_namespace'))->toEqual('Application');
+    expect(config('ddd.layers'))->toContain('src/Infrastructure');
+
     $expected = [
         ...array_values($this->providers),
         ...array_values($this->commands),
@@ -53,7 +59,8 @@ it('can ignore folders when autoloading', function () {
         ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($discovered)->toEqualCanonicalizing($expected);
+    expect($expected)->each(fn ($item) => $item->toBeIn($discovered));
+    expect($discovered)->toHaveCount(count($expected));
 
     Config::set('ddd.autoload_ignore', ['Commands']);
 
