@@ -24,6 +24,10 @@ beforeEach(function () {
         'Tests',
         'Database/Migrations',
     ]);
+
+    foreach ($this->providers as $provider) {
+        expect(class_exists($provider))->toBeTrue("{$provider} class does not exist");
+    }
 });
 
 afterEach(function () {

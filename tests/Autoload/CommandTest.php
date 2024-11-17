@@ -24,6 +24,10 @@ beforeEach(function () {
         'Tests',
         'Database/Migrations',
     ]);
+
+    foreach ($this->commands as $command) {
+        expect(class_exists($command))->toBeTrue("{$command} class does not exist");
+    }
 });
 
 afterEach(function () {
