@@ -120,14 +120,14 @@ class AutoloadManager
             DomainResolver::domainPath(),
             DomainResolver::applicationLayerPath(),
             ...array_values(config('ddd.layers', [])),
-        ])->map(fn ($path) => $this->app->basePath($path))->toArray();
+        ])->map(fn ($path) => Path::normalize($this->app->basePath($path)))->toArray();
     }
 
     protected function getCustomLayerPaths(): array
     {
         return collect([
             ...array_values(config('ddd.layers', [])),
-        ])->map(fn ($path) => $this->app->basePath($path))->toArray();
+        ])->map(fn ($path) => Path::normalize($this->app->basePath($path)))->toArray();
     }
 
     protected function handleProviders()
