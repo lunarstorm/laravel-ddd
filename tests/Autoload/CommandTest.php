@@ -64,6 +64,8 @@ describe('caching', function () {
         DomainCache::set('domain-commands', []);
         DomainCache::clear();
 
+        config()->set('ddd.autoload.commands', true);
+
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
