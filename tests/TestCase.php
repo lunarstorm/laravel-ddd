@@ -5,7 +5,6 @@ namespace Lunarstorm\LaravelDDD\Tests;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
