@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Migrations\MigrationCreator;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
@@ -9,19 +9,21 @@ uses(BootsTestApplication::class);
 beforeEach(function () {
     $this->setupTestApplication();
 
-    Artisan::call('config:clear');
-    Artisan::call('ddd:clear');
-})->skip('causing issues in test suite');
+    // $this->app->when(MigrationCreator::class)
+    //     ->needs('$customStubPath')
+    //     ->give(fn() => $this->app->basePath('stubs'));
+
+    $this->originalComposerContents = file_get_contents(base_path('composer.json'));
+});
 
 afterEach(function () {
     $this->cleanSlate();
 
-    Artisan::call('config:clear');
-    Artisan::call('ddd:clear');
+    file_put_contents(base_path('composer.json'), $this->originalComposerContents);
 });
 
 it('can run the config wizard', function () {
-    Artisan::call('config:cache');
+    $this->artisan('config:cache')->assertSuccessful()->execute();
 
     expect(config('ddd.domain_path'))->toBe('src/Domain');
     expect(config('ddd.domain_namespace'))->toBe('Domain');
@@ -29,7 +31,7 @@ it('can run the config wizard', function () {
         'Infrastructure' => 'src/Infrastructure',
     ]);
 
-    $path = config_path('ddd.php');
+    $configPath = config_path('ddd.php');
 
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'wizard')
@@ -38,13 +40,13 @@ it('can run the config wizard', function () {
         ->expectsQuestion('Path to Application Layer', null)
         ->expectsQuestion('Custom Layers (Optional)', ['Support' => 'src/Support'])
         ->expectsOutput('Building configuration...')
-        ->expectsOutput("Configuration updated: {$path}")
+        ->expectsOutput("Configuration updated: {$configPath}")
         ->assertSuccessful()
         ->execute();
 
-    expect(file_exists($path))->toBeTrue();
+    expect(file_exists($configPath))->toBeTrue();
 
-    Artisan::call('config:cache');
+    $this->artisan('config:cache')->assertSuccessful()->execute();
 
     expect(config('ddd.domain_path'))->toBe('src/CustomDomain');
     expect(config('ddd.domain_namespace'))->toBe('CustomDomain');
@@ -53,36 +55,42 @@ it('can run the config wizard', function () {
     expect(config('ddd.layers'))->toBe([
         'Support' => 'src/Support',
     ]);
+
+    $this->artisan('config:clear')->assertSuccessful()->execute();
+
+    unlink($configPath);
 });
 
 it('can update and merge ddd.php with latest package version', function () {
-    $path = config_path('ddd.php');
+    $configPath = config_path('ddd.php');
 
     $originalContents = <<<'PHP'
 <?php
 return [];
 PHP;
 
-    file_put_contents($path, $originalContents);
+    file_put_contents($configPath, $originalContents);
 
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'update')
         ->expectsQuestion('Are you sure you want to update ddd.php and merge with latest copy from the package?', true)
         ->expectsOutput('Merging ddd.php...')
-        ->expectsOutput("Configuration updated: {$path}")
+        ->expectsOutput("Configuration updated: {$configPath}")
         ->expectsOutput('Note: Some values may require manual adjustment.')
         ->assertSuccessful()
         ->execute();
 
     $packageConfigContents = file_get_contents(DDD::packagePath('config/ddd.php'));
 
-    expect($updatedContents = file_get_contents($path))
+    expect($updatedContents = file_get_contents($configPath))
         ->not->toEqual($originalContents);
 
-    $updatedConfigArray = include $path;
+    $updatedConfigArray = include $configPath;
     $packageConfigArray = include DDD::packagePath('config/ddd.php');
 
     expect($updatedConfigArray)->toHaveKeys(array_keys($packageConfigArray));
+
+    unlink($configPath);
 });
 
 it('can sync composer.json from ddd.php ', function () {
@@ -107,7 +115,7 @@ PHP;
 
     file_put_contents(config_path('ddd.php'), $configContent);
 
-    Artisan::call('config:cache');
+    $this->artisan('config:cache')->assertSuccessful()->execute();
 
     $composerContents = file_get_contents(base_path('composer.json'));
 
@@ -146,6 +154,10 @@ PHP;
     $composerContents = file_get_contents(base_path('composer.json'));
 
     expect($composerContents)->toContain(...$fragments);
+
+    $this->artisan('config:clear')->assertSuccessful()->execute();
+
+    unlink(config_path('ddd.php'));
 });
 
 it('can detect domain namespace from composer.json', function () {
@@ -155,6 +167,8 @@ it('can detect domain namespace from composer.json', function () {
         app()->basePath('composer.json'),
         $sampleComposer
     );
+
+    $configPath = config_path('ddd.php');
 
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'detect')
@@ -166,7 +180,7 @@ it('can detect domain namespace from composer.json', function () {
             'Domain',
         ])
         ->expectsQuestion('Update configuration with these values?', true)
-        ->expectsOutput('Configuration updated: '.config_path('ddd.php'))
+        ->expectsOutput('Configuration updated: '.$configPath)
         ->assertSuccessful()
         ->execute();
 
@@ -174,4 +188,6 @@ it('can detect domain namespace from composer.json', function () {
 
     expect(data_get($configValues, 'domain_path'))->toBe('lib/CustomDomain');
     expect(data_get($configValues, 'domain_namespace'))->toBe('Domain');
+
+    unlink($configPath);
 });

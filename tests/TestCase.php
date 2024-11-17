@@ -211,12 +211,14 @@ class TestCase extends Orchestra
 
         File::cleanDirectory($basePath.'/app/Models');
         File::cleanDirectory($basePath.'/database/factories');
+        File::cleanDirectory($basePath.'/bootstrap/cache');
         File::cleanDirectory($basePath.'/bootstrap/cache/ddd');
 
         File::deleteDirectory($basePath.'/src');
         File::deleteDirectory($basePath.'/resources/stubs/ddd');
         File::deleteDirectory($basePath.'/stubs');
         File::deleteDirectory($basePath.'/Custom');
+        File::deleteDirectory($basePath.'/Other');
         File::deleteDirectory($basePath.'/app/Policies');
         File::deleteDirectory($basePath.'/app/Modules');
 

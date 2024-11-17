@@ -15,8 +15,10 @@ class ConfigManager
 
     protected string $stub;
 
-    public function __construct(public string $configPath)
+    public function __construct(public ?string $configPath = null)
     {
+        $this->configPath = $configPath ?? app()->configPath('ddd.php');
+
         $this->packageConfig = require DDD::packagePath('config/ddd.php');
 
         $this->config = file_exists($configPath) ? require ($configPath) : $this->packageConfig;

@@ -111,7 +111,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         });
 
         $this->app->scoped(ConfigManager::class, function () {
-            return new ConfigManager(config_path('ddd.php'));
+            return new ConfigManager($this->app->configPath('ddd.php'));
         });
 
         $this->app->scoped(StubManager::class, function () {
