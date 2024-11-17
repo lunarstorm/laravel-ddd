@@ -257,6 +257,10 @@ class ConfigCommand extends Command
 
         $this->info('Building configuration...');
 
+        foreach ($responses as $key => $value) {
+            $responses[$key] = $value ?: $config->get($key);
+        }
+
         DDD::config()->fill($responses)->save();
 
         $this->info('Configuration updated: '.config_path('ddd.php'));

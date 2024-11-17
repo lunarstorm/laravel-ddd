@@ -22,8 +22,8 @@ return [
     | that should be recognized as part of the application layer.
     |
     */
-    'application_path' => 'Application',
-    'application_namespace' => 'src\Application',
+    'application_path' => 'src/Application',
+    'application_namespace' => 'Application',
     'application_objects' => [
         'controller',
         'request',

@@ -251,7 +251,7 @@ class TestCase extends Orchestra
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
-        // File::copy(__DIR__ . '/.skeleton/config/ddd.php', config_path('ddd.php'));
+        File::copy(__DIR__.'/.skeleton/config/ddd.php', config_path('ddd.php'));
 
         $this->setAutoloadPathInComposer('Domain', 'src/Domain');
         $this->setAutoloadPathInComposer('Application', 'src/Application');

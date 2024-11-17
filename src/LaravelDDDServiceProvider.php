@@ -2,6 +2,7 @@
 
 namespace Lunarstorm\LaravelDDD;
 
+use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Foundation\Application;
 use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
@@ -88,6 +89,12 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
             return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
         });
+
+        $this->app->when(MigrationCreator::class)
+            ->needs('$customStubPath')
+            ->give(function ($app) {
+                return $app->basePath('stubs');
+            });
 
         $this->loadMigrationsFrom(DomainMigration::paths());
 

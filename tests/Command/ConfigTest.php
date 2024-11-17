@@ -2,18 +2,22 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Facades\DDD;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+
+uses(BootsTestApplication::class);
 
 beforeEach(function () {
-    $this->cleanSlate();
     $this->setupTestApplication();
+
     Artisan::call('config:clear');
-    $this->composerReload();
-})->skip();
+    Artisan::call('ddd:clear');
+});
 
 afterEach(function () {
     $this->cleanSlate();
+
     Artisan::call('config:clear');
-    $this->composerReload();
+    Artisan::call('ddd:clear');
 });
 
 it('can run the config wizard', function () {
@@ -44,15 +48,8 @@ it('can run the config wizard', function () {
 
     expect(config('ddd.domain_path'))->toBe('src/CustomDomain');
     expect(config('ddd.domain_namespace'))->toBe('CustomDomain');
-    expect(config('ddd.application'))->toBe([
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-    ]);
+    expect(config('ddd.application_path'))->toBe('src/Application');
+    expect(config('ddd.application_namespace'))->toBe('Application');
     expect(config('ddd.layers'))->toBe([
         'Support' => 'src/Support',
     ]);
