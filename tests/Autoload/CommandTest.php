@@ -10,9 +10,9 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->commands = [
+        'application:sync' => 'Application\Commands\ApplicationSync',
         'invoice:deliver' => 'Domain\Invoicing\Commands\InvoiceDeliver',
         'log:prune' => 'Infrastructure\Commands\LogPrune',
-        'application:sync' => 'Application\Commands\ApplicationSync',
     ];
 
     $this->setupTestApplication();

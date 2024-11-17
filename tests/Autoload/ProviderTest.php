@@ -10,8 +10,8 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->providers = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
         'Application\Providers\ApplicationServiceProvider',
+        'Domain\Invoicing\Providers\InvoiceServiceProvider',
         'Infrastructure\Providers\InfrastructureServiceProvider',
     ];
 

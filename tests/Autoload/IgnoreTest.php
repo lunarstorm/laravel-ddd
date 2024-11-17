@@ -13,15 +13,15 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->providers = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
         'Application\Providers\ApplicationServiceProvider',
+        'Domain\Invoicing\Providers\InvoiceServiceProvider',
         'Infrastructure\Providers\InfrastructureServiceProvider',
     ];
 
     $this->commands = [
+        'application:sync' => 'Application\Commands\ApplicationSync',
         'invoice:deliver' => 'Domain\Invoicing\Commands\InvoiceDeliver',
         'log:prune' => 'Infrastructure\Commands\LogPrune',
-        'application:sync' => 'Application\Commands\ApplicationSync',
     ];
 
     $this->setupTestApplication();
