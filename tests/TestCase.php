@@ -86,6 +86,7 @@ class TestCase extends Orchestra
                     'Tests',
                     'Database/Migrations',
                 ],
+                'ddd.cache_directory' => 'bootstrap/cache/ddd',
                 'cache.default' => 'file',
                 ...static::$configValues,
             ];
@@ -202,6 +203,7 @@ class TestCase extends Orchestra
 
         File::cleanDirectory($basePath.'/app/Models');
         File::cleanDirectory($basePath.'/database/factories');
+        File::cleanDirectory($basePath.'/bootstrap/cache/ddd');
 
         File::deleteDirectory($basePath.'/src');
         File::deleteDirectory($basePath.'/resources/stubs/ddd');
@@ -209,7 +211,6 @@ class TestCase extends Orchestra
         File::deleteDirectory($basePath.'/Custom');
         File::deleteDirectory($basePath.'/app/Policies');
         File::deleteDirectory($basePath.'/app/Modules');
-        File::deleteDirectory($basePath.'/bootstrap/cache/ddd');
 
         File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
 
@@ -227,8 +228,12 @@ class TestCase extends Orchestra
     {
         $this->cleanSlate();
 
+        $basePath = $this->getBasePath();
+
         File::ensureDirectoryExists(app_path());
         File::ensureDirectoryExists(app_path('Models'));
+        File::ensureDirectoryExists(database_path('factories'));
+        File::ensureDirectoryExists($basePath.'/bootstrap/cache/ddd');
 
         $skeletonAppFolders = glob(__DIR__.'/.skeleton/app/*', GLOB_ONLYDIR);
 

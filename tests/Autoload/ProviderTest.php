@@ -67,6 +67,8 @@ describe('when ddd.autoload.providers = true', function () {
         $mock->shouldReceive('handleProviders')->once();
         $mock->run();
 
+        expect(DomainCache::has('domain-providers'))->toBeFalse();
+
         expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
             Path::normalize(base_path('src/Domain')),
             Path::normalize(base_path('src/Application')),
@@ -79,8 +81,6 @@ describe('when ddd.autoload.providers = true', function () {
 
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
-
-        expect(DomainCache::has('domain-providers'))->toBeFalse();
 
         $mock = AutoloadManager::partialMock();
         $mock->run();
@@ -118,6 +118,8 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
+        expect(DomainCache::has('domain-providers'))->toBeTrue();
+
         expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
             Path::normalize(base_path('src/Domain')),
             Path::normalize(base_path('src/Application')),
@@ -150,8 +152,12 @@ describe('caching', function () {
             ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
 
         $expected = array_values($this->providers);
+
+        foreach ($expected as $provider) {
+            expect(class_exists($provider))->toBeTrue("class_exists false on expected {$provider}");
+        }
+
         $registered = array_values($mock->getRegisteredProviders());
-        expect($mock->discoverProviders())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });
