@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -34,6 +35,12 @@ beforeEach(function () {
         'factories' => true,
         'policies' => true,
         'migrations' => true,
+    ]);
+
+    expect(DDD::autoloader()->getAllLayerPaths())->toEqualCanonicalizing([
+        Path::normalize(base_path('src/Domain')),
+        Path::normalize(base_path('src/Application')),
+        Path::normalize(base_path('src/Infrastructure')),
     ]);
 });
 

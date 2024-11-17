@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
@@ -40,6 +41,12 @@ describe('when ddd.autoload.providers = false', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
+        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
+            Path::normalize(base_path('src/Domain')),
+            Path::normalize(base_path('src/Application')),
+            Path::normalize(base_path('src/Infrastructure')),
+        ]);
+
         expect($mock->getRegisteredProviders())->toBeEmpty();
     });
 });
@@ -51,6 +58,12 @@ describe('when ddd.autoload.providers = true', function () {
         $mock = AutoloadManager::partialMock();
         $mock->shouldReceive('handleProviders')->once();
         $mock->run();
+
+        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
+            Path::normalize(base_path('src/Domain')),
+            Path::normalize(base_path('src/Application')),
+            Path::normalize(base_path('src/Infrastructure')),
+        ]);
     });
 
     it('registers the providers', function () {
@@ -58,6 +71,12 @@ describe('when ddd.autoload.providers = true', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->run();
+
+        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
+            Path::normalize(base_path('src/Domain')),
+            Path::normalize(base_path('src/Application')),
+            Path::normalize(base_path('src/Infrastructure')),
+        ]);
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());
@@ -75,6 +94,12 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
+        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
+            Path::normalize(base_path('src/Domain')),
+            Path::normalize(base_path('src/Application')),
+            Path::normalize(base_path('src/Infrastructure')),
+        ]);
+
         $registered = array_values($mock->getRegisteredProviders());
         expect($registered)->toHaveCount(0);
     });
@@ -87,6 +112,12 @@ describe('caching', function () {
 
         $mock = AutoloadManager::partialMock();
         $mock->run();
+
+        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
+            Path::normalize(base_path('src/Domain')),
+            Path::normalize(base_path('src/Application')),
+            Path::normalize(base_path('src/Infrastructure')),
+        ]);
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());
