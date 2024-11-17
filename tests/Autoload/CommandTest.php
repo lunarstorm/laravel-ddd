@@ -58,6 +58,7 @@ describe('when ddd.autoload.commands = true', function () {
 
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
+        expect($mock->discoverCommands())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });
@@ -99,6 +100,7 @@ describe('caching', function () {
 
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
+        expect($mock->discoverCommands())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });

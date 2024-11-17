@@ -85,6 +85,7 @@ describe('when ddd.autoload.providers = true', function () {
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());
+        expect($mock->discoverProviders())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });
@@ -126,6 +127,7 @@ describe('caching', function () {
 
         $expected = array_values($this->providers);
         $registered = array_values($mock->getRegisteredProviders());
+        expect($mock->discoverProviders())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });

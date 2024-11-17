@@ -37,9 +37,9 @@ class TestCase extends Orchestra
 
         parent::setUp();
 
-        if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {
-            $this->composerReload();
-        }
+        // if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {
+        //     $this->composerReload();
+        // }
     }
 
     protected function tearDown(): void
