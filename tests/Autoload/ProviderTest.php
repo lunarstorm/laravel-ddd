@@ -24,6 +24,8 @@ beforeEach(function () {
         'Tests',
         'Database/Migrations',
     ]);
+
+    expect(file_exists(base_path('src/Application/Providers/ApplicationServiceProvider.php')))->toBeTrue();
 });
 
 afterEach(function () {
