@@ -49,7 +49,7 @@ it('handles objects in the application layer', function ($command, $domainName, 
         ->name->toBe($expectedName)
         ->namespace->toBe($expectedNamespace)
         ->fullyQualifiedName->toBe($expectedFqn)
-        ->path->toBe($expectedPath);
+        ->path->toEqualPath($expectedPath);
 })->with([
     ['ddd:controller', 'SomeDomain', 'ApplicationController', 'ApplicationController', 'Application\\SomeDomain\\Controllers', 'Application\\SomeDomain\\Controllers\\ApplicationController', 'src/Application/SomeDomain/Controllers/ApplicationController.php'],
     ['ddd:controller', 'SomeDomain', 'Application', 'Application', 'Application\\SomeDomain\\Controllers', 'Application\\SomeDomain\\Controllers\\Application', 'src/Application/SomeDomain/Controllers/Application.php'],
@@ -68,7 +68,7 @@ it('handles objects in custom layers', function ($command, $domainName, $nameInp
         ->name->toBe($expectedName)
         ->namespace->toBe($expectedNamespace)
         ->fullyQualifiedName->toBe($expectedFqn)
-        ->path->toBe($expectedPath);
+        ->path->toEqualPath($expectedPath);
 })->with([
     ['ddd:model', 'Infrastructure', 'System', 'System', 'Infrastructure\\Models', 'Infrastructure\\Models\\System', 'src/Infrastructure/Models/System.php'],
     ['ddd:factory', 'Infrastructure', 'System', 'SystemFactory', 'Infrastructure\\Database\\Factories', 'Infrastructure\\Database\\Factories\\SystemFactory', 'src/Infrastructure/Database/Factories/SystemFactory.php'],
@@ -90,7 +90,7 @@ it('handles objects whose name contains the domain name', function ($command, $d
         ->name->toBe($expectedName)
         ->namespace->toBe($expectedNamespace)
         ->fullyQualifiedName->toBe($expectedFqn)
-        ->path->toBe($expectedPath);
+        ->path->toEqualPath($expectedPath);
 })->with([
     ['ddd:model', 'SomeDomain', 'SomeDomain', 'SomeDomain', 'Domain\\SomeDomain\\Models', 'Domain\\SomeDomain\\Models\\SomeDomain', 'src/Domain/SomeDomain/Models/SomeDomain.php'],
     ['ddd:model', 'SomeDomain', 'SomeDomainModel', 'SomeDomainModel', 'Domain\\SomeDomain\\Models', 'Domain\\SomeDomain\\Models\\SomeDomainModel', 'src/Domain/SomeDomain/Models/SomeDomainModel.php'],
@@ -115,7 +115,7 @@ it('handles absolute-path names', function ($command, $domainName, $nameInput, $
         ->name->toBe($expectedName)
         ->namespace->toBe($expectedNamespace)
         ->fullyQualifiedName->toBe($expectedFqn)
-        ->path->toBe($expectedPath);
+        ->path->toEqualPath($expectedPath);
 })->with([
     ['ddd:model', 'SomeDomain', '/RootModel', 'RootModel', 'Domain\\SomeDomain', 'Domain\\SomeDomain\\RootModel', 'src/Domain/SomeDomain/RootModel.php'],
     ['ddd:model', 'SomeDomain', '/CustomLocation/Thing', 'CustomLocation\\Thing', 'Domain\\SomeDomain', 'Domain\\SomeDomain\\CustomLocation\\Thing', 'src/Domain/SomeDomain/CustomLocation/Thing.php'],

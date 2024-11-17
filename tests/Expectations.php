@@ -15,6 +15,10 @@ expect()->extend('toContainFilepath', function ($path) {
     return $this->toContain(Path::normalize($path));
 });
 
+expect()->extend('toEqualPath', function ($path) {
+    return $this->toEqual(Path::normalize($path));
+});
+
 expect()->extend('toGenerateFileWithNamespace', function ($expectedPath, $expectedNamespace) {
     $command = $this->value;
 
