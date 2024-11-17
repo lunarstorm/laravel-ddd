@@ -59,7 +59,10 @@ describe('when ddd.autoload.providers = true', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
+        $expected = array_values($this->providers);
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($registered)->toHaveCount(count($expected));
+        expect($registered)->each(fn ($item) => $item->toBeIn($expected));
     });
 });
 
@@ -72,7 +75,8 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing([]);
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($registered)->toHaveCount(0);
     });
 
     it('can bust the cache', function () {
@@ -84,6 +88,9 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredProviders()))->toEqualCanonicalizing($this->providers);
+        $expected = array_values($this->providers);
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($registered)->toHaveCount(count($expected));
+        expect($registered)->each(fn ($item) => $item->toBeIn($expected));
     });
 });

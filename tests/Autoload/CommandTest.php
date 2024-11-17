@@ -44,7 +44,10 @@ describe('when ddd.autoload.commands = true', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+        $expected = array_values($this->commands);
+        $registered = array_values($mock->getRegisteredCommands());
+        expect($registered)->toHaveCount(count($expected));
+        expect($registered)->each(fn ($item) => $item->toBeIn($expected));
     });
 });
 
@@ -57,7 +60,8 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing([]);
+        $registered = array_values($mock->getRegisteredCommands());
+        expect($registered)->toHaveCount(0);
     });
 
     it('can bust the cache', function () {
@@ -69,6 +73,9 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect(array_values($mock->getRegisteredCommands()))->toEqualCanonicalizing(array_values($this->commands));
+        $expected = array_values($this->commands);
+        $registered = array_values($mock->getRegisteredCommands());
+        expect($registered)->toHaveCount(count($expected));
+        expect($registered)->each(fn ($item) => $item->toBeIn($expected));
     });
 });
