@@ -31,9 +31,9 @@ it('is backwards compatible with factories located in database/factories/**/*', 
 it('can instantiate a domain model factory', function ($domainParameter, $modelName, $modelClass) {
     $this->setupTestApplication();
 
-    // $this->afterApplicationRefreshed(function () {
-    //     app('ddd.autoloader')->boot();
-    // });
+    $this->afterApplicationRefreshed(function () {
+        app('ddd.autoloader')->boot();
+    });
 
     $this->refreshApplicationWithConfig([
         'ddd.base_model' => 'Lunarstorm\LaravelDDD\Models\DomainModel',
