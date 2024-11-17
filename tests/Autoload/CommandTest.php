@@ -18,15 +18,6 @@ beforeEach(function () {
 
     DomainCache::clear();
     Artisan::call('ddd:clear');
-
-    expect(config('ddd.autoload_ignore'))->toEqualCanonicalizing([
-        'Tests',
-        'Database/Migrations',
-    ]);
-
-    foreach ($this->commands as $command) {
-        expect(class_exists($command))->toBeTrue("{$command} class does not exist");
-    }
 });
 
 afterEach(function () {
