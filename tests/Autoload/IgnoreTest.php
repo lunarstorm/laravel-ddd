@@ -26,14 +26,12 @@ beforeEach(function () {
     $this->setupTestApplication();
 
     DomainCache::clear();
-
-    Artisan::call('optimize:clear');
+    Artisan::call('ddd:clear');
 });
 
 afterEach(function () {
     DomainCache::clear();
-
-    Artisan::call('optimize:clear');
+    Artisan::call('ddd:clear');
 });
 
 it('can ignore folders when autoloading', function () {
