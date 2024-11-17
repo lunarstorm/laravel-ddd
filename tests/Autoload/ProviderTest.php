@@ -16,11 +16,13 @@ beforeEach(function () {
 
     $this->setupTestApplication();
 
-    Artisan::call('optimize:clear');
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
 });
 
 afterEach(function () {
     DomainCache::clear();
+    Artisan::call('ddd:clear');
 });
 
 describe('when ddd.autoload.providers = false', function () {
