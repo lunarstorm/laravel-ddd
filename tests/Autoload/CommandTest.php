@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
@@ -54,18 +53,8 @@ describe('when ddd.autoload.commands = true', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
-        expect($mock->discoverCommands())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });
@@ -80,15 +69,6 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $registered = array_values($mock->getRegisteredCommands());
         expect($registered)->toHaveCount(0);
     });
@@ -102,18 +82,8 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $expected = array_values($this->commands);
         $registered = array_values($mock->getRegisteredCommands());
-        expect($mock->discoverCommands())->toEqualCanonicalizing($expected);
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
     });

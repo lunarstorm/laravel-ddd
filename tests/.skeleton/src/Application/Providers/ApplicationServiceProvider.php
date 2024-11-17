@@ -5,13 +5,14 @@ namespace Application\Providers;
 use Infrastructure\Models\AppSession;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Infrastructure\Support\Clipboard;
 
 class ApplicationServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton('application-layer', function (Application $app) {
-            return 'application-layer-singleton';
+        $this->app->singleton('application-singleton', function (Application $app) {
+            return 'application-singleton';
         });
     }
 
@@ -23,5 +24,6 @@ class ApplicationServiceProvider extends ServiceProvider
     public function boot()
     {
         AppSession::setSecret('application-secret');
+        Clipboard::set('application-secret', 'application-secret');
     }
 }

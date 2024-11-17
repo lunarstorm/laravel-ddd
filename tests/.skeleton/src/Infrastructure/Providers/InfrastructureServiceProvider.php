@@ -10,8 +10,8 @@ class InfrastructureServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton('infrastructure-layer', function (Application $app) {
-            return 'infrastructure-layer-singleton';
+        $this->app->singleton('infrastructure-singleton', function (Application $app) {
+            return 'infrastructure-singleton';
         });
     }
 
@@ -22,6 +22,6 @@ class InfrastructureServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Clipboard::set('secret', 'infrastructure-secret');
+        Clipboard::set('infrastructure-secret', 'infrastructure-secret');
     }
 }

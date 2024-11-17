@@ -3,7 +3,6 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
-use Illuminate\Foundation\Application;
 use Lunarstorm\LaravelDDD\Facades\Autoload;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
@@ -128,18 +127,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         $this->app->bind('ddd.config', ConfigManager::class);
         $this->app->bind('ddd.composer', ComposerManager::class);
         $this->app->bind('ddd.stubs', StubManager::class);
-
-        if ($this->app->runningUnitTests()) {
-            // $this->app->when(AutoloadManager::class)
-            //     ->needs(Application::class)
-            //     ->give(function () {
-            //         return $this->app;
-            //     });
-
-            $this->app->resolving(AutoloadManager::class, function (AutoloadManager $atuoloader, Application $app) {
-                // dump('App resolving autoloader');
-            });
-        }
 
         return $this;
     }

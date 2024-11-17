@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Artisan;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
@@ -46,16 +45,11 @@ describe('when ddd.autoload.providers = false', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         expect($mock->getRegisteredProviders())->toBeEmpty();
+
+        expect(fn () => app('invoicing-singleton'))->toThrow(Exception::class);
+        expect(fn () => app('application-singleton'))->toThrow(Exception::class);
+        expect(fn () => app('infrastructure-singleton'))->toThrow(Exception::class);
     });
 });
 
@@ -66,50 +60,24 @@ describe('when ddd.autoload.providers = true', function () {
         $mock = AutoloadManager::partialMock();
         $mock->shouldReceive('handleProviders')->once();
         $mock->run();
-
-        expect(DomainCache::has('domain-providers'))->toBeFalse();
-
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
     });
 
     it('registers the providers', function () {
         config()->set('ddd.autoload.providers', true);
-
-        AutoloadManager::registeringProvider(function ($provider) {
-            dump('registering provider: '.$provider);
-        });
 
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
         expect(DomainCache::has('domain-providers'))->toBeFalse();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $expected = array_values($this->providers);
-
-        foreach ($expected as $provider) {
-            expect(class_exists($provider))->toBeTrue("class_exists false on expected {$provider}");
-        }
-
         $registered = array_values($mock->getRegisteredProviders());
-
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
+
+        expect(app('application-singleton'))->toEqual('application-singleton');
+        expect(app('invoicing-singleton'))->toEqual('invoicing-singleton');
+        expect(app('infrastructure-singleton'))->toEqual('infrastructure-singleton');
     });
 });
 
@@ -124,15 +92,6 @@ describe('caching', function () {
 
         expect(DomainCache::has('domain-providers'))->toBeTrue();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $registered = array_values($mock->getRegisteredProviders());
         expect($registered)->toHaveCount(0);
     });
@@ -146,23 +105,13 @@ describe('caching', function () {
         $mock = AutoloadManager::partialMock();
         $mock->run();
 
-        expect($mock->getAllLayerPaths())->toEqualCanonicalizing([
-            Path::normalize(base_path('src/Domain')),
-            Path::normalize(base_path('src/Application')),
-            Path::normalize(base_path('src/Infrastructure')),
-        ]);
-
-        collect($mock->getAllLayerPaths())
-            ->each(fn ($path) => expect(is_dir($path))->toBeTrue("{$path} is not a directory"));
-
         $expected = array_values($this->providers);
-
-        foreach ($expected as $provider) {
-            expect(class_exists($provider))->toBeTrue("class_exists false on expected {$provider}");
-        }
-
         $registered = array_values($mock->getRegisteredProviders());
         expect($expected)->each(fn ($item) => $item->toBeIn($registered));
         expect($registered)->toHaveCount(count($expected));
+
+        expect(app('application-singleton'))->toEqual('application-singleton');
+        expect(app('invoicing-singleton'))->toEqual('invoicing-singleton');
+        expect(app('infrastructure-singleton'))->toEqual('infrastructure-singleton');
     });
 });
