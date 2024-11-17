@@ -71,6 +71,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         if ($this->app->runningUnitTests()) {
             $package->hasRoutes(['testing']);
         }
+
+        $this->registerBindings();
     }
 
     protected function laravelVersion($value)
@@ -80,6 +82,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     protected function registerMigrations()
     {
+        $this->app->when(MigrationCreator::class)
+            ->needs('$customStubPath')
+            ->give(fn () => $this->app->basePath('stubs'));
+
         $this->app->singleton(Commands\Migration\DomainMigrateMakeCommand::class, function ($app) {
             // Once we have the migration creator registered, we will create the command
             // and inject the creator. The creator is responsible for the actual file
@@ -89,12 +95,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
             return new Commands\Migration\DomainMigrateMakeCommand($creator, $composer);
         });
-
-        $this->app->when(MigrationCreator::class)
-            ->needs('$customStubPath')
-            ->give(function ($app) {
-                return $app->basePath('stubs');
-            });
 
         $this->loadMigrationsFrom(DomainMigration::paths());
 
@@ -108,7 +108,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         });
 
         $this->app->scoped(ComposerManager::class, function () {
-            return ComposerManager::make(app()->basePath('composer.json'));
+            return ComposerManager::make($this->app->basePath('composer.json'));
         });
 
         $this->app->scoped(ConfigManager::class, function () {
@@ -159,7 +159,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        $this->registerMigrations()
-            ->registerBindings();
+        $this->registerMigrations();
     }
 }

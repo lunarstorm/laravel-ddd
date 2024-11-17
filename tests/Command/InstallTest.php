@@ -4,10 +4,13 @@ use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
     $this->setupTestApplication();
+
+    $this->originalComposerContents = file_get_contents(base_path('composer.json'));
 });
 
 afterEach(function () {
-    $this->setupTestApplication()->composerReload();
+    // $this->setupTestApplication()->composerReload();
+    file_put_contents(base_path('composer.json'), $this->originalComposerContents);
 });
 
 it('publishes config', function () {

@@ -17,8 +17,12 @@ class TestCase extends Orchestra
 
     public $appConfig = [];
 
+    protected $originalComposerContents;
+
     protected function setUp(): void
     {
+        $this->originalComposerContents = $this->getComposerFileContents();
+
         $this->afterApplicationCreated(function () {
             $this->cleanSlate();
 
@@ -42,7 +46,11 @@ class TestCase extends Orchestra
 
     protected function tearDown(): void
     {
+        $basePath = $this->getBasePath();
+
         $this->cleanSlate();
+
+        file_put_contents($basePath.'/composer.json', $this->originalComposerContents);
 
         parent::tearDown();
     }
@@ -123,7 +131,9 @@ class TestCase extends Orchestra
 
     protected function getComposerFileContents()
     {
-        return file_get_contents(base_path('composer.json'));
+        $basePath = $this->getBasePath();
+
+        return file_get_contents($basePath.'/composer.json');
     }
 
     protected function getComposerFileAsArray()
@@ -210,7 +220,7 @@ class TestCase extends Orchestra
         File::deleteDirectory($basePath.'/app/Policies');
         File::deleteDirectory($basePath.'/app/Modules');
 
-        File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
+        // File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
 
         return $this;
     }

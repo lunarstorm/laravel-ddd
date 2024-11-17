@@ -15,6 +15,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
 use Lorisleiva\Lody\Lody;
+use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 use Mockery;
@@ -266,7 +267,7 @@ class AutoloadManager
 
     protected function finder($paths)
     {
-        $filter = app('ddd')->getAutoloadFilter() ?? function (SplFileInfo $file) {
+        $filter = DDD::getAutoloadFilter() ?? function (SplFileInfo $file) {
             $pathAfterDomain = str($file->getRelativePath())
                 ->replace('\\', '/')
                 ->after('/')
