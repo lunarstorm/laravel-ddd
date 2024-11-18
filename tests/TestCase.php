@@ -31,7 +31,9 @@ class TestCase extends Orchestra
             );
 
             DomainCache::clear();
+        });
 
+        $this->afterApplicationRefreshed(function () {
             config()->set('data.structure_caching.enabled', false);
         });
 
@@ -40,6 +42,8 @@ class TestCase extends Orchestra
         });
 
         parent::setUp();
+
+        config()->set('data.structure_caching.enabled', false);
     }
 
     protected function tearDown(): void
@@ -263,6 +267,8 @@ class TestCase extends Orchestra
         // $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
 
         DomainCache::clear();
+
+        config()->set('data.structure_caching.enabled', false);
 
         return $this;
     }
