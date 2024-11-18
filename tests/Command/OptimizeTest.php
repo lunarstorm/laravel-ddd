@@ -99,6 +99,8 @@ describe('laravel optimize', function () {
         expect(DomainCache::get('domain-commands'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
+        $this->reloadApplication();
+
         $this->artisan('optimize')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
@@ -114,6 +116,8 @@ describe('laravel optimize', function () {
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
         expect(DomainCache::get('domain-commands'))->not->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
+
+        $this->reloadApplication();
 
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
 
