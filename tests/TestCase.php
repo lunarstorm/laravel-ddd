@@ -37,7 +37,6 @@ class TestCase extends Orchestra
 
             Artisan::command('data:cache-structures', function () {
                 // do nothing
-                dd('do nothing');
 
             });
         });
