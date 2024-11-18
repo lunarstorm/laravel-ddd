@@ -66,15 +66,15 @@ it('can run the config wizard', function () {
     $this->artisan('config:clear')->assertSuccessful()->execute();
 
     unlink($configPath);
-})->skipOnLaravelVersionsBelow(11);
+})->skip(fn () => ! function_exists('\Laravel\Prompts\form'));
 
-it('requires laravel 11 to run the wizard', function () {
+it('requires \Laravel\Prompts\form to run the wizard', function () {
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'wizard')
-        ->expectsOutput('This command is only available in Laravel 11 and above.')
+        ->expectsOutput('This command is not supported with your currently installed version of Laravel Prompts.')
         ->assertFailed()
         ->execute();
-})->onlyOnLaravelVersionsBelow(11);
+})->skip(fn () => function_exists('\Laravel\Prompts\form'));
 
 it('can update and merge ddd.php with latest package version', function () {
     $configPath = config_path('ddd.php');

@@ -105,8 +105,8 @@ class ConfigCommand extends Command
 
     protected function wizard(): int
     {
-        if (! app('ddd')->laravelVersion(11)) {
-            $this->error('This command is only available in Laravel 11 and above.');
+        if (! function_exists('\Laravel\Prompts\form')) {
+            $this->error('This command is not supported with your currently installed version of Laravel Prompts.');
 
             return self::FAILURE;
         }
