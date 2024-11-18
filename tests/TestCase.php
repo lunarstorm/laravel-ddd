@@ -111,6 +111,8 @@ class TestCase extends Orchestra
             foreach ($this->appConfig as $key => $value) {
                 $config->set($key, $value);
             }
+
+            $config->set('data.structure_caching.enabled', false);
         });
     }
 
