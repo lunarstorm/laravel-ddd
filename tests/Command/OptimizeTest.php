@@ -88,20 +88,12 @@ it('will not be cleared by laravel cache clearing', function () {
 });
 
 describe('laravel optimize', function () {
-    beforeEach(function () {
-        $this->artisan('optimize:clear')->assertSuccessful()->execute();
-        config()->set('data.structure_caching.enabled', false);
-    });
-
-    afterEach(function () {
-        $this->artisan('optimize:clear')->assertSuccessful()->execute();
-    });
-
     test('optimize will include ddd:optimize', function () {
         expect(DomainCache::get('domain-providers'))->toBeNull();
         expect(DomainCache::get('domain-commands'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
+        config()->set('data.structure_caching.enabled', false);
         $this->artisan('optimize')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
@@ -112,6 +104,7 @@ describe('laravel optimize', function () {
     });
 
     test('optimize:clear will clear ddd cache', function () {
+        config()->set('data.structure_caching.enabled', false);
         $this->artisan('ddd:optimize')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
