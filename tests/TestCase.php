@@ -31,6 +31,8 @@ class TestCase extends Orchestra
             );
 
             DomainCache::clear();
+
+            config()->set('data.structure_caching.enabled', false);
         });
 
         $this->beforeApplicationDestroyed(function () {
@@ -90,6 +92,7 @@ class TestCase extends Orchestra
                 ],
                 'ddd.cache_directory' => 'bootstrap/cache/ddd',
                 'cache.default' => 'file',
+                'data.structure_caching.enabled' => false,
                 ...static::$configValues,
             ];
         }
