@@ -15,6 +15,7 @@ beforeEach(function () {
 
     // $this->artisan('clear-compiled')->assertSuccessful()->execute();
     // $this->artisan('optimize:clear')->assertSuccessful()->execute();
+    config()->set('data.structure_caching.enabled', false);
 });
 
 afterEach(function () {
