@@ -90,6 +90,7 @@ it('will not be cleared by laravel cache clearing', function () {
 describe('laravel optimize', function () {
     beforeEach(function () {
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
+        config()->set('data.structure_caching.enabled', false);
     });
 
     afterEach(function () {
