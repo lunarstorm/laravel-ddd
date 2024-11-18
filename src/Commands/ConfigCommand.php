@@ -105,6 +105,12 @@ class ConfigCommand extends Command
 
     protected function wizard(): int
     {
+        if (! app('ddd')->laravelVersion(11)) {
+            $this->error('This command is only available in Laravel 11 and above.');
+
+            return self::FAILURE;
+        }
+
         $namespaces = collect($this->composer->getPsr4Namespaces());
 
         $layers = $namespaces->map(fn ($path, $namespace) => new Layer($namespace, $path));

@@ -13,8 +13,8 @@ beforeEach(function () {
 
     $this->originalComposerContents = file_get_contents(base_path('composer.json'));
 
-    $this->artisan('clear-compiled')->assertSuccessful()->execute();
-    $this->artisan('optimize:clear')->assertSuccessful()->execute();
+    // $this->artisan('clear-compiled')->assertSuccessful()->execute();
+    // $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 afterEach(function () {
@@ -22,8 +22,8 @@ afterEach(function () {
 
     file_put_contents(base_path('composer.json'), $this->originalComposerContents);
 
-    $this->artisan('clear-compiled')->assertSuccessful()->execute();
-    $this->artisan('optimize:clear')->assertSuccessful()->execute();
+    // $this->artisan('clear-compiled')->assertSuccessful()->execute();
+    // $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 it('can optimize discovered domain providers, commands, migrations', function () {

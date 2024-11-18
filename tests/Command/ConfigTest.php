@@ -14,6 +14,9 @@ beforeEach(function () {
     //     ->give(fn() => $this->app->basePath('stubs'));
 
     $this->originalComposerContents = file_get_contents(base_path('composer.json'));
+
+    // $this->artisan('clear-compiled')->assertSuccessful()->execute();
+    // $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 afterEach(function () {
@@ -32,6 +35,8 @@ it('can run the config wizard', function () {
     expect(config('ddd.layers'))->toBe([
         'Infrastructure' => 'src/Infrastructure',
     ]);
+
+    $this->reloadApplication();
 
     $configPath = config_path('ddd.php');
 
@@ -61,7 +66,15 @@ it('can run the config wizard', function () {
     $this->artisan('config:clear')->assertSuccessful()->execute();
 
     unlink($configPath);
-});
+})->skipOnLaravelVersionsBelow(11);
+
+it('requires laravel 11 to run the wizard', function () {
+    $this->artisan('ddd:config')
+        ->expectsQuestion('Laravel-DDD Config Utility', 'wizard')
+        ->expectsOutput('This command is only available in Laravel 11 and above.')
+        ->assertFailure()
+        ->execute();
+})->onlyOnLaravelVersionsBelow(11);
 
 it('can update and merge ddd.php with latest package version', function () {
     $configPath = config_path('ddd.php');

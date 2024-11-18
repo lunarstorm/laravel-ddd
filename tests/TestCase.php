@@ -38,17 +38,10 @@ class TestCase extends Orchestra
         });
 
         parent::setUp();
-
-        // if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {
-        //     $this->composerReload();
-        // }
     }
 
     protected function tearDown(): void
     {
-        $this->artisan('clear-compiled')->assertSuccessful()->execute();
-        $this->artisan('optimize:clear')->assertSuccessful()->execute();
-
         $basePath = $this->getBasePath();
 
         $this->cleanSlate();
