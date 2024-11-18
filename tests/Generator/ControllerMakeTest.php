@@ -9,13 +9,12 @@ beforeEach(function () {
     $this->cleanSlate();
     $this->setupTestApplication();
 
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
-
-    Config::set('ddd.application', [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-        'objects' => ['controller', 'request'],
+    Config::set([
+        'ddd.domain_path' => 'src/Domain',
+        'ddd.domain_namespace' => 'Domain',
+        'ddd.application_path' => 'app/Modules',
+        'ddd.application_namespace' => 'App\Modules',
+        'ddd.application_objects' => ['controller', 'request'],
     ]);
 });
 

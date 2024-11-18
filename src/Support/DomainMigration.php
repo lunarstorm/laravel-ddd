@@ -31,7 +31,7 @@ class DomainMigration
             : static::discoverPaths();
     }
 
-    protected static function normalizePaths($path): array
+    protected static function filterDirectories($path): array
     {
         return collect($path)
             ->filter(fn ($path) => is_dir($path))
@@ -46,7 +46,7 @@ class DomainMigration
             return [];
         }
 
-        $paths = static::normalizePaths([
+        $paths = static::filterDirectories([
             app()->basePath(DomainResolver::domainPath()),
         ]);
 

@@ -1,6 +1,21 @@
 # Upgrading
- 
- ## From 0.x to 1.x
+
+## From 1.1.x to 1.2.x
+### Breaking
+- Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
+- Published stubs now use `.stub` extension instead of `.php.stub` (following Laravel's convention).
+- If you are using published stubs from pre 1.2, you will need to refactor your stubs accordingly.
+
+### Update Config
+- Support for Application Layer and Custom Layers was added, introducing changes to the config file.
+- Run `php artisan ddd:config update` to rebuild your application's published `ddd.php` config to align with the package's latest copy.
+- The update utility will attempt to respect your existing customizations, but you should still review and verify manually.
+
+### Publishing Stubs
+- Old way (removed): `php artisan vendor:publish --tag="ddd-stubs"`
+- New way: `php artisan ddd:stub` (see [Customizing Stubs](README.md#customizing-stubs) in README for more details).
+
+## From 0.x to 1.x
 - Minimum required Laravel version is 10.25.
 - The ddd generator [command syntax](README.md#usage) in 1.x. Generator commands no longer receive a domain argument. For example, instead of `ddd:action Invoicing CreateInvoice`, one of the following would be used:
     - Using the --domain option: ddd:action CreateInvoice --domain=Invoicing (this takes precedence).

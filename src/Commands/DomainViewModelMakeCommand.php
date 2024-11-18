@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
-use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 
@@ -55,7 +54,10 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
             $domain = DomainResolver::guessDomainFromClass($baseViewModel);
 
-            $name = Str::after($baseViewModel, $domain);
+            $name = str($baseViewModel)
+                ->after($domain)
+                ->replace(['\\', '/'], '/')
+                ->toString();
 
             $this->call(DomainBaseViewModelMakeCommand::class, [
                 '--domain' => $domain,

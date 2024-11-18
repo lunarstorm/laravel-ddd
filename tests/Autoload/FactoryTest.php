@@ -1,25 +1,39 @@
 <?php
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
+use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+
+uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-
-    Config::set('ddd.domain_namespace', 'Domain');
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
 });
 
-describe('autoload enabled', function () {
-    beforeEach(function () {
-        Config::set('ddd.autoload.factories', true);
+afterEach(function () {
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
+});
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+describe('when ddd.autoload.factories = true', function () {
+    it('handles the factories', function () {
+        config()->set('ddd.autoload.factories', true);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldReceive('handleFactories')->once();
+        $mock->run();
     });
 
     it('can resolve domain factory', function ($modelClass, $expectedFactoryClass) {
+        config()->set('ddd.autoload.factories', true);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
         expect($modelClass::factory())->toBeInstanceOf($expectedFactoryClass);
     })->with([
         // VanillaModel is a vanilla eloquent model in the domain layer
@@ -36,30 +50,42 @@ describe('autoload enabled', function () {
     ]);
 
     it('gracefully falls back for non-domain factories', function () {
+        config()->set('ddd.autoload.factories', true);
+
+        $this->refreshApplication();
+
         Artisan::call('make:model RegularModel -f');
 
         $modelClass = 'App\Models\RegularModel';
 
         expect(class_exists($modelClass))->toBeTrue();
 
+        expect(Factory::resolveFactoryName($modelClass))
+            ->toEqual('Database\Factories\RegularModelFactory');
+
         expect($modelClass::factory())
             ->toBeInstanceOf('Database\Factories\RegularModelFactory');
     });
 });
 
-describe('autoload disabled', function () {
-    beforeEach(function () {
-        Config::set('ddd.autoload.factories', false);
+describe('when ddd.autoload.factories = false', function () {
+    it('skips handling factories', function () {
+        config()->set('ddd.autoload.factories', false);
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldNotReceive('handleFactories');
+        $mock->run();
     });
 
-    it('cannot resolve factories that rely on autoloading', function ($modelClass) {
+    it('cannot resolve factories that rely on autoloading', function ($modelClass, $correctFactories) {
+        config()->set('ddd.autoload.factories', false);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
         expect(fn () => $modelClass::factory())->toThrow(Error::class);
     })->with([
-        ['Domain\Invoicing\Models\VanillaModel'],
-        ['Domain\Internal\Reporting\Models\Report'],
+        ['Domain\Invoicing\Models\VanillaModel', ['Domain\Invoicing\Database\Factories\VanillaModelFactory', 'Database\Factories\Invoicing\VanillaModelFactory']],
+        ['Domain\Internal\Reporting\Models\Report', ['Domain\Internal\Reporting\Database\Factories\ReportFactory', 'Database\Factories\Internal\Reporting\ReportFactory']],
     ]);
 });

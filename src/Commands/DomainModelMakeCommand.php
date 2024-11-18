@@ -38,7 +38,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
         $replacements = parent::buildFactoryReplacements();
 
         if ($this->option('factory')) {
-            $factoryNamespace = Str::start($this->domain->factory($this->getNameInput())->fullyQualifiedName, '\\');
+            $factoryNamespace = Str::start($this->blueprint->getFactoryFor($this->getNameInput())->fullyQualifiedName, '\\');
 
             $factoryCode = <<<EOT
             /** @use HasFactory<$factoryNamespace> */
@@ -92,7 +92,10 @@ class DomainModelMakeCommand extends ModelMakeCommand
 
         $domain = DomainResolver::guessDomainFromClass($baseModel);
 
-        $name = Str::after($baseModel, $domain);
+        $name = str($baseModel)
+            ->after($domain)
+            ->replace(['\\', '/'], '/')
+            ->toString();
 
         $this->call(DomainBaseModelMakeCommand::class, [
             '--domain' => $domain,

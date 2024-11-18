@@ -1,77 +1,117 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Illuminate\Support\Facades\Artisan;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+
+uses(BootsTestApplication::class);
 
 beforeEach(function () {
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
+    $this->providers = [
+        'Application\Providers\ApplicationServiceProvider',
+        'Domain\Invoicing\Providers\InvoiceServiceProvider',
+        'Infrastructure\Providers\InfrastructureServiceProvider',
+    ];
 
     $this->setupTestApplication();
+
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
+
+    expect(config('ddd.autoload_ignore'))->toEqualCanonicalizing([
+        'Tests',
+        'Database/Migrations',
+    ]);
 });
 
-describe('without autoload', function () {
-    beforeEach(function () {
-        config([
-            'ddd.autoload.providers' => false,
-        ]);
+afterEach(function () {
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
+});
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+describe('when ddd.autoload.providers = false', function () {
+    it('skips handling providers', function () {
+        config()->set('ddd.autoload.providers', false);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldNotReceive('handleProviders');
+        $mock->run();
     });
 
-    it('does not register the provider', function () {
-        expect(fn () => app('invoicing'))->toThrow(Exception::class);
+    it('does not register the providers', function () {
+        config()->set('ddd.autoload.providers', false);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
+        expect($mock->getRegisteredProviders())->toBeEmpty();
+
+        expect(fn () => app('invoicing-singleton'))->toThrow(Exception::class);
+        expect(fn () => app('application-singleton'))->toThrow(Exception::class);
+        expect(fn () => app('infrastructure-singleton'))->toThrow(Exception::class);
     });
 });
 
-describe('with autoload', function () {
-    beforeEach(function () {
-        config([
-            'ddd.autoload.providers' => true,
-        ]);
+describe('when ddd.autoload.providers = true', function () {
+    it('handles the providers', function () {
+        config()->set('ddd.autoload.providers', true);
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        $mock = AutoloadManager::partialMock();
+        $mock->shouldReceive('handleProviders')->once();
+        $mock->run();
     });
 
-    it('registers the provider', function () {
-        expect(app('invoicing'))->toEqual('invoicing-singleton');
-        $this->artisan('invoice:deliver')->expectsOutputToContain('invoice-secret');
+    it('registers the providers', function () {
+        config()->set('ddd.autoload.providers', true);
+
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
+        expect(DomainCache::has('domain-providers'))->toBeFalse();
+
+        $expected = array_values($this->providers);
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($expected)->each(fn ($item) => $item->toBeIn($registered));
+        expect($registered)->toHaveCount(count($expected));
+
+        expect(app('application-singleton'))->toEqual('application-singleton');
+        expect(app('invoicing-singleton'))->toEqual('invoicing-singleton');
+        expect(app('infrastructure-singleton'))->toEqual('infrastructure-singleton');
     });
 });
 
 describe('caching', function () {
-    beforeEach(function () {
-        config([
-            'ddd.autoload.providers' => true,
-        ]);
-
-        $this->setupTestApplication();
-    });
-
     it('remembers the last cached state', function () {
         DomainCache::set('domain-providers', []);
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        config()->set('ddd.autoload.providers', true);
 
-        expect(fn () => app('invoicing'))->toThrow(Exception::class);
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
+        expect(DomainCache::has('domain-providers'))->toBeTrue();
+
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($registered)->toHaveCount(0);
     });
 
     it('can bust the cache', function () {
         DomainCache::set('domain-providers', []);
         DomainCache::clear();
 
-        $this->afterApplicationCreated(function () {
-            (new DomainAutoloader)->autoload();
-        });
+        config()->set('ddd.autoload.providers', true);
 
-        expect(app('invoicing'))->toEqual('invoicing-singleton');
-        $this->artisan('invoice:deliver')->expectsOutputToContain('invoice-secret');
+        $mock = AutoloadManager::partialMock();
+        $mock->run();
+
+        $expected = array_values($this->providers);
+        $registered = array_values($mock->getRegisteredProviders());
+        expect($expected)->each(fn ($item) => $item->toBeIn($registered));
+        expect($registered)->toHaveCount(count($expected));
+
+        expect(app('application-singleton'))->toEqual('application-singleton');
+        expect(app('invoicing-singleton'))->toEqual('invoicing-singleton');
+        expect(app('infrastructure-singleton'))->toEqual('infrastructure-singleton');
     });
 });

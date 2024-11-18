@@ -4,22 +4,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => {{domain_path}},
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => {{domain_namespace}},
 
     /*
@@ -27,72 +18,38 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure objects that belong in the application layer.
-    |
-    | e.g., App\Modules\Invoicing\Controllers\*
-    |       App\Modules\Invoicing\Requests\*
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'application' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-
-        // Specify which ddd:* objects belong in the application layer
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
-    ],
+    'application_path' => {{application_path}},
+    'application_namespace' => {{application_namespace}},
+    'application_objects' => {{application_objects}},
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
     |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
     |
     */
-    'namespaces' => [
-        'model' => {{namespaces.model}},
-        'data_transfer_object' => {{namespaces.data_transfer_object}},
-        'view_model' => {{namespaces.view_model}},
-        'value_object' => {{namespaces.value_object}},
-        'action' => {{namespaces.action}},
-        'cast' => 'Casts',
-        'class' => '',
-        'channel' => 'Channels',
-        'command' => 'Commands',
-        'controller' => 'Controllers',
-        'enum' => 'Enums',
-        'event' => 'Events',
-        'exception' => 'Exceptions',
-        'factory' => 'Database\Factories',
-        'interface' => '',
-        'job' => 'Jobs',
-        'listener' => 'Listeners',
-        'mail' => 'Mail',
-        'middleware' => 'Middleware',
-        'migration' => 'Database\Migrations',
-        'notification' => 'Notifications',
-        'observer' => 'Observers',
-        'policy' => 'Policies',
-        'provider' => 'Providers',
-        'resource' => 'Resources',
-        'request' => 'Requests',
-        'rule' => 'Rules',
-        'scope' => 'Scopes',
-        'seeder' => 'Database\Seeders',
-        'trait' => '',
-    ],
+    'layers' => {{layers}},
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
+    |
+    */
+    'namespaces' => {{namespaces}},
 
     /*
     |--------------------------------------------------------------------------
@@ -152,13 +109,7 @@ return [
     | should be auto-discovered and registered.
     |
     */
-    'autoload' => [
-        'providers' => true,
-        'commands' => true,
-        'policies' => true,
-        'factories' => true,
-        'migrations' => true,
-    ],
+    'autoload' => {{autoload}},
 
     /*
     |--------------------------------------------------------------------------
@@ -175,10 +126,7 @@ return [
     | the AppServiceProvider's boot method.
     |
     */
-    'autoload_ignore' => [
-        'Tests',
-        'Database/Migrations',
-    ],
+    'autoload_ignore' => {{autoload_ignore}},
 
     /*
     |--------------------------------------------------------------------------
@@ -189,5 +137,5 @@ return [
     | autoloading.
     |
     */
-    'cache_directory' => 'bootstrap/cache/ddd',
+    'cache_directory' => {{cache_directory}},
 ];

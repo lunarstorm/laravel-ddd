@@ -1,11 +1,11 @@
-# Domain Driven Design toolkit for Laravel
+# Domain Driven Design Toolkit for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
 
-Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate domain objects since they are typically stored outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
+Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate objects outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
 
 ## Installation
 You can install the package via composer:
@@ -21,24 +21,17 @@ php artisan ddd:install
 
 ### Peer Dependencies
 The following additional packages are suggested (but not required) while working with this package.
+- Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
+- Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
 
-Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
-```bash
-composer require spatie/laravel-data
-```
-
-Actions: [lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)
-```bash
-composer require lorisleiva/laravel-actions
-```
-The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [customize the stubs](#publishing-stubs-advanced) accordingly.
+The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [publish and customize the stubs](#customizing-stubs) accordingly.
 
 ### Deployment
 In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
 ```bash
 php artisan ddd:optimize
 ```
-Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary.
+Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary. In previous versions of this package, this command was named `ddd:cache`, which will continue to work as an alias.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -47,7 +40,7 @@ Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimiz
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
 
-See **[UPGRADING](UPGRADING.md)** for more details about upgrading from 0.x.
+See **[UPGRADING](UPGRADING.md)** for more details about upgrading across different versions.
 
 <a name="usage"></a>
 
@@ -104,6 +97,36 @@ The following generators are currently available:
 
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
+### Config Utility (Since 1.2)
+A configuration utility was introduced in 1.2 to help manage the package's configuration over time. 
+```bash
+php artisan ddd:config
+```
+Output:
+```
+ ┌ Laravel-DDD Config Utility ──────────────────────────────────┐
+ │ › ● Run the configuration wizard                             │
+ │   ○ Update and merge ddd.php with latest package version     │
+ │   ○ Detect domain namespace from composer.json               │
+ │   ○ Sync composer.json from ddd.php                          │
+ │   ○ Exit                                                     │
+ └──────────────────────────────────────────────────────────────┘
+```
+These config tasks are also invokeable directly using arguments:
+```bash
+# Run the configuration wizard
+php artisan ddd:config wizard
+
+# Update and merge ddd.php with latest package version
+php artisan ddd:config update
+
+# Detect domain namespace from composer.json
+php artisan ddd:config detect
+
+# Sync composer.json from ddd.php   
+php artisan ddd:config composer
+```
+
 ### Other Commands
 ```bash
 # Show a summary of current domains in the domain folder
@@ -121,14 +144,12 @@ php artisan ddd:clear
 Some objects interact with the domain layer, but are not part of the domain layer themselves. By default, these include: `controller`, `request`, `middleware`. You may customize the path, namespace, and which `ddd:*` objects belong in the application layer.
 ```php
 // In config/ddd.php
-'application' => [
-    'path' => 'app/Modules',
-    'namespace' => 'App\Modules',
-    'objects' => [
-        'controller',
-        'request',
-        'middleware',
-    ],
+'application_path' => 'app/Modules',
+'application_namespace' => 'App\Modules',
+'application_objects' => [
+    'controller',
+    'request',
+    'middleware',
 ],
 ```
 The configuration above will result in the following:
@@ -149,6 +170,35 @@ Output:
     └─ Invoicing
         └─ Models
             └─ Invoice.php
+```
+
+### Custom Layers (since 1.2)
+Often times, additional top-level namespaces are needed to hold shared components, helpers, and things that are not domain-specific. A common example is the `Infrastructure` layer. You may configure these additional layers in the `ddd.layers` array.
+```php
+// In config/ddd.php
+'layers' => [
+    'Infrastructure' => 'src/Infrastructure',
+],
+```
+The configuration above will result in the following:
+```bash
+ddd:model Invoicing:Invoice
+ddd:trait Infrastructure:Concerns/HasExpiryDate
+```
+Output:
+```
+├─ src/Domain
+|   └─ Invoicing
+|       └─ Models
+|           └─ Invoice.php
+├─ src/Infrastructure
+    └─ Concerns
+        └─ HasExpiryDate.php
+```
+After defining new layers in `ddd.php`, make sure the corresponding namespaces are also registered in your `composer.json` file. You may use the `ddd:config` helper command to handle this for you.
+```bash
+# Sync composer.json with ddd.php
+php artisan ddd:config composer
 ```
 
 ### Nested Objects
@@ -177,6 +227,18 @@ php artisan ddd:interface Invoicing:Models/Concerns/HasLineItems
 # -> Domain\Invoicing\Models\Concerns\HasLineItems
 ```
 
+### Subdomains (nested domains)
+Subdomains can be specified with dot notation wherever a domain option is accepted.
+```bash
+# Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Internal:MonthlyInvoicesReportViewModel
+
+# Domain/Reporting/Customer/ViewModels/MonthlyInvoicesReportViewModel
+php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
+
+# (supported by all commands where a domain option is accepted)
+```
+
 ### Overriding Configured Namespaces at Runtime
 If for some reason you need to generate a domain object under a namespace different to what is configured in `ddd.namespaces.*`,
 you may do so using an absolute name starting with `/`. This will generate the object from the root of the domain.
@@ -198,48 +260,85 @@ php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
 # -> Domain\Invoicing\Models\Exceptions\InvoiceNotFoundException
 ```
 
-### Subdomains (nested domains)
-Subdomains can be specified with dot notation wherever a domain option is accepted.
+### Custom Object Resolution
+If you require advanced customization of generated object naming conventions, you may register a custom resolver using `DDD::resolveObjectSchemaUsing()` in your AppServiceProvider's boot method: 
+```php
+use Lunarstorm\LaravelDDD\Facades\DDD;
+use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
+use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
+
+DDD::resolveObjectSchemaUsing(function (string $domainName, string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
+    if ($type === 'controller' && $command->option('api')) {
+        return new ObjectSchema(
+            name: $name = str($nameInput)->replaceEnd('Controller', '')->finish('ApiController')->toString(),
+            namespace: "App\\Api\\Controllers\\{$domainName}",
+            fullyQualifiedName: "App\\Api\\Controllers\\{$domainName}\\{$name}",
+            path: "src/App/Api/Controllers/{$domainName}/{$name}.php",
+        );
+    }
+
+    // Return null to fall back to the default
+    return null;
+});
+```
+The example above will result in the following:
 ```bash
-# Domain/Reporting/Internal/ViewModels/MonthlyInvoicesReportViewModel
-php artisan ddd:view-model Reporting.Internal:MonthlyInvoicesReportViewModel
-
-# Domain/Reporting/Customer/ViewModels/MonthlyInvoicesReportViewModel
-php artisan ddd:view-model Reporting.Customer:MonthlyInvoicesReportViewModel
-
-# (supported by all commands where a domain option is accepted)
+php artisan ddd:controller Invoicing:PaymentController --api 
+# Controller [src/App/Api/Controllers/Invoicing/PaymentApiController.php] created successfully. 
 ```
 
-## Customization
-### Config File
-This package ships with opinionated (but sensible) configuration defaults. You may customize by publishing the [config file](#config-file) and generator stubs as needed:
+<a name="customizing-stubs"></a>
 
+## Customizing Stubs
+This package ships with a few ddd-specific stubs, while the rest are pulled from the framework. For a quick reference of available stubs and their source, you may use the `ddd:stub --list` command:
 ```bash
-php artisan ddd:publish --config
-php artisan ddd:publish --stubs
+php artisan ddd:stub --list
 ```
 
-### Publishing Stubs (Advanced)
-For more granular management of stubs, you may use the `ddd:stub` command:
+### Stub Priority
+When generating objects using `ddd:*`, stubs are prioritized as follows:
+- Try `stubs/ddd/*.stub` (customized for `ddd:*` only)
+- Try `stubs/*.stub` (shared by both `make:*` and `ddd:*`)
+- Fallback to the package or framework default
+
+### Publishing Stubs
+To publish stubs interactively, you may use the `ddd:stub` command:
 ```bash
-# Publish one or more stubs interactively via prompts
 php artisan ddd:stub
+```
+```
+ ┌ What do you want to do? ─────────────────────────────────────┐
+ │ › ● Choose stubs to publish                                  │
+ │   ○ Publish all stubs                                        │
+ └──────────────────────────────────────────────────────────────┘
 
+ ┌ Which stub should be published? ─────────────────────────────┐
+ │ policy                                                       │
+ ├──────────────────────────────────────────────────────────────┤
+ │ › ◼ policy.plain.stub                                        │
+ │   ◻ policy.stub                                              │
+ └────────────────────────────────────────────────── 1 selected ┘
+  Use the space bar to select options.
+```
+You may also use shortcuts to skip the interactive steps:
+```bash
 # Publish all stubs
 php artisan ddd:stub --all
 
-# Publish and overwrite only the files that have already been published
-php artisan ddd:stub --all --existing
-
-# Overwrite any existing files
-php artisan ddd:stub --all --force
-
-# Publish one or more stubs specified as arguments
+# Publish one or more stubs specified as arguments (see ddd:stub --list)
 php artisan ddd:stub model
 php artisan ddd:stub model dto action
 php artisan ddd:stub controller controller.plain controller.api
+
+# Options:
+
+# Publish and overwrite only the files that have already been published
+php artisan ddd:stub ... --existing
+
+# Overwrite any existing files
+php artisan ddd:stub ... --force
 ```
-To publish multiple related stubs at once, use `*` or `.` as a wildcard ending.
+To publish multiple stubs with common prefixes at once, use `*` or `.` as a wildcard ending to indicate "stubs that starts with":
 ```bash 
 php artisan ddd:stub listener.
 ```
@@ -249,10 +348,6 @@ Publishing /stubs/ddd/listener.typed.queued.stub
 Publishing /stubs/ddd/listener.queued.stub
 Publishing /stubs/ddd/listener.typed.stub
 Publishing /stubs/ddd/listener.stub
-```
-For a quick reference of available stubs, use the `--list` option:
-```bash
-php artisan ddd:stub --list
 ```
 
 ## Domain Autoloading and Discovery
@@ -336,22 +431,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => 'src/Domain',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => 'Domain',
 
     /*
@@ -359,37 +445,42 @@ return [
     | Application Layer
     |--------------------------------------------------------------------------
     |
-    | Configure objects that belong in the application layer.
-    |
-    | e.g., App\Modules\Invoicing\Controllers\*
-    |       App\Modules\Invoicing\Requests\*
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'application' => [
-        'path' => 'app/Modules',
-        'namespace' => 'App\Modules',
-
-        // Specify which ddd:* objects belong in the application layer
-        'objects' => [
-            'controller',
-            'request',
-            'middleware',
-        ],
+    'application_path' => 'app/Modules',
+    'application_namespace' => 'App\Modules',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Generator Object Namespaces
+    | Custom Layers
     |--------------------------------------------------------------------------
     |
-    | This array maps the default relative namespaces of generated objects
-    | relative to their domain's root namespace.
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
     |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    */
+    'layers' => [
+        'Infrastructure' => 'src/Infrastructure',
+        // 'Integrations' => 'src/Integrations',
+        // 'Support' => 'src/Support',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
     |
     */
     'namespaces' => [

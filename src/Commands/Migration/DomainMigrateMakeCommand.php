@@ -18,8 +18,8 @@ class DomainMigrateMakeCommand extends BaseMigrateMakeCommand
      */
     protected function getMigrationPath()
     {
-        if ($this->domain) {
-            return $this->laravel->basePath($this->domain->migrationPath);
+        if ($this->blueprint) {
+            return $this->laravel->basePath($this->blueprint->getMigrationPath());
         }
 
         return $this->laravel->databasePath().DIRECTORY_SEPARATOR.'migrations';

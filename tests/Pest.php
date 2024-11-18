@@ -13,6 +13,15 @@ function skipOnLaravelVersionsBelow($minimumVersion)
     }
 }
 
+function onlyOnLaravelVersionsBelow($minimumVersion)
+{
+    $version = app()->version();
+
+    if (! version_compare($version, $minimumVersion, '<')) {
+        test()->markTestSkipped("Does not apply to Laravel {$minimumVersion}+ (Current version: {$version}).");
+    }
+}
+
 function setConfigValues(array $values)
 {
     TestCase::configValues($values);

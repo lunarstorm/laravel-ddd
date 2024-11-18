@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Support\Domain;
 
-it('can generate extended objects', function ($type, $objectName, $domainPath, $domainRoot) {
+it('can generate other objects', function ($type, $objectName, $domainPath, $domainRoot) {
     if (in_array($type, ['class', 'enum', 'interface', 'trait'])) {
         skipOnLaravelVersionsBelow('11');
     }

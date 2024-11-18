@@ -17,8 +17,6 @@ class DomainRequestMakeCommand extends RequestMakeCommand
 
     protected function rootNamespace()
     {
-        $type = $this->guessObjectType();
-
-        return Str::finish(DomainResolver::resolveRootNamespace($type), '\\');
+        return Str::finish(DomainResolver::resolveRootNamespace($this->blueprint->type), '\\');
     }
 }

@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Support;
 
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Enums\LayerType;
 
 class DomainResolver
 {
@@ -40,7 +41,7 @@ class DomainResolver
      */
     public static function applicationLayerPath(): ?string
     {
-        return config('ddd.application.path');
+        return config('ddd.application_path');
     }
 
     /**
@@ -48,7 +49,7 @@ class DomainResolver
      */
     public static function applicationLayerRootNamespace(): ?string
     {
-        return config('ddd.application.namespace');
+        return config('ddd.application_namespace');
     }
 
     /**
@@ -67,7 +68,7 @@ class DomainResolver
     public static function isApplicationLayer(string $type): bool
     {
         $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
-            $applicationObjects = config('ddd.application.objects', ['controller', 'request']);
+            $applicationObjects = config('ddd.application_objects', ['controller', 'request']);
 
             return in_array($type, $applicationObjects);
         };
@@ -88,6 +89,34 @@ class DomainResolver
     }
 
     /**
+     * Resolve the intended layer of a specified domain name keyword.
+     */
+    public static function resolveLayer(string $domain, ?string $type = null): ?Layer
+    {
+        $layers = config('ddd.layers', []);
+
+        // Objects in the application layer take precedence
+        if ($type && static::isApplicationLayer($type)) {
+            return new Layer(
+                static::applicationLayerRootNamespace().'\\'.$domain,
+                Path::join(static::applicationLayerPath(), $domain),
+                LayerType::Application,
+            );
+        }
+
+        return match (true) {
+            array_key_exists($domain, $layers)
+                && is_string($layers[$domain]) => new Layer($domain, $layers[$domain], LayerType::Custom),
+
+            default => new Layer(
+                static::domainRootNamespace().'\\'.$domain,
+                Path::join(static::domainPath(), $domain),
+                LayerType::Domain,
+            )
+        };
+    }
+
+    /**
      * Get the fully qualified namespace for a domain object.
      *
      * @param  string  $domain  The domain name.
@@ -96,20 +125,11 @@ class DomainResolver
      */
     public static function getDomainObjectNamespace(string $domain, string $type, ?string $name = null): string
     {
-        $customResolver = app('ddd')->getNamespaceResolver();
-
-        $resolved = is_callable($customResolver)
-            ? $customResolver($domain, $type, app('ddd')->getCommandContext())
-            : null;
-
-        if (! is_null($resolved)) {
-            return $resolved;
-        }
-
         $resolver = function (string $domain, string $type, ?string $name) {
+            $layer = static::resolveLayer($domain, $type);
+
             $namespace = collect([
-                static::resolveRootNamespace($type),
-                $domain,
+                $layer->namespace,
                 static::getRelativeObjectNamespace($type),
             ])->filter()->implode('\\');
 

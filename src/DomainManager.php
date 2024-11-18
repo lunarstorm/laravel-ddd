@@ -2,10 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Illuminate\Console\Command;
-use Lunarstorm\LaravelDDD\Support\Domain;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
+use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
 use Lunarstorm\LaravelDDD\Support\Path;
-use Lunarstorm\LaravelDDD\ValueObjects\DomainCommandContext;
 
 class DomainManager
 {
@@ -24,23 +23,44 @@ class DomainManager
     protected $applicationLayerFilter;
 
     /**
-     * The application layer object resolver callback.
+     * The object schema resolver callback.
      *
      * @var callable|null
      */
-    protected $namespaceResolver;
+    protected $objectSchemaResolver;
 
-    protected ?DomainCommandContext $commandContext;
+    /**
+     * Resolved custom objects.
+     */
+    protected array $resolvedObjects = [];
 
-    protected StubManager $stubs;
+    protected ?GeneratorBlueprint $commandContext;
 
     public function __construct()
     {
         $this->autoloadFilter = null;
         $this->applicationLayerFilter = null;
-        $this->namespaceResolver = null;
         $this->commandContext = null;
-        $this->stubs = new StubManager;
+    }
+
+    public function autoloader(): AutoloadManager
+    {
+        return app(AutoloadManager::class);
+    }
+
+    public function composer(): ComposerManager
+    {
+        return app(ComposerManager::class);
+    }
+
+    public function config(): ConfigManager
+    {
+        return app(ConfigManager::class);
+    }
+
+    public function stubs(): StubManager
+    {
+        return app(StubManager::class);
     }
 
     public function filterAutoloadPathsUsing(callable $filter): void
@@ -63,24 +83,14 @@ class DomainManager
         return $this->applicationLayerFilter;
     }
 
-    public function resolveNamespaceUsing(callable $resolver): void
+    public function resolveObjectSchemaUsing(callable $resolver): void
     {
-        $this->namespaceResolver = $resolver;
+        $this->objectSchemaResolver = $resolver;
     }
 
-    public function getNamespaceResolver(): ?callable
+    public function getObjectSchemaResolver(): ?callable
     {
-        return $this->namespaceResolver;
-    }
-
-    public function captureCommandContext(Command $command, ?Domain $domain, ?string $type): void
-    {
-        $this->commandContext = DomainCommandContext::fromCommand($command, $domain, $type);
-    }
-
-    public function getCommandContext(): ?DomainCommandContext
-    {
-        return $this->commandContext;
+        return $this->objectSchemaResolver;
     }
 
     public function packagePath($path = ''): string
@@ -91,10 +101,5 @@ class DomainManager
     public function laravelVersion($value)
     {
         return version_compare(app()->version(), $value, '>=');
-    }
-
-    public function stubs(): StubManager
-    {
-        return $this->stubs;
     }
 }

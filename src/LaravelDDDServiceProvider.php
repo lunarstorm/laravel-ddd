@@ -2,7 +2,9 @@
 
 namespace Lunarstorm\LaravelDDD;
 
-use Lunarstorm\LaravelDDD\Support\DomainAutoloader;
+use Illuminate\Database\Migrations\MigrationCreator;
+use Lunarstorm\LaravelDDD\Facades\Autoload;
+use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -11,12 +13,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        $this->app->scoped(DomainManager::class, function () {
-            return new DomainManager;
-        });
-
-        $this->app->bind('ddd', DomainManager::class);
-
         /*
          * This class is a Package Service Provider
          *
@@ -27,6 +23,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 Commands\InstallCommand::class,
+                Commands\ConfigCommand::class,
                 Commands\PublishCommand::class,
                 Commands\StubCommand::class,
                 Commands\UpgradeCommand::class,
@@ -70,10 +67,11 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
             $package->hasCommand(Commands\DomainTraitMakeCommand::class);
         }
 
-        // if ($this->laravelVersion('11.30.0')) {
-        //     $package->hasCommand(Commands\PublishCommand::class);
-        //     $package->hasCommand(Commands\StubCommand::class);
-        // }
+        if ($this->app->runningUnitTests()) {
+            $package->hasRoutes(['testing']);
+        }
+
+        $this->registerBindings();
     }
 
     protected function laravelVersion($value)
@@ -83,6 +81,10 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     protected function registerMigrations()
     {
+        $this->app->when(MigrationCreator::class)
+            ->needs('$customStubPath')
+            ->give(fn () => $this->app->basePath('stubs'));
+
         $this->app->singleton(Commands\Migration\DomainMigrateMakeCommand::class, function ($app) {
             // Once we have the migration creator registered, we will create the command
             // and inject the creator. The creator is responsible for the actual file
@@ -94,13 +96,44 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
         });
 
         $this->loadMigrationsFrom(DomainMigration::paths());
+
+        return $this;
+    }
+
+    protected function registerBindings()
+    {
+        $this->app->scoped(DomainManager::class, function () {
+            return new DomainManager;
+        });
+
+        $this->app->scoped(ComposerManager::class, function () {
+            return ComposerManager::make($this->app->basePath('composer.json'));
+        });
+
+        $this->app->scoped(ConfigManager::class, function () {
+            return new ConfigManager($this->app->configPath('ddd.php'));
+        });
+
+        $this->app->scoped(StubManager::class, function () {
+            return new StubManager;
+        });
+
+        $this->app->scoped(AutoloadManager::class, function () {
+            return new AutoloadManager;
+        });
+
+        $this->app->bind('ddd', DomainManager::class);
+        $this->app->bind('ddd.autoloader', AutoloadManager::class);
+        $this->app->bind('ddd.config', ConfigManager::class);
+        $this->app->bind('ddd.composer', ComposerManager::class);
+        $this->app->bind('ddd.stubs', StubManager::class);
+
+        return $this;
     }
 
     public function packageBooted()
     {
-        $this->publishes([
-            $this->package->basePath('/../stubs') => $this->app->basePath("stubs/{$this->package->shortName()}"),
-        ], "{$this->package->shortName()}-stubs");
+        Autoload::run();
 
         if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
             $this->optimizes(
@@ -113,8 +146,6 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        (new DomainAutoloader)->autoload();
-
         $this->registerMigrations();
     }
 }

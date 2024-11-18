@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 it('can upgrade 0.x config to 1.x', function (string $pathToOldConfig, array $expectedValues) {
-    $path = config_path('ddd.php');
+    $configFilePath = config_path('ddd.php');
 
-    File::copy($pathToOldConfig, $path);
+    File::copy($pathToOldConfig, $configFilePath);
 
-    expect(file_exists($path))->toBeTrue();
+    expect(file_exists($configFilePath))->toBeTrue();
 
     $this->artisan('ddd:upgrade')
         ->expectsOutputToContain('Configuration upgraded successfully.')
@@ -21,10 +21,13 @@ it('can upgrade 0.x config to 1.x', function (string $pathToOldConfig, array $ex
 
     $configAsArray = require config_path('ddd.php');
 
-    foreach ($expectedValues as $path => $value) {
-        expect(data_get($configAsArray, $path))
-            ->toEqual($value, "Config {$path} does not match expected value.");
+    foreach ($expectedValues as $key => $value) {
+        expect(data_get($configAsArray, $key))
+            ->toEqual($value, "Config {$key} does not match expected value.");
     }
+
+    // Delete the config file after the test
+    unlink($configFilePath);
 })->with('configUpgrades');
 
 it('skips upgrade if config file was not published', function () {
