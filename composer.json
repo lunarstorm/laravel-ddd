@@ -35,7 +35,7 @@
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "spatie/laravel-data": "^4.10"
+        "spatie/laravel-data": "^4.11.1"
     },
     "suggest": {
         "spatie/laravel-data": "Recommended for Data Transfer Objects.",
