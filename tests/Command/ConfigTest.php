@@ -72,7 +72,7 @@ it('requires laravel 11 to run the wizard', function () {
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'wizard')
         ->expectsOutput('This command is only available in Laravel 11 and above.')
-        ->assertFailure()
+        ->assertFailed()
         ->execute();
 })->onlyOnLaravelVersionsBelow(11);
 
