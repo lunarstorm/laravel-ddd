@@ -89,14 +89,11 @@ it('will not be cleared by laravel cache clearing', function () {
 
 describe('laravel optimize', function () {
     beforeEach(function () {
-        $this->artisan('clear-compiled')->assertSuccessful()->execute();
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
     });
 
     afterEach(function () {
-        $this->artisan('clear-compiled')->assertSuccessful()->execute();
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
-        $this->reloadApplication();
     });
 
     test('optimize will include ddd:optimize', function () {
