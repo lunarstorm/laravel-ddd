@@ -19,7 +19,6 @@ afterEach(function () {
 
     file_put_contents(base_path('composer.json'), $this->originalComposerContents);
 
-    config()->set('data.structure_caching.enabled', false);
     $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
@@ -48,8 +47,6 @@ it('can optimize discovered domain providers, commands, migrations', function ()
 });
 
 it('can clear the cache', function () {
-    config()->set('data.structure_caching.enabled', false);
-
     $this->artisan('ddd:optimize')->assertSuccessful()->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
@@ -67,8 +64,6 @@ it('can clear the cache', function () {
 });
 
 it('will not be cleared by laravel cache clearing', function () {
-    config()->set('data.structure_caching.enabled', false);
-
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
@@ -96,8 +91,6 @@ it('will not be cleared by laravel cache clearing', function () {
 
 describe('laravel optimize', function () {
     test('optimize will include ddd:optimize', function () {
-        config()->set('data.structure_caching.enabled', false);
-
         expect(DomainCache::get('domain-providers'))->toBeNull();
         expect(DomainCache::get('domain-commands'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
@@ -112,8 +105,6 @@ describe('laravel optimize', function () {
     });
 
     test('optimize:clear will clear ddd cache', function () {
-        config()->set('data.structure_caching.enabled', false);
-
         $this->artisan('ddd:optimize')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();

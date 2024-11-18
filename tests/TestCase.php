@@ -35,10 +35,7 @@ class TestCase extends Orchestra
 
             config()->set('data.structure_caching.enabled', false);
 
-            Artisan::command('data:cache-structures', function () {
-                // do nothing
-
-            });
+            Artisan::command('data:cache-structures', function () {});
         });
 
         $this->afterApplicationRefreshed(function () {

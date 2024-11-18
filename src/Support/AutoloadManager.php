@@ -49,8 +49,6 @@ class AutoloadManager
 
     protected bool $ran = false;
 
-    protected static ?Closure $registeringProviderCallback = null;
-
     public function __construct(protected ?Container $container = null)
     {
         $this->container = $container ?? Container::getInstance();
@@ -133,11 +131,6 @@ class AutoloadManager
         ])->map(fn ($path) => Path::normalize($this->app->basePath($path)))->toArray();
     }
 
-    public static function registeringProvider(Closure $callback)
-    {
-        static::$registeringProviderCallback = $callback;
-    }
-
     protected function handleProviders()
     {
         $providers = DomainCache::has('domain-providers')
@@ -166,19 +159,11 @@ class AutoloadManager
 
     public function run()
     {
-        // if ($this->hasRun()) {
-        //     return $this;
-        // }
-
         if (! $this->isBooted()) {
             $this->boot();
         }
 
         foreach (static::$registeredProviders as $provider) {
-            if (static::$registeringProviderCallback) {
-                call_user_func(static::$registeringProviderCallback, $provider);
-            }
-
             $this->app->register($provider);
         }
 
