@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\MigrationCreator;
+use Lunarstorm\LaravelDDD\Commands\ConfigCommand;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 
@@ -66,15 +67,15 @@ it('can run the config wizard', function () {
     $this->artisan('config:clear')->assertSuccessful()->execute();
 
     unlink($configPath);
-})->skip(fn () => ! function_exists('\Laravel\Prompts\form'));
+})->skip(fn () => ! ConfigCommand::hasRequiredVersionOfLaravelPrompts());
 
-it('requires \Laravel\Prompts\form to run the wizard', function () {
+it('requires supported version of Laravel Prompts to run the wizard', function () {
     $this->artisan('ddd:config')
         ->expectsQuestion('Laravel-DDD Config Utility', 'wizard')
         ->expectsOutput('This command is not supported with your currently installed version of Laravel Prompts.')
         ->assertFailed()
         ->execute();
-})->skip(fn () => function_exists('\Laravel\Prompts\form'));
+})->skip(fn () => ConfigCommand::hasRequiredVersionOfLaravelPrompts());
 
 it('can update and merge ddd.php with latest package version', function () {
     $configPath = config_path('ddd.php');

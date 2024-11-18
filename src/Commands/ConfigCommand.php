@@ -103,9 +103,15 @@ class ConfigCommand extends Command
         return self::SUCCESS;
     }
 
+    public static function hasRequiredVersionOfLaravelPrompts(): bool
+    {
+        return function_exists('\Laravel\Prompts\form')
+            && method_exists(\Laravel\Prompts\FormBuilder::class, 'addIf');
+    }
+
     protected function wizard(): int
     {
-        if (! function_exists('\Laravel\Prompts\form')) {
+        if (! static::hasRequiredVersionOfLaravelPrompts()) {
             $this->error('This command is not supported with your currently installed version of Laravel Prompts.');
 
             return self::FAILURE;
