@@ -31,6 +31,8 @@ class TestCase extends Orchestra
             );
 
             DomainCache::clear();
+
+            config()->set('data.structure_caching.enabled', false);
         });
 
         $this->afterApplicationRefreshed(function () {
