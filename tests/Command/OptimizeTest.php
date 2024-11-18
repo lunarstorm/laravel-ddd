@@ -20,6 +20,7 @@ afterEach(function () {
     file_put_contents(base_path('composer.json'), $this->originalComposerContents);
 
     config()->set('data.structure_caching.enabled', false);
+    $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 it('can optimize discovered domain providers, commands, migrations', function () {
