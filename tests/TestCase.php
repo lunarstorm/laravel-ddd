@@ -5,6 +5,7 @@ namespace Lunarstorm\LaravelDDD\Tests;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
@@ -33,6 +34,12 @@ class TestCase extends Orchestra
             DomainCache::clear();
 
             config()->set('data.structure_caching.enabled', false);
+
+            Artisan::command('data:cache-structures', function () {
+                // do nothing
+                dd('do nothing');
+
+            });
         });
 
         $this->afterApplicationRefreshed(function () {
@@ -44,8 +51,6 @@ class TestCase extends Orchestra
         });
 
         parent::setUp();
-
-        config()->set('data.structure_caching.enabled', false);
     }
 
     protected function tearDown(): void
