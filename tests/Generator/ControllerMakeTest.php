@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Lunarstorm\LaravelDDD\Support\Path;
 use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
@@ -35,16 +36,14 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
+    expect(file_exists(app_path('Http/Controllers/Controller.php')))->toBeTrue();
 
-    expect($contents = file_get_contents($expectedPath))
-        ->toContain("namespace {$expectedNamespace};");
+    $contents = file_get_contents($expectedPath);
 
-    if (Feature::Laravel11->exists()) {
-        // These assertions don't seem to pass on Laravel 10
-        expect($contents)
-            ->toContain("use App\Http\Controllers\Controller;")
-            ->toContain('extends Controller');
-    }
+    expect($contents)
+        ->toContain("namespace {$expectedNamespace};")
+        ->toContain("use App\Http\Controllers\Controller;\nuse Illuminate\Http\Request;")
+        ->toContain('extends Controller');
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
@@ -70,11 +69,19 @@ it('can generate domain resource controller from model', function ($domainName, 
 
     expect(file_exists($expectedPath))->toBeFalse();
 
-    Artisan::call('ddd:controller', [
+    $modelExists = class_exists($modelClass);
+
+    $command = $this->artisan('ddd:controller', [
         'name' => $controllerName,
         '--domain' => $domainName,
         '--model' => $modelName,
     ]);
+
+    if (! $modelExists) {
+        $command->expectsQuestion("A {$modelClass} model does not exist. Do you want to generate it?", false);
+    }
+
+    $command->assertSuccessful()->execute();
 
     expect(file_exists($expectedPath))->toBeTrue();
 
@@ -123,20 +130,28 @@ it('can generate domain controller with requests', function ($domainName, $contr
         }
     }
 
-    Artisan::call('ddd:controller', [
+    $modelExists = class_exists($modelClass);
+
+    $command = $this->artisan('ddd:controller', [
         'name' => $controllerName,
         '--domain' => $domainName,
         '--model' => $modelName,
         '--requests' => true,
     ]);
 
-    $output = Artisan::output();
+    if (! $modelExists) {
+        $command->expectsQuestion("A {$modelClass} model does not exist. Do you want to generate it?", false);
+    }
 
     foreach ($generatedPaths as $path) {
         if (Feature::IncludeFilepathInGeneratorCommandOutput->exists()) {
-            expect($output)->toContainFilepath($path);
+            $command->expectsOutputToContain(Path::normalize($path));
         }
+    }
 
+    $command->assertSuccessful()->execute();
+
+    foreach ($generatedPaths as $path) {
         expect(file_exists(base_path($path)))->toBeTrue("Expecting {$path} to exist");
     }
 
@@ -194,7 +209,7 @@ it('does not extend base controller if base controller not found', function ($do
     expect(file_exists($expectedPath))->toBeFalse();
 
     // Remove the base controller
-    $baseControllerPath = base_path('app/Http/Controllers/Controller.php');
+    $baseControllerPath = app_path('Http/Controllers/Controller.php');
 
     if (file_exists($baseControllerPath)) {
         unlink($baseControllerPath);
@@ -202,19 +217,18 @@ it('does not extend base controller if base controller not found', function ($do
 
     expect(file_exists($baseControllerPath))->toBeFalse();
 
-    Artisan::call("ddd:controller {$domainName}:{$controllerName}");
+    $this->artisan("ddd:controller {$domainName}:{$controllerName}")
+        ->assertSuccessful()
+        ->execute();
 
     expect(file_exists($expectedPath))->toBeTrue();
 
     expect($contents = file_get_contents($expectedPath))
         ->toContain("namespace {$expectedNamespace};");
 
-    if (Feature::Laravel11->exists()) {
-        // These assertions don't seem to pass on Laravel 10
-        expect($contents)
-            ->not->toContain("use App\Http\Controllers\Controller;")
-            ->not->toContain('extends Controller');
-    }
+    expect($contents)
+        ->not->toContain("use App\Http\Controllers\Controller;")
+        ->not->toContain('extends Controller');
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
@@ -253,7 +267,9 @@ STUB;
     file_put_contents(app()->basePath($stubFolder.'/controller.plain.stub'), $customStub);
     expect(file_exists(app()->basePath($stubFolder.'/controller.plain.stub')))->toBeTrue();
 
-    Artisan::call("ddd:controller {$domainName}:{$controllerName}");
+    $this->artisan("ddd:controller {$domainName}:{$controllerName}")
+        ->assertSuccessful()
+        ->execute();
 
     expect(file_exists($expectedPath))->toBeTrue();
 

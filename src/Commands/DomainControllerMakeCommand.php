@@ -6,8 +6,7 @@ use Illuminate\Routing\Console\ControllerMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-
-use function Laravel\Prompts\confirm;
+use Lunarstorm\LaravelDDD\Support\Path;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
@@ -16,33 +15,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
-
-    protected function buildModelReplacements(array $replace)
-    {
-        $modelClass = $this->parseModel($this->option('model'));
-
-        if (
-            ! app()->runningUnitTests()
-            && ! class_exists($modelClass)
-            && confirm("A {$modelClass} model does not exist. Do you want to generate it?", default: true)
-        ) {
-            $this->call('make:model', ['name' => $modelClass]);
-        }
-
-        $replace = $this->buildFormRequestReplacements($replace, $modelClass);
-
-        return array_merge($replace, [
-            'DummyFullModelClass' => $modelClass,
-            '{{ namespacedModel }}' => $modelClass,
-            '{{namespacedModel}}' => $modelClass,
-            'DummyModelClass' => class_basename($modelClass),
-            '{{ model }}' => class_basename($modelClass),
-            '{{model}}' => class_basename($modelClass),
-            'DummyModelVariable' => lcfirst(class_basename($modelClass)),
-            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
-            '{{modelVariable}}' => lcfirst(class_basename($modelClass)),
-        ]);
-    }
 
     protected function buildFormRequestReplacements(array $replace, $modelClass)
     {
@@ -90,16 +62,33 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             return $stub;
         }
 
+        // Handle Laravel 10 side effect
+        if (str($stub)->contains($invalidUse = "use {$this->getNamespace($name)}\Http\Controllers\Controller;\n")) {
+            $laravel10Replacements = [
+                ' extends Controller' => '',
+                $invalidUse => '',
+            ];
+
+            $stub = str_replace(
+                array_keys($laravel10Replacements),
+                array_values($laravel10Replacements),
+                $stub
+            );
+        }
+
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
-        $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
+        $pathToAppBaseController = Path::normalize(app()->path('Http/Controllers/Controller.php'));
 
         $baseControllerExists = $this->files->exists($pathToAppBaseController);
 
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);
-            $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+            $fullyQualifiedBaseController = "{$appRootNamespace}Http\Controllers\Controller";
+            $namespaceLine = "namespace {$this->getNamespace($name)};";
+            $replace["{$namespaceLine}\n"] = "{$namespaceLine}\n\nuse {$fullyQualifiedBaseController};";
+            $replace["class {$controllerClass}\n"] = "class {$controllerClass} extends Controller\n";
         }
 
         $stub = str_replace(

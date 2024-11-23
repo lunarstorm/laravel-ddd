@@ -259,6 +259,9 @@ class TestCase extends Orchestra
             File::copyDirectory($folder, app_path(basename($folder)));
         }
 
+        File::ensureDirectoryExists(app_path('Http/Controllers'));
+        File::copy(__DIR__.'/.skeleton/app/Http/Controllers/Controller.php', app_path('Http/Controllers/Controller.php'));
+
         File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
         File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
         File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
