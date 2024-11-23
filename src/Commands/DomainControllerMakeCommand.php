@@ -62,11 +62,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         }
 
         // Handle Laravel 10 side effect
-        $invalidUse = "use {$this->getNamespace($name)}\Http\Controllers\Controller;";
-        if (strpos($stub, $invalidUse) !== false) {
+        if (str($stub)->contains($invalidUse = "use {$this->getNamespace($name)}\Http\Controllers\Controller;\n")) {
             $laravel10Replacements = [
-                $invalidUse.PHP_EOL => '',
                 ' extends Controller' => '',
+                $invalidUse => '',
             ];
 
             $stub = str_replace(
