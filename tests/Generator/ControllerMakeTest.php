@@ -27,6 +27,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
     }
 
     expect(file_exists($expectedPath))->toBeFalse();
+    expect(file_exists(app_path('Http/Controllers/Controller.php')))->toBeTrue();
 
     Artisan::call("ddd:controller {$domainName}:{$controllerName}");
 
@@ -209,10 +210,8 @@ it('does not extend base controller if base controller not found', function ($do
 
     // Remove the base controller
     $baseControllerPath = app_path('Http/Controllers/Controller.php');
-    $originalBaseControllerContent = null;
 
     if (file_exists($baseControllerPath)) {
-        $originalBaseControllerContent = file_get_contents($baseControllerPath);
         unlink($baseControllerPath);
     }
 
@@ -230,11 +229,6 @@ it('does not extend base controller if base controller not found', function ($do
     expect($contents)
         ->not->toContain("use App\Http\Controllers\Controller;")
         ->not->toContain('extends Controller');
-
-    // Restore the base controller
-    if ($originalBaseControllerContent) {
-        file_put_contents($baseControllerPath, $originalBaseControllerContent);
-    }
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
