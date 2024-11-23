@@ -27,7 +27,6 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
     }
 
     expect(file_exists($expectedPath))->toBeFalse();
-    expect(file_exists(app_path('Http/Controllers/Controller.php')))->toBeTrue();
 
     Artisan::call("ddd:controller {$domainName}:{$controllerName}");
 
@@ -37,6 +36,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
     );
 
     expect(file_exists($expectedPath))->toBeTrue();
+    expect(file_exists(app_path('Http/Controllers/Controller.php')))->toBeTrue();
 
     $contents = file_get_contents($expectedPath);
 
