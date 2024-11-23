@@ -79,7 +79,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
-        $pathToAppBaseController = Path::normalize(app_path('Http/Controllers/Controller.php'));
+        $pathToAppBaseController = Path::normalize(app()->path('Http/Controllers/Controller.php'));
 
         $baseControllerExists = $this->files->exists($pathToAppBaseController);
 
@@ -87,8 +87,8 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             $controllerClass = class_basename($name);
             $fullyQualifiedBaseController = "{$appRootNamespace}Http\Controllers\Controller";
             $namespaceLine = "namespace {$this->getNamespace($name)};";
-            $replace[$namespaceLine.PHP_EOL] = $namespaceLine.PHP_EOL.PHP_EOL."use {$fullyQualifiedBaseController};";
-            $replace["class {$controllerClass}".PHP_EOL] = "class {$controllerClass} extends Controller".PHP_EOL;
+            $replace["{$namespaceLine}\n"] = "{$namespaceLine}\n\nuse {$fullyQualifiedBaseController};";
+            $replace["class {$controllerClass}\n"] = "class {$controllerClass} extends Controller\n";
         }
 
         $stub = str_replace(
