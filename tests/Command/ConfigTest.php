@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Migrations\MigrationCreator;
 use Lunarstorm\LaravelDDD\Commands\ConfigCommand;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
@@ -9,15 +8,7 @@ uses(BootsTestApplication::class);
 
 beforeEach(function () {
     $this->setupTestApplication();
-
-    // $this->app->when(MigrationCreator::class)
-    //     ->needs('$customStubPath')
-    //     ->give(fn() => $this->app->basePath('stubs'));
-
     $this->originalComposerContents = file_get_contents(base_path('composer.json'));
-
-    // $this->artisan('clear-compiled')->assertSuccessful()->execute();
-    // $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
 afterEach(function () {
@@ -77,7 +68,7 @@ it('requires supported version of Laravel Prompts to run the wizard', function (
         ->execute();
 })->skip(fn () => ConfigCommand::hasRequiredVersionOfLaravelPrompts());
 
-it('can update and merge ddd.php with latest package version', function () {
+it('can Rebuild and merge ddd.php with latest package version', function () {
     $configPath = config_path('ddd.php');
 
     $originalContents = <<<'PHP'
