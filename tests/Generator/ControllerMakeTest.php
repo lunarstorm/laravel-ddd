@@ -41,15 +41,8 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
 
     expect($contents)
         ->toContain("namespace {$expectedNamespace};")
-        ->toContain("use App\Http\Controllers\Controller;")
+        ->toContain("use App\Http\Controllers\Controller;".PHP_EOL."use Illuminate\Http\Request;")
         ->toContain('extends Controller');
-
-    // if (Feature::Laravel11->exists()) {
-    //     // These assertions don't seem to pass on Laravel 10
-    //     expect($contents)
-    //         ->toContain("use App\Http\Controllers\Controller;")
-    //         ->toContain('extends Controller');
-    // }
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',
@@ -232,12 +225,9 @@ it('does not extend base controller if base controller not found', function ($do
     expect($contents = file_get_contents($expectedPath))
         ->toContain("namespace {$expectedNamespace};");
 
-    if (Feature::Laravel11->exists()) {
-        // These assertions don't seem to pass on Laravel 10
-        expect($contents)
-            ->not->toContain("use App\Http\Controllers\Controller;")
-            ->not->toContain('extends Controller');
-    }
+    expect($contents)
+        ->not->toContain("use App\Http\Controllers\Controller;")
+        ->not->toContain('extends Controller');
 })->with([
     'Invoicing:InvoiceController' => [
         'Invoicing',

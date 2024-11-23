@@ -64,7 +64,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
-        $pathToAppBaseController = parent::getPath("Http\Controllers\Controller");
+        $pathToAppBaseController = app_path('Http/Controllers/Controller.php');
 
         $baseControllerExists = $this->files->exists($pathToAppBaseController);
 
