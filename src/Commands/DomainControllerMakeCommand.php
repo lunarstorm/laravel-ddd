@@ -76,6 +76,9 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             $replace["class {$controllerClass}".PHP_EOL] = "class {$controllerClass} extends Controller".PHP_EOL;
         }
 
+        // Remove Laravel 10 side effect
+        $replace["use {$this->getNamespace($name)}\Http\Controllers\Controller;".PHP_EOL] = '';
+
         $stub = str_replace(
             array_keys($replace),
             array_values($replace),

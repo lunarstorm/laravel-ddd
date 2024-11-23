@@ -208,7 +208,7 @@ it('does not extend base controller if base controller not found', function ($do
     expect(file_exists($expectedPath))->toBeFalse();
 
     // Remove the base controller
-    $baseControllerPath = base_path('app/Http/Controllers/Controller.php');
+    $baseControllerPath = app_path('Http/Controllers/Controller.php');
 
     if (file_exists($baseControllerPath)) {
         unlink($baseControllerPath);
