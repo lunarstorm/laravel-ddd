@@ -7,8 +7,6 @@ use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
-use function Laravel\Prompts\confirm;
-
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
     use ForwardsToDomainCommands,
@@ -16,33 +14,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         ResolvesDomainFromInput;
 
     protected $name = 'ddd:controller';
-
-    protected function buildModelReplacements(array $replace)
-    {
-        $modelClass = $this->parseModel($this->option('model'));
-
-        if (
-            ! app()->runningUnitTests()
-            && ! class_exists($modelClass)
-            && confirm("A {$modelClass} model does not exist. Do you want to generate it?", default: true)
-        ) {
-            $this->call('make:model', ['name' => $modelClass]);
-        }
-
-        $replace = $this->buildFormRequestReplacements($replace, $modelClass);
-
-        return array_merge($replace, [
-            'DummyFullModelClass' => $modelClass,
-            '{{ namespacedModel }}' => $modelClass,
-            '{{namespacedModel}}' => $modelClass,
-            'DummyModelClass' => class_basename($modelClass),
-            '{{ model }}' => class_basename($modelClass),
-            '{{model}}' => class_basename($modelClass),
-            'DummyModelVariable' => lcfirst(class_basename($modelClass)),
-            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
-            '{{modelVariable}}' => lcfirst(class_basename($modelClass)),
-        ]);
-    }
 
     protected function buildFormRequestReplacements(array $replace, $modelClass)
     {
@@ -99,7 +70,10 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
 
         if ($baseControllerExists) {
             $controllerClass = class_basename($name);
-            $replace["\nclass {$controllerClass}\n"] = "\nuse {$appRootNamespace}Http\Controllers\Controller;\n\nclass {$controllerClass} extends Controller\n";
+            $fullyQualifiedBaseController = "{$appRootNamespace}Http\Controllers\Controller";
+            $namespaceLine = "namespace {$this->getNamespace($name)};";
+            $replace[$namespaceLine.PHP_EOL] = $namespaceLine.PHP_EOL.PHP_EOL."use {$fullyQualifiedBaseController};";
+            $replace["class {$controllerClass}".PHP_EOL] = "class {$controllerClass} extends Controller".PHP_EOL;
         }
 
         $stub = str_replace(
