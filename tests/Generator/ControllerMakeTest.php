@@ -42,7 +42,7 @@ it('can generate domain controller', function ($domainName, $controllerName, $re
 
     expect($contents)
         ->toContain("namespace {$expectedNamespace};")
-        ->toContain("use App\Http\Controllers\Controller;".PHP_EOL."use Illuminate\Http\Request;")
+        ->toContain("use App\Http\Controllers\Controller;\nuse Illuminate\Http\Request;")
         ->toContain('extends Controller');
 })->with([
     'Invoicing:InvoiceController' => [
