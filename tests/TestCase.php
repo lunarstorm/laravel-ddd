@@ -5,8 +5,10 @@ namespace Lunarstorm\LaravelDDD\Tests;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunarstorm\LaravelDDD\LaravelDDDServiceProvider;
+use Lunarstorm\LaravelDDD\Support\DomainCache;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
 
@@ -14,27 +16,30 @@ class TestCase extends Orchestra
 {
     public static $configValues = [];
 
+    public $appConfig = [];
+
+    protected $originalComposerContents;
+
     protected function setUp(): void
     {
+        $this->originalComposerContents = $this->getComposerFileContents();
+
         $this->afterApplicationCreated(function () {
             $this->cleanSlate();
-
-            // $this->updateComposer(
-            //     set: [
-            //         [['autoload', 'psr-4', 'App\\'], 'vendor/orchestra/testbench-core/laravel/app'],
-            //         [['autoload', 'psr-4', 'Database\\Factories\\'], 'vendor/orchestra/testbench-core/laravel/database/factories'],
-            //         [['autoload', 'psr-4', 'Database\\Seeders\\'], 'vendor/orchestra/testbench-core/laravel/database/seeders'],
-            //         [['autoload', 'psr-4', 'Domain\\'], 'vendor/orchestra/testbench-core/laravel/src/Domain'],
-            //     ],
-            //     forget: [
-            //         ['autoload', 'psr-4', 'Domains\\'],
-            //         ['autoload', 'psr-4', 'Domain\\'],
-            //     ]
-            // );
 
             Factory::guessFactoryNamesUsing(
                 fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
             );
+
+            DomainCache::clear();
+
+            config()->set('data.structure_caching.enabled', false);
+
+            Artisan::command('data:cache-structures', function () {});
+        });
+
+        $this->afterApplicationRefreshed(function () {
+            config()->set('data.structure_caching.enabled', false);
         });
 
         $this->beforeApplicationDestroyed(function () {
@@ -44,33 +49,99 @@ class TestCase extends Orchestra
         parent::setUp();
     }
 
+    protected function tearDown(): void
+    {
+        $basePath = $this->getBasePath();
+
+        $this->cleanSlate();
+
+        file_put_contents($basePath.'/composer.json', $this->originalComposerContents);
+
+        parent::tearDown();
+    }
+
     public static function configValues(array $values)
     {
         static::$configValues = $values;
     }
 
+    public static function resetConfig()
+    {
+        static::$configValues = [];
+    }
+
     protected function defineEnvironment($app)
     {
+        if (in_array(BootsTestApplication::class, class_uses_recursive($this))) {
+            static::$configValues = [
+                'ddd.domain_path' => 'src/Domain',
+                'ddd.domain_namespace' => 'Domain',
+                'ddd.application_path' => 'src/Application',
+                'ddd.application_namespace' => 'Application',
+                'ddd.application_objects' => [
+                    'controller',
+                    'request',
+                    'middleware',
+                ],
+                'ddd.layers' => [
+                    'Infrastructure' => 'src/Infrastructure',
+                ],
+                'ddd.autoload' => [
+                    'providers' => true,
+                    'commands' => true,
+                    'policies' => true,
+                    'factories' => true,
+                    'migrations' => true,
+                ],
+                'ddd.autoload_ignore' => [
+                    'Tests',
+                    'Database/Migrations',
+                ],
+                'ddd.cache_directory' => 'bootstrap/cache/ddd',
+                'cache.default' => 'file',
+                'data.structure_caching.enabled' => false,
+                ...static::$configValues,
+            ];
+        }
+
         tap($app['config'], function (Repository $config) {
             foreach (static::$configValues as $key => $value) {
                 $config->set($key, $value);
             }
-        });
 
-        // $this->updateComposer(
-        //     set: [
-        //         [['autoload', 'psr-4', 'App\\'], 'vendor/orchestra/testbench-core/laravel/app'],
-        //     ],
-        //     forget: [
-        //         ['autoload', 'psr-4', 'Domains\\'],
-        //         ['autoload', 'psr-4', 'Domain\\'],
-        //     ]
-        // );
+            foreach ($this->appConfig as $key => $value) {
+                $config->set($key, $value);
+            }
+
+            $config->set('data.structure_caching.enabled', false);
+        });
+    }
+
+    protected function refreshApplicationWithConfig(array $config)
+    {
+        $this->appConfig = $config;
+
+        // $this->afterApplicationRefreshed(fn () => $this->appConfig = []);
+
+        $this->reloadApplication();
+
+        $this->appConfig = [];
+
+        return $this;
+    }
+
+    protected function withConfig(array $config)
+    {
+        $this->appConfig = $config;
+
+        return $this;
     }
 
     protected function getComposerFileContents()
     {
-        return file_get_contents(base_path('composer.json'));
+        $basePath = $this->getBasePath();
+
+        return file_get_contents($basePath.'/composer.json');
     }
 
     protected function getComposerFileAsArray()
@@ -136,42 +207,85 @@ class TestCase extends Orchestra
         (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
             ->setTimeout(null)
             ->run(function ($type, $output) {});
+
+        return $this;
     }
 
     protected function cleanSlate()
     {
-        File::copy(__DIR__.'/.skeleton/composer.json', base_path('composer.json'));
+        $basePath = $this->getBasePath();
 
-        File::delete(base_path('config/ddd.php'));
+        File::delete($basePath.'/config/ddd.php');
 
-        File::cleanDirectory(app_path());
-        File::cleanDirectory(base_path('database/factories'));
+        File::cleanDirectory($basePath.'/app/Models');
+        File::cleanDirectory($basePath.'/database/factories');
+        File::cleanDirectory($basePath.'/bootstrap/cache');
+        File::cleanDirectory($basePath.'/bootstrap/cache/ddd');
 
-        File::deleteDirectory(resource_path('stubs/ddd'));
-        File::deleteDirectory(base_path('Custom'));
-        File::deleteDirectory(base_path('src/Domain'));
-        File::deleteDirectory(base_path('src/Domains'));
-        File::deleteDirectory(app_path('Models'));
+        File::deleteDirectory($basePath.'/src');
+        File::deleteDirectory($basePath.'/resources/stubs/ddd');
+        File::deleteDirectory($basePath.'/stubs');
+        File::deleteDirectory($basePath.'/Custom');
+        File::deleteDirectory($basePath.'/Other');
+        File::deleteDirectory($basePath.'/app/Policies');
+        File::deleteDirectory($basePath.'/app/Modules');
 
-        File::deleteDirectory(base_path('bootstrap/cache/ddd'));
+        // File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
+
+        return $this;
+    }
+
+    protected function cleanStubs()
+    {
+        File::cleanDirectory(base_path('stubs'));
+
+        return $this;
     }
 
     protected function setupTestApplication()
     {
-        File::copyDirectory(__DIR__.'/.skeleton/app', app_path());
-        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
-        File::copyDirectory(__DIR__.'/.skeleton/src/Domain', base_path('src/Domain'));
-        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
-        File::ensureDirectoryExists(app_path('Models'));
+        $this->cleanSlate();
 
-        $this->setDomainPathInComposer('Domain', 'src/Domain');
+        $basePath = $this->getBasePath();
+
+        File::ensureDirectoryExists(app_path());
+        File::ensureDirectoryExists(app_path('Models'));
+        File::ensureDirectoryExists(database_path('factories'));
+        File::ensureDirectoryExists($basePath.'/bootstrap/cache/ddd');
+
+        $skeletonAppFolders = glob(__DIR__.'/.skeleton/app/*', GLOB_ONLYDIR);
+
+        foreach ($skeletonAppFolders as $folder) {
+            File::copyDirectory($folder, app_path(basename($folder)));
+        }
+
+        File::ensureDirectoryExists(app_path('Http/Controllers'));
+        File::copy(__DIR__.'/.skeleton/app/Http/Controllers/Controller.php', app_path('Http/Controllers/Controller.php'));
+
+        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
+        File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
+        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
+        File::copy(__DIR__.'/.skeleton/config/ddd.php', config_path('ddd.php'));
+        File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
+
+        $this->composerReload();
+
+        // $this->setAutoloadPathInComposer('Domain', 'src/Domain');
+        // $this->setAutoloadPathInComposer('Application', 'src/Application');
+        // $this->setAutoloadPathInComposer('Infrastructure', 'src/Infrastructure');
+
+        DomainCache::clear();
+
+        config()->set('data.structure_caching.enabled', false);
+
+        return $this;
     }
 
-    protected function setDomainPathInComposer($domainNamespace, $domainPath, bool $reload = true)
+    protected function setAutoloadPathInComposer($namespace, $path, bool $reload = true)
     {
         $this->updateComposer(
             set: [
-                [['autoload', 'psr-4', $domainNamespace.'\\'], $domainPath],
+                [['autoload', 'psr-4', $namespace.'\\'], $path],
             ],
         );
 

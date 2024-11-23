@@ -1,9 +1,12 @@
 <?php
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+
+uses(BootsTestApplication::class);
 
 it('can resolve the factory name of a domain model', function ($modelClass, $expectedFactoryClass) {
     $this->setupTestApplication();
@@ -26,8 +29,19 @@ it('is backwards compatible with factories located in database/factories/**/*', 
 ]);
 
 it('can instantiate a domain model factory', function ($domainParameter, $modelName, $modelClass) {
-    Config::set('ddd.base_model', 'Lunarstorm\LaravelDDD\Models\DomainModel');
+    $this->setupTestApplication();
+
+    $this->afterApplicationRefreshed(function () {
+        app('ddd.autoloader')->boot();
+    });
+
+    $this->refreshApplicationWithConfig([
+        'ddd.base_model' => 'Lunarstorm\LaravelDDD\Models\DomainModel',
+        'ddd.autoload.factories' => true,
+    ]);
+
     Artisan::call("ddd:model -f {$domainParameter}:{$modelName}");
+
     expect(class_exists($modelClass))->toBeTrue();
     expect($modelClass::factory())->toBeInstanceOf(Factory::class);
 })->with([

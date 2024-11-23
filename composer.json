@@ -20,20 +20,26 @@
     "require": {
         "php": "^8.1|^8.2|^8.3",
         "illuminate/contracts": "^10.25|^11.0",
-        "laravel/prompts": "^0.1.16|^0.3.1",
+        "laravel/pint": "^1.18",
+        "laravel/prompts": "^0.1.16|^0.2|^0.3.1",
         "lorisleiva/lody": "^0.5.0",
-        "spatie/laravel-package-tools": "^1.13.0"
+        "spatie/laravel-package-tools": "^1.13.0",
+        "symfony/var-exporter": "^6|^7.1"
     },
     "require-dev": {
         "larastan/larastan": "^2.0.1",
-        "laravel/pint": "^1.0",
         "nunomaduro/collision": "^7.0|^8.1",
         "orchestra/testbench": "^8|^9.0",
         "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-laravel": "^2.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0"
+        "phpstan/phpstan-phpunit": "^1.0",
+        "spatie/laravel-data": "^4.11.1"
+    },
+    "suggest": {
+        "spatie/laravel-data": "Recommended for Data Transfer Objects.",
+        "lorisleiva/laravel-actions": "Recommended for Actions."
     },
     "autoload": {
         "psr-4": {
@@ -47,7 +53,9 @@
             "App\\": "vendor/orchestra/testbench-core/laravel/app",
             "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories",
             "Database\\Seeders\\": "vendor/orchestra/testbench-core/laravel/database/seeders",
-            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain"
+            "Domain\\": "vendor/orchestra/testbench-core/laravel/src/Domain",
+            "Application\\": "vendor/orchestra/testbench-core/laravel/src/Application",
+            "Infrastructure\\": "vendor/orchestra/testbench-core/laravel/src/Infrastructure"
         }
     },
     "scripts": {
@@ -55,6 +63,7 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "@composer dump-autoload && vendor/bin/pest",
         "test-coverage": "@composer dump-autoload && vendor/bin/pest --coverage",
+        "purge-skeleton": "vendor/bin/testbench package:purge-skeleton",
         "format": "vendor/bin/pint",
         "lint": "vendor/bin/pint"
     },
@@ -71,7 +80,7 @@
                 "Lunarstorm\\LaravelDDD\\LaravelDDDServiceProvider"
             ],
             "aliases": {
-                "LaravelDDD": "Lunarstorm\\LaravelDDD\\Facades\\LaravelDDD"
+                "DDD": "Lunarstorm\\LaravelDDD\\Facades\\DDD"
             }
         }
     },

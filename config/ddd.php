@@ -4,38 +4,56 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => 'src/Domain',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => 'Domain',
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Application Layer
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
+    */
+    'application_path' => 'app/Modules',
+    'application_namespace' => 'App\Modules',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Layers
+    |--------------------------------------------------------------------------
+    |
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
+    |
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    */
+    'layers' => [
+        'Infrastructure' => 'src/Infrastructure',
+        // 'Integrations' => 'src/Integrations',
+        // 'Support' => 'src/Support',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
     |
     */
     'namespaces' => [
@@ -48,6 +66,7 @@ return [
         'class' => '',
         'channel' => 'Channels',
         'command' => 'Commands',
+        'controller' => 'Controllers',
         'enum' => 'Enums',
         'event' => 'Events',
         'exception' => 'Exceptions',
@@ -56,13 +75,17 @@ return [
         'job' => 'Jobs',
         'listener' => 'Listeners',
         'mail' => 'Mail',
+        'middleware' => 'Middleware',
+        'migration' => 'Database\Migrations',
         'notification' => 'Notifications',
         'observer' => 'Observers',
         'policy' => 'Policies',
         'provider' => 'Providers',
         'resource' => 'Resources',
+        'request' => 'Requests',
         'rule' => 'Rules',
         'scope' => 'Scopes',
+        'seeder' => 'Database\Seeders',
         'trait' => '',
     ],
 
@@ -71,12 +94,11 @@ return [
     | Base Model
     |--------------------------------------------------------------------------
     |
-    | The base class which generated domain models should extend. By default,
-    | generated domain models will extend `Domain\Shared\Models\BaseModel`,
-    | which will be created if it doesn't already exist.
+    | The base model class which generated domain models should extend. If
+    | set to null, the generated models will extend Laravel's default.
     |
     */
-    'base_model' => 'Domain\Shared\Models\BaseModel',
+    'base_model' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -120,34 +142,16 @@ return [
     | Autoloading
     |--------------------------------------------------------------------------
     |
-    | Configure whether domain providers, commands, policies, and factories
-    | should be auto-discovered and registered.
+    | Configure whether domain providers, commands, policies, factories,
+    | and migrations should be auto-discovered and registered.
     |
     */
     'autoload' => [
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
-         */
         'providers' => true,
-
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
-         */
         'commands' => true,
-
-        /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'policies' => true,
-
-        /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
         'factories' => true,
+        'migrations' => true,
     ],
 
     /*

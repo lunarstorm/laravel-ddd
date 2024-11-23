@@ -2,7 +2,6 @@
 
 namespace Lunarstorm\LaravelDDD\Support;
 
-use Lunarstorm\LaravelDDD\ValueObjects\DomainNamespaces;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 
 class Domain
@@ -11,13 +10,15 @@ class Domain
 
     public readonly string $path;
 
+    public readonly string $migrationPath;
+
     public readonly string $domain;
 
     public readonly ?string $subdomain;
 
     public readonly string $domainWithSubdomain;
 
-    public readonly DomainNamespaces $namespace;
+    public readonly Layer $layer;
 
     public static array $objects = [];
 
@@ -54,9 +55,11 @@ class Domain
             ? "{$this->domain}.{$this->subdomain}"
             : $this->domain;
 
-        $this->namespace = DomainNamespaces::from($this->domain, $this->subdomain);
+        $this->layer = DomainResolver::resolveLayer($this->domainWithSubdomain);
 
-        $this->path = Path::join(DomainResolver::domainPath(), $this->domainWithSubdomain);
+        $this->path = $this->layer->path;
+
+        $this->migrationPath = Path::join($this->path, config('ddd.namespaces.migration', 'Database/Migrations'));
     }
 
     protected function getDomainBasePath()
@@ -70,13 +73,28 @@ class Domain
             return $this->path;
         }
 
-        $path = str($path)
-            ->replace($this->namespace->root, '')
+        $resolvedPath = str($path)
+            ->replace($this->layer->namespace, '')
             ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
             ->append('.php')
             ->toString();
 
-        return Path::join($this->path, $path);
+        return Path::join($this->path, $resolvedPath);
+    }
+
+    public function pathInApplicationLayer(?string $path = null): string
+    {
+        if (is_null($path)) {
+            return $this->path;
+        }
+
+        $path = str($path)
+            ->replace(DomainResolver::applicationLayerRootNamespace(), '')
+            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
+            ->append('.php')
+            ->toString();
+
+        return Path::join(DomainResolver::applicationLayerPath(), $path);
     }
 
     public function relativePath(string $path = ''): string
@@ -84,9 +102,19 @@ class Domain
         return collect([$this->domain, $path])->filter()->implode(DIRECTORY_SEPARATOR);
     }
 
-    public function namespaceFor(string $type): string
+    public function rootNamespace(): string
     {
-        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type);
+        return $this->layer->namespace;
+    }
+
+    public function intendedLayerFor(string $type)
+    {
+        return DomainResolver::resolveLayer($this->domainWithSubdomain, $type);
+    }
+
+    public function namespaceFor(string $type, ?string $name = null): string
+    {
+        return DomainResolver::getDomainObjectNamespace($this->domainWithSubdomain, $type, $name);
     }
 
     public function guessNamespaceFromName(string $name): string
@@ -102,20 +130,28 @@ class Domain
 
     public function object(string $type, string $name, bool $absolute = false): DomainObject
     {
+        $layer = $this->intendedLayerFor($type);
+
         $namespace = match (true) {
-            $absolute => $this->namespace->root,
-            str($name)->startsWith('\\') => $this->guessNamespaceFromName($name),
-            default => $this->namespaceFor($type),
+            $absolute => $layer->namespace,
+            str($name)->startsWith('\\') => $layer->guessNamespaceFromName($name),
+            default => $layer->namespaceFor($type),
         };
 
-        $baseName = str($name)->replace($namespace, '')->trim('\\')->toString();
+        $baseName = str($name)->replace($namespace, '')
+            ->replace(['\\', '/'], '\\')
+            ->trim('\\')
+            ->when($type === 'factory', fn ($name) => $name->finish('Factory'))
+            ->toString();
+
+        $fullyQualifiedName = $namespace.'\\'.$baseName;
 
         return new DomainObject(
             name: $baseName,
             domain: $this->domain,
             namespace: $namespace,
-            fullyQualifiedName: $namespace.'\\'.$baseName,
-            path: $this->path($namespace.'\\'.$baseName),
+            fullyQualifiedName: $fullyQualifiedName,
+            path: $layer->path($fullyQualifiedName),
             type: $type
         );
     }

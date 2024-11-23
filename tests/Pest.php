@@ -9,7 +9,16 @@ function skipOnLaravelVersionsBelow($minimumVersion)
     $version = app()->version();
 
     if (version_compare($version, $minimumVersion, '<')) {
-        test()->markTestSkipped("Only relevant from Laravel {$minimumVersion} onwards (Current version: {$version}).");
+        test()->markTestSkipped("Only available on Laravel {$minimumVersion}+ (Current version: {$version}).");
+    }
+}
+
+function onlyOnLaravelVersionsBelow($minimumVersion)
+{
+    $version = app()->version();
+
+    if (! version_compare($version, $minimumVersion, '<')) {
+        test()->markTestSkipped("Does not apply to Laravel {$minimumVersion}+ (Current version: {$version}).");
     }
 }
 

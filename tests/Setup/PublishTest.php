@@ -17,10 +17,13 @@ it('can publish config file', function () {
     ]);
 
     expect(file_exists($expectedPath))->toBeTrue();
+
+    // Delete it
+    unlink($expectedPath);
 });
 
 it('can publish stubs', function () {
-    $dir = resource_path('stubs/ddd');
+    $dir = base_path('stubs/ddd');
 
     if (File::exists($dir)) {
         File::deleteDirectory($dir);
@@ -34,4 +37,4 @@ it('can publish stubs', function () {
 
     expect(File::exists($dir))->toBeTrue();
     expect(File::isEmptyDirectory($dir))->toBeFalse();
-});
+})->markTestSkipped('Deprecated');

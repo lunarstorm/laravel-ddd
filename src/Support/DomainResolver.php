@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Support;
 
 use Illuminate\Support\Str;
+use Lunarstorm\LaravelDDD\Enums\LayerType;
 
 class DomainResolver
 {
@@ -36,6 +37,22 @@ class DomainResolver
     }
 
     /**
+     * Get the current configured application layer path.
+     */
+    public static function applicationLayerPath(): ?string
+    {
+        return config('ddd.application_path');
+    }
+
+    /**
+     * Get the current configured root application layer namespace.
+     */
+    public static function applicationLayerRootNamespace(): ?string
+    {
+        return config('ddd.application_namespace');
+    }
+
+    /**
      * Resolve the relative domain object namespace.
      *
      * @param  string  $type  The domain object type.
@@ -45,19 +62,85 @@ class DomainResolver
         return config("ddd.namespaces.{$type}", str($type)->plural()->studly()->toString());
     }
 
-    public static function getDomainObjectNamespace(string $domain, string $type, ?string $object = null): string
+    /**
+     * Determine whether a given object type is part of the application layer.
+     */
+    public static function isApplicationLayer(string $type): bool
     {
-        $namespace = collect([
-            static::domainRootNamespace(),
-            $domain,
-            static::getRelativeObjectNamespace($type),
-        ])->filter()->implode('\\');
+        $filter = app('ddd')->getApplicationLayerFilter() ?? function (string $type) {
+            $applicationObjects = config('ddd.application_objects', ['controller', 'request']);
 
-        if ($object) {
-            $namespace .= "\\{$object}";
+            return in_array($type, $applicationObjects);
+        };
+
+        return $filter($type);
+    }
+
+    /**
+     * Resolve the root namespace for a given domain object type.
+     *
+     * @param  string  $type  The domain object type.
+     */
+    public static function resolveRootNamespace(string $type): ?string
+    {
+        return static::isApplicationLayer($type)
+            ? static::applicationLayerRootNamespace()
+            : static::domainRootNamespace();
+    }
+
+    /**
+     * Resolve the intended layer of a specified domain name keyword.
+     */
+    public static function resolveLayer(string $domain, ?string $type = null): ?Layer
+    {
+        $layers = config('ddd.layers', []);
+
+        // Objects in the application layer take precedence
+        if ($type && static::isApplicationLayer($type)) {
+            return new Layer(
+                static::applicationLayerRootNamespace().'\\'.$domain,
+                Path::join(static::applicationLayerPath(), $domain),
+                LayerType::Application,
+            );
         }
 
-        return $namespace;
+        return match (true) {
+            array_key_exists($domain, $layers)
+                && is_string($layers[$domain]) => new Layer($domain, $layers[$domain], LayerType::Custom),
+
+            default => new Layer(
+                static::domainRootNamespace().'\\'.$domain,
+                Path::join(static::domainPath(), $domain),
+                LayerType::Domain,
+            )
+        };
+    }
+
+    /**
+     * Get the fully qualified namespace for a domain object.
+     *
+     * @param  string  $domain  The domain name.
+     * @param  string  $type  The domain object type.
+     * @param  string|null  $name  The domain object name.
+     */
+    public static function getDomainObjectNamespace(string $domain, string $type, ?string $name = null): string
+    {
+        $resolver = function (string $domain, string $type, ?string $name) {
+            $layer = static::resolveLayer($domain, $type);
+
+            $namespace = collect([
+                $layer->namespace,
+                static::getRelativeObjectNamespace($type),
+            ])->filter()->implode('\\');
+
+            if ($name) {
+                $namespace .= "\\{$name}";
+            }
+
+            return $namespace;
+        };
+
+        return $resolver($domain, $type, $name);
     }
 
     /**
@@ -93,6 +176,22 @@ class DomainResolver
             ->toString();
 
         return Path::join(...[static::domainPath(), "{$classWithoutDomainRoot}.php"]);
+    }
+
+    /**
+     * Attempt to resolve the folder of a given domain class.
+     */
+    public static function guessFolderFromClass(string $class): ?string
+    {
+        $path = static::guessPathFromClass($class);
+
+        if (! $path) {
+            return null;
+        }
+
+        $filenamePortion = basename($path);
+
+        return Str::beforeLast($path, $filenamePortion);
     }
 
     /**

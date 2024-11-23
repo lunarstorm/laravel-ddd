@@ -2,6 +2,59 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unreleased]
+### Breaking
+- Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
+- Published stubs now use `.stub` extension instead of `.php.stub` (following Laravel's convention).
+- If you are using published stubs from pre 1.2, you will need to refactor your stubs accordingly.
+
+### Added
+- Support for the Application Layer, to generate domain-specific objects that don't belong directly in the domain layer:
+    ```php
+    // In config/ddd.php
+    'application_path' => 'app/Modules',
+    'application_namespace' => 'App\Modules',
+    'application_objects' => [
+        'controller',
+        'request',
+        'middleware',
+    ],
+    ```
+- Support for Custom Layers, additional top-level namespaces of your choosing, such as `Infrastructure`, `Integrations`, etc.:
+    ```php
+    // In config/ddd.php
+    'layers' => [
+        'Infrastructure' => 'src/Infrastructure',
+    ],
+    ```
+- Added config utility command `ddd:config` to help manage the package's configuration over time.
+- Added stub utility command `ddd:stub` to publish one or more stubs selectively.
+- Added `ddd:controller` to generate domain-specific controllers.
+- Added `ddd:request` to generate domain-spefic requests.
+- Added `ddd:middleware` to generate domain-specific middleware.
+- Added `ddd:migration` to generate domain migrations.
+- Added `ddd:seeder` to generate domain seeders.
+- Added `ddd:stub` to manage stubs.
+- Migration folders across domains will be registered and scanned when running `php artisan migrate`, in addition to the standard application `database/migrations` path.
+- Ability to customize generator object naming conventions with your own logic using `DDD::resolveObjectSchemaUsing()`.
+
+### Changed
+- `ddd:model` now extends Laravel's native `make:model` and inherits all standard options:
+    - `--migration|-m`
+    - `--factory|-f`
+    - `--seed|-s`
+    - `--controller --resource --requests|-crR`
+    - `--policy`
+    - `-mfsc`
+    - `--all|-a`
+    - `--pivot|-p`
+- `ddd:cache` is now `ddd:optimize` (`ddd:cache` is still available as an alias).
+- Since Laravel 11.27.1, the framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` (`ddd:cache`) and `ddd:clear` respectively.
+
+### Deprecated
+- Domain base models are no longer required by default, and `config('ddd.base_model')` is now `null` by default.
+- Stubs are no longer published via `php artisan vendor:publish --tag="ddd-stubs"`. Instead, use `php artisan ddd:stub` to manage them.
+
 ## [1.1.3] - 2024-11-05
 ### Chore
 - Allow `laravel/prompts` dependency to use latest version when possible.

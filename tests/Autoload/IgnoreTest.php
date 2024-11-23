@@ -5,74 +5,105 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
 use Symfony\Component\Finder\SplFileInfo;
 
+uses(BootsTestApplication::class);
+
 beforeEach(function () {
-    Config::set('ddd.domain_path', 'src/Domain');
-    Config::set('ddd.domain_namespace', 'Domain');
+    $this->providers = [
+        'Application\Providers\ApplicationServiceProvider',
+        'Domain\Invoicing\Providers\InvoiceServiceProvider',
+        'Infrastructure\Providers\InfrastructureServiceProvider',
+    ];
+
+    $this->commands = [
+        'application:sync' => 'Application\Commands\ApplicationSync',
+        'invoice:deliver' => 'Domain\Invoicing\Commands\InvoiceDeliver',
+        'log:prune' => 'Infrastructure\Commands\LogPrune',
+    ];
+
     $this->setupTestApplication();
+
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
+
+    Config::set('ddd.autoload', [
+        'providers' => true,
+        'commands' => true,
+        'factories' => true,
+        'policies' => true,
+        'migrations' => true,
+    ]);
+});
+
+afterEach(function () {
+    DomainCache::clear();
+    Artisan::call('ddd:clear');
 });
 
 it('can ignore folders when autoloading', function () {
-    Artisan::call('ddd:cache');
+    expect(config('ddd.domain_path'))->toEqual('src/Domain');
+    expect(config('ddd.domain_namespace'))->toEqual('Domain');
+    expect(config('ddd.application_path'))->toEqual('src/Application');
+    expect(config('ddd.application_namespace'))->toEqual('Application');
+    expect(config('ddd.layers'))->toContain('src/Infrastructure');
 
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
-        'Domain\Invoicing\Commands\InvoiceDeliver',
+        ...array_values($this->providers),
+        ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual($expected);
+    expect($expected)->each(fn ($item) => $item->toBeIn($discovered));
+    expect($discovered)->toHaveCount(count($expected));
 
     Config::set('ddd.autoload_ignore', ['Commands']);
 
-    Artisan::call('ddd:cache');
-
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
+        ...array_values($this->providers),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual($expected);
+    expect($expected)->each(fn ($item) => $item->toBeIn($discovered));
+    expect($discovered)->toHaveCount(count($expected));
 
     Config::set('ddd.autoload_ignore', ['Providers']);
 
-    Artisan::call('ddd:cache');
-
     $expected = [
-        'Domain\Invoicing\Commands\InvoiceDeliver',
+        ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual($expected);
+    expect($expected)->each(fn ($item) => $item->toBeIn($discovered));
+    expect($discovered)->toHaveCount(count($expected));
 });
 
 it('can register a custom autoload filter', function () {
-    Artisan::call('ddd:cache');
-
     $expected = [
-        'Domain\Invoicing\Providers\InvoiceServiceProvider',
-        'Domain\Invoicing\Commands\InvoiceDeliver',
+        ...array_values($this->providers),
+        ...array_values($this->commands),
     ];
 
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual($expected);
+    expect($expected)->each(fn ($item) => $item->toBeIn($discovered));
+    expect($discovered)->toHaveCount(count($expected));
 
     $secret = null;
 
@@ -80,6 +111,10 @@ it('can register a custom autoload filter', function () {
         $ignoredFiles = [
             'InvoiceServiceProvider.php',
             'InvoiceDeliver.php',
+            'ApplicationServiceProvider.php',
+            'ApplicationSync.php',
+            'InfrastructureServiceProvider.php',
+            'LogPrune.php',
         ];
 
         $secret = 'i-was-invoked';
@@ -89,14 +124,12 @@ it('can register a custom autoload filter', function () {
         }
     });
 
-    Artisan::call('ddd:cache');
-
-    $cached = [
-        ...DomainCache::get('domain-providers'),
-        ...DomainCache::get('domain-commands'),
+    $discovered = [
+        ...DDD::autoloader()->discoverProviders(),
+        ...DDD::autoloader()->discoverCommands(),
     ];
 
-    expect($cached)->toEqual([]);
+    expect($discovered)->toHaveCount(0);
 
     expect($secret)->toEqual('i-was-invoked');
 });

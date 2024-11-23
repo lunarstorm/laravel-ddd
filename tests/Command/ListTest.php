@@ -1,8 +1,11 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Lunarstorm\LaravelDDD\Support\Path;
 
 beforeEach(function () {
+    $this->setupTestApplication();
+
     $this->artisan('ddd:model', [
         'name' => 'Invoice',
         '--domain' => 'Invoicing',
@@ -11,6 +14,11 @@ beforeEach(function () {
     $this->artisan('ddd:dto', [
         'name' => 'CustomerProfile',
         '--domain' => 'Customer',
+    ]);
+
+    $this->artisan('ddd:value', [
+        'name' => 'Subtotal',
+        '--domain' => 'Shared',
     ]);
 
     $this->expectedDomains = [
@@ -33,9 +41,10 @@ it('can list domains', function () {
 
     $this
         ->artisan('ddd:list')
-        ->expectsTable([
+        ->expectsOutputToContain(...[
             'Domain',
             'Namespace',
             'Path',
-        ], $expectedTableContent);
+            ...Arr::flatten($expectedTableContent),
+        ]);
 });

@@ -4,67 +4,52 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Path
+    | Domain Layer
     |--------------------------------------------------------------------------
     |
-    | The path to the domain folder relative to the application root.
+    | The path and namespace of the domain layer.
     |
     */
     'domain_path' => {{domain_path}},
-
-    /*
-    |--------------------------------------------------------------------------
-    | Domain Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The root domain namespace.
-    |
-    */
     'domain_namespace' => {{domain_namespace}},
 
     /*
     |--------------------------------------------------------------------------
-    | Domain Object Namespaces
+    | Application Layer
     |--------------------------------------------------------------------------
     |
-    | This value contains the default namespaces of generated domain
-    | objects relative to the domain namespace of which the object
-    | belongs to.
-    |
-    | e.g., Domain\Invoicing\Models\*
-    |       Domain\Invoicing\Data\*
-    |       Domain\Invoicing\ViewModels\*
-    |       Domain\Invoicing\ValueObjects\*
-    |       Domain\Invoicing\Actions\*
+    | The path and namespace of the application layer, and the objects
+    | that should be recognized as part of the application layer.
     |
     */
-    'namespaces' => [
-        'model' => {{namespaces.model}},
-        'data_transfer_object' => {{namespaces.data_transfer_object}},
-        'view_model' => {{namespaces.view_model}},
-        'value_object' => {{namespaces.value_object}},
-        'action' => {{namespaces.action}},
-        'cast' => 'Casts',
-        'class' => '',
-        'channel' => 'Channels',
-        'command' => 'Commands',
-        'enum' => 'Enums',
-        'event' => 'Events',
-        'exception' => 'Exceptions',
-        'factory' => 'Database\Factories',
-        'interface' => '',
-        'job' => 'Jobs',
-        'listener' => 'Listeners',
-        'mail' => 'Mail',
-        'notification' => 'Notifications',
-        'observer' => 'Observers',
-        'policy' => 'Policies',
-        'provider' => 'Providers',
-        'resource' => 'Resources',
-        'rule' => 'Rules',
-        'scope' => 'Scopes',
-        'trait' => '',
-    ],
+    'application_path' => {{application_path}},
+    'application_namespace' => {{application_namespace}},
+    'application_objects' => {{application_objects}},
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Layers
+    |--------------------------------------------------------------------------
+    |
+    | Additional top-level namespaces and paths that should be recognized as
+    | layers when generating ddd:* objects.
+    |
+    | e.g., 'Infrastructure' => 'src/Infrastructure',
+    |
+    */
+    'layers' => {{layers}},
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Object Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | This value contains the default namespaces of ddd:* generated
+    | objects relative to the layer of which the object belongs to.
+    |
+    */
+    'namespaces' => {{namespaces}},
 
     /*
     |--------------------------------------------------------------------------
@@ -124,31 +109,7 @@ return [
     | should be auto-discovered and registered.
     |
     */
-    'autoload' => [
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Support\ServiceProvider`
-         * will be auto-registered as a service provider
-         */
-        'providers' => true,
-
-        /**
-         * When enabled, any class within the domain layer extending `Illuminate\Console\Command`
-         * will be auto-registered as a command when running in console.
-         */
-        'commands' => true,
-
-        /**
-         * When enabled, the package will register a custom policy discovery callback to resolve policy names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
-        'policies' => true,
-
-        /**
-         * When enabled, the package will register a custom factory discovery callback to resolve factory names
-         * for domain models, and fallback to Laravel's default for all other cases.
-         */
-        'factories' => true,
-    ],
+    'autoload' => {{autoload}},
 
     /*
     |--------------------------------------------------------------------------
@@ -165,10 +126,7 @@ return [
     | the AppServiceProvider's boot method.
     |
     */
-    'autoload_ignore' => [
-        'Tests',
-        'Database/Migrations',
-    ],
+    'autoload_ignore' => {{autoload_ignore}},
 
     /*
     |--------------------------------------------------------------------------
@@ -179,5 +137,5 @@ return [
     | autoloading.
     |
     */
-    'cache_directory' => 'bootstrap/cache/ddd',
+    'cache_directory' => {{cache_directory}},
 ];

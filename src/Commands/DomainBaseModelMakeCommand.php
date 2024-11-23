@@ -2,10 +2,13 @@
 
 namespace Lunarstorm\LaravelDDD\Commands;
 
+use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DomainBaseModelMakeCommand extends DomainGeneratorCommand
 {
+    use HasDomainStubs;
+
     protected $name = 'ddd:base-model';
 
     /**
@@ -31,7 +34,7 @@ class DomainBaseModelMakeCommand extends DomainGeneratorCommand
 
     protected function getStub()
     {
-        return $this->resolveStubPath('base-model.php.stub');
+        return $this->resolveDddStubPath('base-model.stub');
     }
 
     protected function getRelativeDomainNamespace(): string

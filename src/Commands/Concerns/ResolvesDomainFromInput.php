@@ -5,16 +5,18 @@ namespace Lunarstorm\LaravelDDD\Commands\Concerns;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\Domain;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
 use Symfony\Component\Console\Input\InputOption;
+
+use function Laravel\Prompts\suggest;
 
 trait ResolvesDomainFromInput
 {
-    use CanPromptForDomain;
+    use HandleHooks,
+        HasGeneratorBlueprint,
+        QualifiesDomainModels;
 
     protected $nameIsAbsolute = false;
-
-    protected ?Domain $domain = null;
 
     protected function getOptions()
     {
@@ -26,47 +28,53 @@ trait ResolvesDomainFromInput
 
     protected function rootNamespace()
     {
-        return Str::finish(DomainResolver::domainRootNamespace(), '\\');
-    }
-
-    protected function guessObjectType(): string
-    {
-        return match ($this->name) {
-            'ddd:base-view-model' => 'view_model',
-            'ddd:base-model' => 'model',
-            'ddd:value' => 'value_object',
-            'ddd:dto' => 'data_transfer_object',
-            default => str($this->name)->after(':')->snake()->toString(),
-        };
+        return $this->blueprint->rootNamespace();
     }
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        if ($this->domain) {
-            return $this->nameIsAbsolute
-                ? $this->domain->namespace->root
-                : $this->domain->namespaceFor($this->guessObjectType());
-        }
-
-        return parent::getDefaultNamespace($rootNamespace);
+        return $this->blueprint
+            ? $this->blueprint->getDefaultNamespace($rootNamespace)
+            : parent::getDefaultNamespace($rootNamespace);
     }
 
     protected function getPath($name)
     {
-        if ($this->domain) {
-            return Path::normalize($this->laravel->basePath(
-                $this->domain->object(
-                    type: $this->guessObjectType(),
-                    name: $name,
-                    absolute: $this->nameIsAbsolute
-                )->path
-            ));
-        }
-
-        return parent::getPath($name);
+        return $this->blueprint
+            ? $this->blueprint->getPath($name)
+            : parent::getPath($name);
     }
 
-    public function handle()
+    protected function qualifyClass($name)
+    {
+        return $this->blueprint->qualifyClass($name);
+    }
+
+    protected function promptForDomainName(): string
+    {
+        $choices = collect(DomainResolver::domainChoices())
+            ->mapWithKeys(fn ($name) => [Str::lower($name) => $name]);
+
+        // Prompt for the domain
+        $domainName = suggest(
+            label: 'What is the domain?',
+            options: fn ($value) => collect($choices)
+                ->filter(fn ($name) => Str::contains($name, $value, ignoreCase: true))
+                ->toArray(),
+            placeholder: 'Start typing to search...',
+            required: true
+        );
+
+        // Normalize the case of the domain name
+        // if it is an existing domain.
+        if ($match = $choices->get(Str::lower($domainName))) {
+            $domainName = $match;
+        }
+
+        return $domainName;
+    }
+
+    protected function beforeHandle()
     {
         $nameInput = $this->getNameInput();
 
@@ -79,33 +87,26 @@ trait ResolvesDomainFromInput
             $nameInput = Str::after($nameInput, ':');
         }
 
-        $this->domain = match (true) {
+        $domainName = match (true) {
             // Domain was specified explicitly via option (priority)
-            filled($this->option('domain')) => new Domain($this->option('domain')),
+            filled($this->option('domain')) => $this->option('domain'),
 
             // Domain was specified as a prefix in the name
-            filled($domainExtractedFromName) => new Domain($domainExtractedFromName),
+            filled($domainExtractedFromName) => $domainExtractedFromName,
 
-            default => null,
+            default => $this->promptForDomainName(),
         };
 
-        // If the domain is not set, prompt for it
-        if (! $this->domain) {
-            $this->domain = new Domain($this->promptForDomainName());
-        }
+        $this->blueprint = new GeneratorBlueprint(
+            commandName: $this->getName(),
+            nameInput: $nameInput,
+            domainName: $domainName,
+            arguments: $this->arguments(),
+            options: $this->options(),
+        );
 
-        // Now that the domain part is handled,
-        // we will deal with the name portion.
+        $this->input->setArgument('name', $this->blueprint->nameInput);
 
-        // Normalize slash and dot separators
-        $nameInput = Str::replace(['.', '\\', '/'], '/', $nameInput);
-
-        if ($this->nameIsAbsolute = Str::startsWith($nameInput, ['/'])) {
-            // $nameInput = Str::after($nameInput, '/');
-        }
-
-        $this->input->setArgument('name', $nameInput);
-
-        parent::handle();
+        $this->input->setOption('domain', $this->blueprint->domainName);
     }
 }

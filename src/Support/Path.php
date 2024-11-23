@@ -18,6 +18,14 @@ class Path
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
 
+    public static function fromNamespace(string $namespace, ?string $classname = null): string
+    {
+        return str($namespace)
+            ->replace(['\\', '/'], DIRECTORY_SEPARATOR)
+            ->when($classname, fn ($s) => $s->append("{$classname}.php"))
+            ->toString();
+    }
+
     public static function filePathToNamespace(string $path, string $namespacePath, string $namespace): string
     {
         return str_replace(
@@ -25,5 +33,10 @@ class Path
             [$namespace, '\\', ''],
             $path
         );
+    }
+
+    public static function normalizeNamespace(string $namespace): string
+    {
+        return str_replace(['\\', '/'], '\\', $namespace);
     }
 }

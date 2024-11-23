@@ -4,6 +4,7 @@ namespace Lunarstorm\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 
 class UpgradeCommand extends Command
 {
@@ -19,36 +20,73 @@ class UpgradeCommand extends Command
             return;
         }
 
-        $replacements = [
+        $legacyMapping = [
             'domain_path' => 'paths.domain',
             'domain_namespace' => 'domain_namespace',
-            'namespaces.model' => 'namespaces.models',
-            'namespaces.data_transfer_object' => 'namespaces.data_transfer_objects',
-            'namespaces.view_model' => 'namespaces.view_models',
-            'namespaces.value_object' => 'namespaces.value_objects',
-            'namespaces.action' => 'namespaces.actions',
+            'application' => null,
+            'layers' => null,
+            'namespaces' => [
+                'model' => 'namespaces.models',
+                'data_transfer_object' => 'namespaces.data_transfer_objects',
+                'view_model' => 'namespaces.view_models',
+                'value_object' => 'namespaces.value_objects',
+                'action' => 'namespaces.actions',
+            ],
             'base_model' => 'base_model',
             'base_dto' => 'base_dto',
             'base_view_model' => 'base_view_model',
             'base_action' => 'base_action',
+            'autoload' => null,
+            'autoload_ignore' => null,
+            'cache_directory' => null,
         ];
 
+        $factoryConfig = require __DIR__.'/../../config/ddd.php';
         $oldConfig = require config_path('ddd.php');
         $oldConfig = Arr::dot($oldConfig);
 
-        // Grab a flesh copy of the new config
-        $newConfigContent = file_get_contents(__DIR__.'/../../config/ddd.php.stub');
+        $replacements = [];
 
-        foreach ($replacements as $dotPath => $legacyKey) {
+        $map = Arr::dot($legacyMapping);
+
+        foreach ($map as $dotPath => $legacyKey) {
             $value = match (true) {
                 array_key_exists($dotPath, $oldConfig) => $oldConfig[$dotPath],
                 array_key_exists($legacyKey, $oldConfig) => $oldConfig[$legacyKey],
                 default => config("ddd.{$dotPath}"),
             };
 
+            $replacements[$dotPath] = $value ?? data_get($factoryConfig, $dotPath);
+        }
+
+        $replacements = Arr::undot($replacements);
+
+        $freshConfig = $factoryConfig;
+
+        // Grab a fresh copy of the new config
+        $newConfigContent = file_get_contents(__DIR__.'/../../config/ddd.php.stub');
+
+        foreach ($freshConfig as $key => $value) {
+            $resolved = null;
+
+            if (is_array($value)) {
+                $resolved = [
+                    ...$value,
+                    ...data_get($replacements, $key, []),
+                ];
+
+                if (array_is_list($resolved)) {
+                    $resolved = array_unique($resolved);
+                }
+            } else {
+                $resolved = data_get($replacements, $key, $value);
+            }
+
+            $freshConfig[$key] = $resolved;
+
             $newConfigContent = str_replace(
-                '{{'.$dotPath.'}}',
-                var_export($value, true),
+                '{{'.$key.'}}',
+                var_export($resolved, true),
                 $newConfigContent
             );
         }
