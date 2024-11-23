@@ -61,6 +61,21 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             return $stub;
         }
 
+        // Handle Laravel 10 side effect
+        $invalidUse = "use {$this->getNamespace($name)}\Http\Controllers\Controller;";
+        if (strpos($stub, $invalidUse) !== false) {
+            $laravel10Replacements = [
+                $invalidUse.PHP_EOL => '',
+                'extends Controller' => '',
+            ];
+
+            $stub = str_replace(
+                array_keys($laravel10Replacements),
+                array_values($laravel10Replacements),
+                $stub
+            );
+        }
+
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
@@ -75,9 +90,6 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
             $replace[$namespaceLine.PHP_EOL] = $namespaceLine.PHP_EOL.PHP_EOL."use {$fullyQualifiedBaseController};";
             $replace["class {$controllerClass}".PHP_EOL] = "class {$controllerClass} extends Controller".PHP_EOL;
         }
-
-        // Remove Laravel 10 side effect
-        $replace["use {$this->getNamespace($name)}\Http\Controllers\Controller;".PHP_EOL] = '';
 
         $stub = str_replace(
             array_keys($replace),
