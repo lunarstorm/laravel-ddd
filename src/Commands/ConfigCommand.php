@@ -65,7 +65,7 @@ class ConfigCommand extends Command
     {
         $action = select('Laravel-DDD Config Utility', [
             'wizard' => 'Run the configuration wizard',
-            'update' => 'Update and merge ddd.php with latest package version',
+            'update' => 'Rebuild and merge ddd.php with latest package version',
             'detect' => 'Detect domain namespace from composer.json',
             'composer' => 'Sync composer.json from ddd.php',
             'exit' => 'Exit',

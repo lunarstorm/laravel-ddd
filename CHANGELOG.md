@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unreleased]
+## [1.2.0] - 2024-11-23
 ### Breaking
 - Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
 - Published stubs now use `.stub` extension instead of `.php.stub` (following Laravel's convention).

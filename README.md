@@ -19,6 +19,17 @@ You may initialize the package using the `ddd:install` artisan command. This wil
 php artisan ddd:install
 ```
 
+### Configuration
+For first-time installations, a config wizard is available to populate the `ddd.php` config file interactively:
+```bash
+php artisan ddd:config wizard
+```
+For existing installations with a config file published from a previous version, you may use the `ddd:config update` command to rebuild and merge it with the latest package copy:
+```bash
+php artisan ddd:config update
+```
+See [Configuration Utility](#config-utility) for more details about the config utility.
+
 ### Peer Dependencies
 The following additional packages are suggested (but not required) while working with this package.
 - Data Transfer Objects: [spatie/laravel-data](https://github.com/spatie/laravel-data)
@@ -97,6 +108,8 @@ The following generators are currently available:
 
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
+<a name="config-utility"></a>
+
 ### Config Utility (Since 1.2)
 A configuration utility was introduced in 1.2 to help manage the package's configuration over time. 
 ```bash
@@ -106,7 +119,7 @@ Output:
 ```
  ┌ Laravel-DDD Config Utility ──────────────────────────────────┐
  │ › ● Run the configuration wizard                             │
- │   ○ Update and merge ddd.php with latest package version     │
+ │   ○ Rebuild and merge ddd.php with latest package copy       │
  │   ○ Detect domain namespace from composer.json               │
  │   ○ Sync composer.json from ddd.php                          │
  │   ○ Exit                                                     │
@@ -117,7 +130,7 @@ These config tasks are also invokeable directly using arguments:
 # Run the configuration wizard
 php artisan ddd:config wizard
 
-# Update and merge ddd.php with latest package version
+# Rebuild and merge ddd.php with latest package copy
 php artisan ddd:config update
 
 # Detect domain namespace from composer.json
