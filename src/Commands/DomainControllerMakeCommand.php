@@ -6,6 +6,7 @@ use Illuminate\Routing\Console\ControllerMakeCommand;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
 use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Lunarstorm\LaravelDDD\Support\Path;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {
@@ -78,7 +79,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         $replace = [];
 
         $appRootNamespace = $this->laravel->getNamespace();
-        $pathToAppBaseController = app_path('Http/Controllers/Controller.php');
+        $pathToAppBaseController = Path::normalize(app_path('Http/Controllers/Controller.php'));
 
         $baseControllerExists = $this->files->exists($pathToAppBaseController);
 
