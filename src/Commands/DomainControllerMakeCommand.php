@@ -66,7 +66,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         if (strpos($stub, $invalidUse) !== false) {
             $laravel10Replacements = [
                 $invalidUse.PHP_EOL => '',
-                'extends Controller' => '',
+                ' extends Controller' => '',
             ];
 
             $stub = str_replace(
