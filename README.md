@@ -28,7 +28,7 @@ For existing installations with a config file published from a previous version,
 ```bash
 php artisan ddd:config update
 ```
-See [Configuration Utility](#config-utility) for more details about the config utility.
+See [Configuration Utility](#config-utility) for details about other available options.
 
 ### Peer Dependencies
 The following additional packages are suggested (but not required) while working with this package.
