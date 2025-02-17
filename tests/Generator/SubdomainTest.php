@@ -26,7 +26,7 @@ it('can generate objects under deeply nested subdomains', function ($type, $conf
         'Models',
         'Betterflow.V1.Editorials:Another',
         'Domain\Betterflow\V1\Editorials\Models',
-        'src/Domain/Betterflow/V1/Editorials/Models/Another.php'
+        'src/Domain/Betterflow/V1/Editorials/Models/Another.php',
     ],
 
     'model Betterflow.V1.Editorials:Nested/Another' => [
@@ -34,7 +34,7 @@ it('can generate objects under deeply nested subdomains', function ($type, $conf
         'Models',
         'Betterflow.V1.Editorials:Nested/Another',
         'Domain\Betterflow\V1\Editorials\Models\Nested',
-        'src/Domain/Betterflow/V1/Editorials/Models/Nested/Another.php'
+        'src/Domain/Betterflow/V1/Editorials/Models/Nested/Another.php',
     ],
 
     'model Betterflow.V1.Editorials:Nested.Another' => [
@@ -42,6 +42,6 @@ it('can generate objects under deeply nested subdomains', function ($type, $conf
         'Models',
         'Betterflow.V1.Editorials:Nested.Another',
         'Domain\Betterflow\V1\Editorials\Models\Nested',
-        'src/Domain/Betterflow/V1/Editorials/Models/Nested/Another.php'
+        'src/Domain/Betterflow/V1/Editorials/Models/Nested/Another.php',
     ],
 ]);
