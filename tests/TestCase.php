@@ -51,7 +51,7 @@ class TestCase extends Orchestra
 
     protected function tearDown(): void
     {
-        $basePath = $this->getBasePath();
+        $basePath = $this->getApplicationBasePath();
 
         $this->cleanSlate();
 
@@ -139,7 +139,7 @@ class TestCase extends Orchestra
 
     protected function getComposerFileContents()
     {
-        $basePath = $this->getBasePath();
+        $basePath = $this->getApplicationBasePath();
 
         return file_get_contents($basePath.'/composer.json');
     }
@@ -213,7 +213,7 @@ class TestCase extends Orchestra
 
     protected function cleanSlate()
     {
-        $basePath = $this->getBasePath();
+        $basePath = $this->getApplicationBasePath();
 
         File::delete($basePath.'/config/ddd.php');
 
@@ -246,7 +246,7 @@ class TestCase extends Orchestra
     {
         $this->cleanSlate();
 
-        $basePath = $this->getBasePath();
+        $basePath = $this->getApplicationBasePath();
 
         File::ensureDirectoryExists(app_path());
         File::ensureDirectoryExists(app_path('Models'));
