@@ -28,7 +28,7 @@ class TestCase extends Orchestra
             $this->cleanSlate();
 
             Factory::guessFactoryNamesUsing(
-                fn (string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\'.class_basename($modelName).'Factory'
+                fn(string $modelName) => 'Lunarstorm\\LaravelDDD\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
             );
 
             DomainCache::clear();
@@ -51,11 +51,11 @@ class TestCase extends Orchestra
 
     protected function tearDown(): void
     {
-        $basePath = $this->getApplicationBasePath();
+        $basePath = $this->resolveApplicationBasePath();
 
         $this->cleanSlate();
 
-        file_put_contents($basePath.'/composer.json', $this->originalComposerContents);
+        file_put_contents($basePath . '/composer.json', $this->originalComposerContents);
 
         parent::tearDown();
     }
@@ -137,11 +137,18 @@ class TestCase extends Orchestra
         return $this;
     }
 
+    protected function resolveApplicationBasePath()
+    {
+        return method_exists($this, 'getBasePath')
+            ? $this->getBasePath()
+            : $this->getApplicationBasePath();
+    }
+
     protected function getComposerFileContents()
     {
-        $basePath = $this->getApplicationBasePath();
+        $basePath = $this->resolveApplicationBasePath();
 
-        return file_get_contents($basePath.'/composer.json');
+        return file_get_contents($basePath . '/composer.json');
     }
 
     protected function getComposerFileAsArray()
@@ -213,22 +220,22 @@ class TestCase extends Orchestra
 
     protected function cleanSlate()
     {
-        $basePath = $this->getApplicationBasePath();
+        $basePath = $this->resolveApplicationBasePath();
 
-        File::delete($basePath.'/config/ddd.php');
+        File::delete($basePath . '/config/ddd.php');
 
-        File::cleanDirectory($basePath.'/app/Models');
-        File::cleanDirectory($basePath.'/database/factories');
-        File::cleanDirectory($basePath.'/bootstrap/cache');
-        File::cleanDirectory($basePath.'/bootstrap/cache/ddd');
+        File::cleanDirectory($basePath . '/app/Models');
+        File::cleanDirectory($basePath . '/database/factories');
+        File::cleanDirectory($basePath . '/bootstrap/cache');
+        File::cleanDirectory($basePath . '/bootstrap/cache/ddd');
 
-        File::deleteDirectory($basePath.'/src');
-        File::deleteDirectory($basePath.'/resources/stubs/ddd');
-        File::deleteDirectory($basePath.'/stubs');
-        File::deleteDirectory($basePath.'/Custom');
-        File::deleteDirectory($basePath.'/Other');
-        File::deleteDirectory($basePath.'/app/Policies');
-        File::deleteDirectory($basePath.'/app/Modules');
+        File::deleteDirectory($basePath . '/src');
+        File::deleteDirectory($basePath . '/resources/stubs/ddd');
+        File::deleteDirectory($basePath . '/stubs');
+        File::deleteDirectory($basePath . '/Custom');
+        File::deleteDirectory($basePath . '/Other');
+        File::deleteDirectory($basePath . '/app/Policies');
+        File::deleteDirectory($basePath . '/app/Modules');
 
         // File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
 
@@ -246,27 +253,27 @@ class TestCase extends Orchestra
     {
         $this->cleanSlate();
 
-        $basePath = $this->getApplicationBasePath();
+        $basePath = $this->resolveApplicationBasePath();
 
         File::ensureDirectoryExists(app_path());
         File::ensureDirectoryExists(app_path('Models'));
         File::ensureDirectoryExists(database_path('factories'));
-        File::ensureDirectoryExists($basePath.'/bootstrap/cache/ddd');
+        File::ensureDirectoryExists($basePath . '/bootstrap/cache/ddd');
 
-        $skeletonAppFolders = glob(__DIR__.'/.skeleton/app/*', GLOB_ONLYDIR);
+        $skeletonAppFolders = glob(__DIR__ . '/.skeleton/app/*', GLOB_ONLYDIR);
 
         foreach ($skeletonAppFolders as $folder) {
             File::copyDirectory($folder, app_path(basename($folder)));
         }
 
         File::ensureDirectoryExists(app_path('Http/Controllers'));
-        File::copy(__DIR__.'/.skeleton/app/Http/Controllers/Controller.php', app_path('Http/Controllers/Controller.php'));
+        File::copy(__DIR__ . '/.skeleton/app/Http/Controllers/Controller.php', app_path('Http/Controllers/Controller.php'));
 
-        File::copyDirectory(__DIR__.'/.skeleton/database', base_path('database'));
-        File::copyDirectory(__DIR__.'/.skeleton/src', base_path('src'));
-        File::copy(__DIR__.'/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
-        File::copy(__DIR__.'/.skeleton/config/ddd.php', config_path('ddd.php'));
-        File::copy(__DIR__.'/.skeleton/composer.json', $basePath.'/composer.json');
+        File::copyDirectory(__DIR__ . '/.skeleton/database', base_path('database'));
+        File::copyDirectory(__DIR__ . '/.skeleton/src', base_path('src'));
+        File::copy(__DIR__ . '/.skeleton/bootstrap/providers.php', base_path('bootstrap/providers.php'));
+        File::copy(__DIR__ . '/.skeleton/config/ddd.php', config_path('ddd.php'));
+        File::copy(__DIR__ . '/.skeleton/composer.json', $basePath . '/composer.json');
 
         $this->composerReload();
 
@@ -285,7 +292,7 @@ class TestCase extends Orchestra
     {
         $this->updateComposer(
             set: [
-                [['autoload', 'psr-4', $namespace.'\\'], $path],
+                [['autoload', 'psr-4', $namespace . '\\'], $path],
             ],
         );
 
