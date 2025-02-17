@@ -41,7 +41,7 @@ class Domain
 
         $domain = str($domain)->trim('\\/')->toString();
 
-        $subdomain = str($subdomain)->trim('\\/')->toString();
+        $subdomain = str($subdomain)->trim('\\/')->replace('.', '/')->toString();
 
         $this->domainWithSubdomain = str($domain)
             ->when($subdomain, fn ($domain) => $domain->append("\\{$subdomain}"))
