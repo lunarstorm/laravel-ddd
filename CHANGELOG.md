@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [Unreleased]
+### Fixed
+- Ensure deeply-nested subdomains specified in dot notation are normalized to slashes when generating the objects into their destination path.
+
 ## [1.2.0] - 2024-11-23
 ### Breaking
 - Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
