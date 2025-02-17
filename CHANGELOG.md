@@ -2,9 +2,12 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [Unreleased]
+## [1.2.1] - 2025-02-17
 ### Fixed
 - Ensure deeply-nested subdomains specified in dot notation are normalized to slashes when generating the objects into their destination path.
+
+### Chore
+- Bump dependencies.
 
 ## [1.2.0] - 2024-11-23
 ### Breaking
