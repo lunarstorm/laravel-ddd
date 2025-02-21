@@ -20,7 +20,7 @@ jobs:
             -   laravel: 12.*
                 testbench: 10.*
                 carbon: ^3.8.4
-            -   laravel: 11.*
+            -   laravel: ^11.43
                 testbench: 9.*
                 carbon: ^3.4
 
