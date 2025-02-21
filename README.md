@@ -50,6 +50,8 @@ Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimiz
  9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**   |
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
+ 11.43.x        | 2.x        |
+ 12.x           | 2.x        |
 
 See **[UPGRADING](UPGRADING.md)** for more details about upgrading across different versions.
 
