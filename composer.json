@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^8.2|^8.3|^8.4",
-        "illuminate/contracts": "^11.43|^12.0",
+        "illuminate/contracts": "^11.44|^12.0",
         "laravel/pint": "^1.21",
         "laravel/prompts": "^0.3.1",
         "lorisleiva/lody": "^0.6",
