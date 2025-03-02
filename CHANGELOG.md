@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.0.0] - 2025-03-02
+### Chore
+- Add support for Laravel 12.
+- Minimum Laravel 11 version is now 11.44.
+- Drop support for Laravel 10.
+
 ## [1.2.1] - 2025-02-17
 ### Fixed
 - Ensure deeply-nested subdomains specified in dot notation are normalized to slashes when generating the objects into their destination path.
