@@ -63,6 +63,7 @@ class DomainControllerMakeCommand extends ControllerMakeCommand
         }
 
         // Handle Laravel 10 side effect
+        // todo: deprecated since L10 is no longer supported.
         if (str($stub)->contains($invalidUse = "use {$this->getNamespace($name)}\Http\Controllers\Controller;\n")) {
             $laravel10Replacements = [
                 ' extends Controller' => '',

@@ -1,5 +1,10 @@
 # Upgrading
 
+## From 1.2.x to 2.0.x
+- Minimum required Laravel version is 11.44.
+- Minimum PHP version is now 8.2.
+- Nothing major on the surface; but the package will no longer require various workarounds for Laravel 10 behind the scenes.
+
 ## From 1.1.x to 1.2.x
 ### Breaking
 - Stubs are now published to `base_path('stubs/ddd')` instead of `resource_path('stubs/ddd')`. In other words, they are now co-located alongside the framework's published stubs, within a ddd subfolder.
