@@ -22,7 +22,7 @@
         "illuminate/contracts": "^11.43|^12.0",
         "laravel/pint": "^1.21",
         "laravel/prompts": "^0.1.16|^0.2|^0.3.1",
-        "lorisleiva/lody": "dev-l12-compatibility",
+        "lorisleiva/lody": "^0.6",
         "spatie/laravel-package-tools": "^1.19.0",
         "symfony/var-exporter": "^6|^7.1"
     },
@@ -85,11 +85,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/laravel-shift/lody.git"
-        }
-    ]
+    "prefer-stable": true
 }
