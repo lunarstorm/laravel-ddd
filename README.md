@@ -38,11 +38,7 @@ The following additional packages are suggested (but not required) while working
 The default DTO and Action stubs of this package reference classes from these packages. If this doesn't apply to your application, you may [publish and customize the stubs](#customizing-stubs) accordingly.
 
 ### Deployment
-In production, run `ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production).
-```bash
-php artisan ddd:optimize
-```
-Since Laravel 11.27.1, `php artisan optimize` automatically invokes `ddd:optimize`. If you already run `optimize` in production, a separate `ddd:optimize` is no longer necessary. In previous versions of this package, this command was named `ddd:cache`, which will continue to work as an alias.
+In production, ensure you run `php artisan ddd:optimize` during the deployment process to [optimize autoloading](#autoloading-in-production). If you already run `php artisan optimize` in production, this will be handled automatically.
 
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
@@ -103,10 +99,10 @@ The following generators are currently available:
 | `ddd:request` | Generate a form request | `php artisan ddd:request Invoicing:StoreInvoiceRequest` |
 | `ddd:scope` | Generate a scope | `php artisan ddd:scope Invoicing:ArchivedInvoicesScope` |
 | `ddd:seeder` | Generate a seeder | `php artisan ddd:seeder Invoicing:InvoiceSeeder` |
-| `ddd:class` | Generate a class (Laravel 11+) | `php artisan ddd:class Invoicing:Support/InvoiceBuilder` |
-| `ddd:enum` | Generate an enum (Laravel 11+) | `php artisan ddd:enum Customer:CustomerType` |
-| `ddd:interface` | Generate an interface (Laravel 11+) | `php artisan ddd:interface Customer:Contracts/Invoiceable` |
-| `ddd:trait` | Generate a trait (Laravel 11+) | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
+| `ddd:class` | Generate a class | `php artisan ddd:class Invoicing:Support/InvoiceBuilder` |
+| `ddd:enum` | Generate an enum | `php artisan ddd:enum Customer:CustomerType` |
+| `ddd:interface` | Generate an interface | `php artisan ddd:interface Customer:Contracts/Invoiceable` |
+| `ddd:trait` | Generate a trait | `php artisan ddd:trait Customer:Concerns/HasInvoices` |
 
 Generated objects will be placed in the appropriate domain namespace as specified by `ddd.namespaces.*` in the [config file](#config-file).
 
@@ -432,9 +428,7 @@ You may disable autoloading by setting the respective autoload options to `false
 <a name="autoloading-in-production"></a>
 
 ## Autoloading in Production
-In production, you should cache the autoload manifests using the `ddd:optimize` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed.
-
-> **Note**: Since Laravel 11.27.1, the framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` and `ddd:clear` respectively.
+In production, you should cache the autoload manifests using the `ddd:optimize` command as part of your application's deployment process. This will speed up the auto-discovery and registration of domain providers and commands. The `ddd:clear` command may be used to clear the cache if needed. If you are already running `php artisan optimize`, `ddd:optimize` will be included within that pipeline. The framework's `optimize` and `optimize:clear` commands will automatically invoke `ddd:optimize` and `ddd:clear` respectively.
 
 <a name="config-file"></a>
 
