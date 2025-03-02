@@ -14,6 +14,11 @@ trait HandleHooks
         //
     }
 
+    /**
+     * Handle the command, with before and after hooks.
+     *
+     * @return bool|null|void
+     */
     public function handle()
     {
         $this->beforeHandle();

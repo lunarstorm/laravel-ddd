@@ -42,8 +42,11 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainChannelMakeCommand::class,
                 Commands\DomainConsoleMakeCommand::class,
                 Commands\DomainControllerMakeCommand::class,
+                Commands\DomainClassMakeCommand::class,
+                Commands\DomainEnumMakeCommand::class,
                 Commands\DomainEventMakeCommand::class,
                 Commands\DomainExceptionMakeCommand::class,
+                Commands\DomainInterfaceMakeCommand::class,
                 Commands\DomainJobMakeCommand::class,
                 Commands\DomainListenerMakeCommand::class,
                 Commands\DomainMailMakeCommand::class,
@@ -57,15 +60,9 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 Commands\DomainRuleMakeCommand::class,
                 Commands\DomainScopeMakeCommand::class,
                 Commands\DomainSeederMakeCommand::class,
+                Commands\DomainTraitMakeCommand::class,
                 Commands\Migration\DomainMigrateMakeCommand::class,
             ]);
-
-        if ($this->laravelVersion(11)) {
-            $package->hasCommand(Commands\DomainClassMakeCommand::class);
-            $package->hasCommand(Commands\DomainEnumMakeCommand::class);
-            $package->hasCommand(Commands\DomainInterfaceMakeCommand::class);
-            $package->hasCommand(Commands\DomainTraitMakeCommand::class);
-        }
 
         if ($this->app->runningUnitTests()) {
             $package->hasRoutes(['testing']);
@@ -135,7 +132,7 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
     {
         Autoload::run();
 
-        if ($this->app->runningInConsole() && method_exists($this, 'optimizes')) {
+        if ($this->app->runningInConsole()) {
             $this->optimizes(
                 optimize: 'ddd:optimize',
                 clear: 'ddd:clear',

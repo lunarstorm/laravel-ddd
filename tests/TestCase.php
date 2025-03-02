@@ -139,9 +139,7 @@ class TestCase extends Orchestra
 
     protected function resolveApplicationBasePath()
     {
-        return method_exists($this, 'getBasePath')
-            ? $this->getBasePath()
-            : $this->getApplicationBasePath();
+        return $this->getApplicationBasePath();
     }
 
     protected function getComposerFileContents()

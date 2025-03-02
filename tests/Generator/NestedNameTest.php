@@ -21,7 +21,7 @@ it('can generate nested objects', function ($type, $configuredNamespace, $nameIn
 
     expect($command)->toGenerateFileWithNamespace($expectedPath, $expectedNamespace);
 })->with([
-    'model Invoicing:Deep/Nested/Model' => ['model', 'Models', 'Invoicing:Deep/Nested/Model', 'Domain\Invoicing\Models\Deep\Nested', 'src/Domain/Invoicing/Models/Deep/Nested/Model.php'],
+    'model Invoicing:Deep/Nested/SomeModel' => ['model', 'Models', 'Invoicing:Deep/Nested/SomeModel', 'Domain\Invoicing\Models\Deep\Nested', 'src/Domain/Invoicing/Models/Deep/Nested/SomeModel.php'],
     'action Invoicing:Deep/Nested/SomeAction' => ['action', 'Actions', 'Invoicing:Deep/Nested/SomeAction', 'Domain\Invoicing\Actions\Deep\Nested', 'src/Domain/Invoicing/Actions/Deep/Nested/SomeAction.php'],
     'dto Invoicing:Deep/Nested/InvoiceData' => ['dto', 'Data', 'Invoicing:Deep/Nested/InvoiceData', 'Domain\Invoicing\Data\Deep\Nested', 'src/Domain/Invoicing/Data/Deep/Nested/InvoiceData.php'],
     'view_model Invoicing:Deep/Nested/InvoiceViewModel' => ['view_model', 'ViewModels', 'Invoicing:Deep/Nested/InvoiceViewModel', 'Domain\Invoicing\ViewModels\Deep\Nested', 'src/Domain/Invoicing/ViewModels/Deep/Nested/InvoiceViewModel.php'],
