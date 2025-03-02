@@ -16,7 +16,7 @@ trait HandleHooks
 
     /**
      * Handle the command, with before and after hooks.
-     * 
+     *
      * @return bool|null
      */
     public function handle()
