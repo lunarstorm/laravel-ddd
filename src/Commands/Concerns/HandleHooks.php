@@ -14,6 +14,11 @@ trait HandleHooks
         //
     }
 
+    /**
+     * Handle the command, with before and after hooks.
+     * 
+     * @return bool|null
+     */
     public function handle()
     {
         $this->beforeHandle();
@@ -21,5 +26,7 @@ trait HandleHooks
         parent::handle();
 
         $this->afterHandle();
+
+        return true;
     }
 }

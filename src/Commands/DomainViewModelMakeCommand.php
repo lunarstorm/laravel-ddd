@@ -65,7 +65,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
             ]);
         }
 
-        parent::handle();
+        return parent::handle();
     }
 
     protected function shouldCreateBaseViewModel(): bool

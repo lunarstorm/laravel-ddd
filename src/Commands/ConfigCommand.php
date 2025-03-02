@@ -105,8 +105,7 @@ class ConfigCommand extends Command
 
     public static function hasRequiredVersionOfLaravelPrompts(): bool
     {
-        return function_exists('\Laravel\Prompts\form')
-            && method_exists(\Laravel\Prompts\FormBuilder::class, 'addIf');
+        return function_exists('\Laravel\Prompts\form');
     }
 
     protected function wizard(): int
