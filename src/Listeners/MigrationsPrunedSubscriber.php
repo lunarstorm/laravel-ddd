@@ -5,57 +5,34 @@ namespace Lunarstorm\LaravelDDD\Listeners;
 use Illuminate\Database\Events\MigrationsPruned;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
+use Illuminate\Support\LazyCollection;
+use Lorisleiva\Lody\Lody;
+use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use SplFileInfo;
+use Symfony\Component\Finder\Finder;
 
 class MigrationsPrunedSubscriber
 {
-    public function __construct() {}
-
     public function handle(): void
     {
-        $locations = [
-            config('ddd.domain_path'),
-            ...config('ddd.layers'),
-        ];
-
-        $migrationDirs = collect();
-        /** @var Collection<int, SplFileInfo> $filesToDelete */
-        $filesToDelete = collect();
-
+        $migrationDirs = DomainMigration::paths();
         $filesystem = new Filesystem;
 
-        foreach ($locations as $location) {
-            if (! $filesystem->exists($location)) {
-                continue;
-            }
+        foreach ($migrationDirs as $migrationDir) {
+            /** @var LazyCollection<int, SplFileInfo> $filesToDelete */
+            $filesToDelete = Lody::filesFromFinder(
+                Finder::create()
+                    ->files()
+                    ->in($migrationDir)
+                    ->filter(static fn (SplFileInfo $file): bool => $file->getExtension() === 'php')
+            );
 
-            $allFiles = $filesystem->allFiles($location);
-
-            foreach ($allFiles as $file) {
-                if (
-                    Str::endsWith($file->getPath(), 'Database/Migrations')
-                    &&
-                    $file->getExtension() == 'php'
-                ) {
-                    $filesToDelete->push($file);
-                }
-            }
-        }
-
-        /** @var Collection<string, Collection<int, SplFileInfo>> $groupedFilesToDelete */
-        $groupedFilesToDelete = $filesToDelete->groupBy(function (SplFileInfo $file) {
-            return $file->getPath();
-        });
-
-        foreach ($groupedFilesToDelete as $location => $groupOfFilesToDelete) {
-            foreach ($groupOfFilesToDelete as $file) {
+            foreach ($filesToDelete as $file) {
                 $filesystem->delete($file->getPathname());
             }
 
-            if ($filesystem->isEmptyDirectory($location)) {
-                $filesystem->deleteDirectory($location);
+            if ($filesystem->isEmptyDirectory($migrationDir)) {
+                $filesystem->deleteDirectory($migrationDir);
             }
         }
     }
