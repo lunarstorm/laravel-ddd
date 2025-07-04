@@ -3,7 +3,9 @@
 namespace Lunarstorm\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
+use Illuminate\Support\Facades\Event;
 use Lunarstorm\LaravelDDD\Facades\Autoload;
+use Lunarstorm\LaravelDDD\Listeners\MigrationsPrunedSubscriber;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
@@ -139,6 +141,8 @@ class LaravelDDDServiceProvider extends PackageServiceProvider
                 key: 'laravel-ddd',
             );
         }
+
+        Event::subscribe(MigrationsPrunedSubscriber::class);
     }
 
     public function packageRegistered()
