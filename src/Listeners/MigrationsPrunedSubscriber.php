@@ -5,11 +5,7 @@ namespace Lunarstorm\LaravelDDD\Listeners;
 use Illuminate\Database\Events\MigrationsPruned;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\LazyCollection;
-use Lorisleiva\Lody\Lody;
 use Lunarstorm\LaravelDDD\Support\DomainMigration;
-use SplFileInfo;
-use Symfony\Component\Finder\Finder;
 
 class MigrationsPrunedSubscriber
 {
@@ -19,21 +15,7 @@ class MigrationsPrunedSubscriber
         $filesystem = new Filesystem;
 
         foreach ($migrationDirs as $migrationDir) {
-            /** @var LazyCollection<int, SplFileInfo> $filesToDelete */
-            $filesToDelete = Lody::filesFromFinder(
-                Finder::create()
-                    ->files()
-                    ->in($migrationDir)
-                    ->filter(static fn (SplFileInfo $file): bool => $file->getExtension() === 'php')
-            );
-
-            foreach ($filesToDelete as $file) {
-                $filesystem->delete($file->getPathname());
-            }
-
-            if ($filesystem->isEmptyDirectory($migrationDir)) {
-                $filesystem->deleteDirectory($migrationDir);
-            }
+            $filesystem->deleteDirectory($migrationDir, preserve: false);
         }
     }
 
