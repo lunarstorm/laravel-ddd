@@ -23,4 +23,4 @@ it('prunes domain migrations when schema:dump --prune is called', function () {
     });
 
     expect($migrationFile)->not->toBeFile();
-});
+})->skipOnWindows();
