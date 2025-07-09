@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.0.1] - 2025-07-09
+### Added
+- Ensure domain migration folders are also pruned when pruning migrations via `php artisan schema:dump --prune`.
+
 ## [2.0.0] - 2025-03-02
 ### Chore
 - Add support for Laravel 12.
