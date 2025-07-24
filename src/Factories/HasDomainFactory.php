@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 trait HasDomainFactory
 {
+    /** @use HasFactory<TFactory> */
     use HasFactory;
 
     /**
