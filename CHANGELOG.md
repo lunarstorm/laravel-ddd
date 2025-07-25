@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.0.2] - 2025-07-24
+### Added
+- Add generics to `HasDomainFactory` trait for improved static analysis.
+
 ## [2.0.1] - 2025-07-09
 ### Added
 - Ensure domain migration folders are also pruned when pruning migrations via `php artisan schema:dump --prune`.
