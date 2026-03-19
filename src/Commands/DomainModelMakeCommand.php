@@ -28,9 +28,20 @@ class DomainModelMakeCommand extends ModelMakeCommand
 
         $this->createBaseModelIfNeeded();
 
-        parent::handle();
+        // Prevent the upstream confirm() prompt introduced in newer Laravel versions
+        // when a model file already exists. Domain generators don't support the
+        // "additional components" flow — use explicit flags (--factory, --migration, etc.).
+        if (! $this->option('force') && $this->alreadyExists($this->getNameInput())) {
+            $this->components->error($this->type.' already exists.');
+
+            return self::FAILURE;
+        }
+
+        $result = parent::handle();
 
         $this->afterHandle();
+
+        return $result ?? self::SUCCESS;
     }
 
     protected function buildFactoryReplacements()

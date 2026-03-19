@@ -23,8 +23,10 @@ trait HandleHooks
     {
         $this->beforeHandle();
 
-        parent::handle();
+        $result = parent::handle();
 
         $this->afterHandle();
+
+        return $result ?? self::SUCCESS;
     }
 }
