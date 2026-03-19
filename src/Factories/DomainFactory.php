@@ -3,6 +3,7 @@
 namespace Lunarstorm\LaravelDDD\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunarstorm\LaravelDDD\Support\DomainResolver;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
@@ -22,8 +23,8 @@ abstract class DomainFactory extends Factory
     /**
      * Get the factory name for the given domain model name.
      *
-     * @param  class-string<\Illuminate\Database\Eloquent\Model>  $modelName
-     * @return null|class-string<\Illuminate\Database\Eloquent\Factories\Factory>
+     * @param  class-string<Model>  $modelName
+     * @return null|class-string<Factory>
      */
     public static function resolveFactoryName(string $modelName)
     {
