@@ -19,7 +19,7 @@ class DomainValueObjectMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'Value Object';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setAliases([
             'ddd:value-object',

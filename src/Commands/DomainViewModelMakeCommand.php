@@ -20,7 +20,7 @@ class DomainViewModelMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'View Model';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setAliases([
             'ddd:viewmodel',
