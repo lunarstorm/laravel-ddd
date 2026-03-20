@@ -12,7 +12,7 @@ class OptimizeCommand extends Command
 
     protected $description = 'Cache auto-discovered domain objects and migration paths.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setAliases([
             'ddd:cache',
