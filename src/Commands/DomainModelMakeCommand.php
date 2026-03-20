@@ -22,6 +22,9 @@ class DomainModelMakeCommand extends ModelMakeCommand
         return Str::studly($this->argument('name'));
     }
 
+    /**
+     * @return int
+     */
     public function handle()
     {
         $this->beforeHandle();
@@ -37,11 +40,11 @@ class DomainModelMakeCommand extends ModelMakeCommand
             return self::FAILURE;
         }
 
-        $result = parent::handle();
+        parent::handle();
 
         $this->afterHandle();
 
-        return $result ?? self::SUCCESS;
+        return self::SUCCESS;
     }
 
     protected function buildFactoryReplacements()

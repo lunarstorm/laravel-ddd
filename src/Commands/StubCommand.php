@@ -31,10 +31,10 @@ class StubCommand extends Command
     protected function getOptions()
     {
         return [
-            ['all', 'a', InputOption::VALUE_NONE, 'Publish all stubs'],
-            ['existing', null, InputOption::VALUE_NONE, 'Publish and overwrite only the files that have already been published'],
-            ['force', null, InputOption::VALUE_NONE, 'Overwrite any existing files'],
-            ['list', 'l', InputOption::VALUE_NONE, 'List all available stubs'],
+            new InputOption('all', 'a', InputOption::VALUE_NONE, 'Publish all stubs'),
+            new InputOption('existing', null, InputOption::VALUE_NONE, 'Publish and overwrite only the files that have already been published'),
+            new InputOption('force', null, InputOption::VALUE_NONE, 'Overwrite any existing files'),
+            new InputOption('list', 'l', InputOption::VALUE_NONE, 'List all available stubs'),
         ];
     }
 
