@@ -28,7 +28,7 @@ jobs:
                 pest: ^4.0
                 pest-plugin: ^4.0
             -   laravel: 11.*
-                testbench: 9.11.*
+                testbench: ^9.11
                 carbon: ^3.8.4
                 pest: ^4.0
                 pest-plugin: ^4.0
