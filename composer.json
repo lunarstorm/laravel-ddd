@@ -62,7 +62,7 @@
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "@composer dump-autoload && vendor/bin/pest",
+        "test": "@composer dump-autoload && vendor/bin/pest --no-coverage",
         "test-coverage": "@composer dump-autoload && vendor/bin/pest --coverage",
         "purge-skeleton": "vendor/bin/testbench package:purge-skeleton",
         "format": "vendor/bin/pint",
