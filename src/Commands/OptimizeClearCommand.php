@@ -11,7 +11,7 @@ class OptimizeClearCommand extends Command
 
     protected $description = 'Clear cached domain autoloaded objects.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setAliases([
             'ddd:optimize:clear',
@@ -25,5 +25,7 @@ class OptimizeClearCommand extends Command
         DomainCache::clear();
 
         $this->components->info('Domain cache cleared successfully.');
+
+        return self::SUCCESS;
     }
 }

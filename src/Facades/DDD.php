@@ -3,9 +3,10 @@
 namespace Lunarstorm\LaravelDDD\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lunarstorm\LaravelDDD\DomainManager;
 
 /**
- * @see \Lunarstorm\LaravelDDD\DomainManager
+ * @see DomainManager
  *
  * @method static void filterAutoloadPathsUsing(callable $filter)
  * @method static ?callable getAutoloadFilter()
@@ -20,6 +21,6 @@ class DDD extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Lunarstorm\LaravelDDD\DomainManager::class;
+        return DomainManager::class;
     }
 }
