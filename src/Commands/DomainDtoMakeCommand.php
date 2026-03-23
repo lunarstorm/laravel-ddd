@@ -19,7 +19,7 @@ class DomainDtoMakeCommand extends DomainGeneratorCommand
 
     protected $type = 'Data Transfer Object';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setAliases([
             'ddd:data-transfer-object',

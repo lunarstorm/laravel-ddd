@@ -19,11 +19,11 @@ class BaseMigrateMakeCommand extends MigrateMakeCommand
     protected function getOptions()
     {
         return [
-            ['create', null, InputOption::VALUE_REQUIRED, 'The table to be created'],
-            ['table', null, InputOption::VALUE_REQUIRED, 'The table to migrate'],
-            ['path', null, InputOption::VALUE_REQUIRED, 'The location where the migration file should be created'],
-            ['realpath', null, InputOption::VALUE_NONE, 'Indicate any provided migration file paths are pre-resolved absolute paths'],
-            ['fullpath', null, InputOption::VALUE_NONE, 'Output the full path of the migration (Deprecated)'],
+            new InputOption('create', null, InputOption::VALUE_REQUIRED, 'The table to be created'),
+            new InputOption('table', null, InputOption::VALUE_REQUIRED, 'The table to migrate'),
+            new InputOption('path', null, InputOption::VALUE_REQUIRED, 'The location where the migration file should be created'),
+            new InputOption('realpath', null, InputOption::VALUE_NONE, 'Indicate any provided migration file paths are pre-resolved absolute paths'),
+            new InputOption('fullpath', null, InputOption::VALUE_NONE, 'Output the full path of the migration (Deprecated)'),
         ];
     }
 

@@ -9,17 +9,17 @@ beforeEach(function () {
     $this->artisan('ddd:model', [
         'name' => 'Invoice',
         '--domain' => 'Invoicing',
-    ]);
+    ])->execute();
 
     $this->artisan('ddd:dto', [
         'name' => 'CustomerProfile',
         '--domain' => 'Customer',
-    ]);
+    ])->execute();
 
     $this->artisan('ddd:value', [
         'name' => 'Subtotal',
         '--domain' => 'Shared',
-    ]);
+    ])->execute();
 
     $this->expectedDomains = [
         'Customer',

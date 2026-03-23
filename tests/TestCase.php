@@ -257,6 +257,7 @@ class TestCase extends Orchestra
         File::ensureDirectoryExists(app_path('Models'));
         File::ensureDirectoryExists(database_path('factories'));
         File::ensureDirectoryExists($basePath.'/bootstrap/cache/ddd');
+        File::ensureDirectoryExists(storage_path('framework/cache/data'));
 
         $skeletonAppFolders = glob(__DIR__.'/.skeleton/app/*', GLOB_ONLYDIR);
 

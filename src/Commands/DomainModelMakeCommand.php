@@ -22,15 +22,31 @@ class DomainModelMakeCommand extends ModelMakeCommand
         return Str::studly($this->argument('name'));
     }
 
+    /**
+     * @return int
+     */
     public function handle()
     {
         $this->beforeHandle();
 
         $this->createBaseModelIfNeeded();
 
-        parent::handle();
+        // Prevent the upstream confirm() prompt introduced in newer Laravel versions
+        // when a model file already exists. Domain generators don't support the
+        // "additional components" flow — use explicit flags (--factory, --migration, etc.).
+        if (! $this->option('force') && $this->alreadyExists($this->getNameInput())) {
+            $this->components->error($this->type.' already exists.');
+
+            return self::FAILURE;
+        }
+
+        /** @phpstan-ignore-next-line staticMethod.void */
+        $result = parent::handle();
 
         $this->afterHandle();
+
+        /** @phpstan-ignore-next-line function.impossibleType */
+        return is_int($result) ? $result : self::SUCCESS;
     }
 
     protected function buildFactoryReplacements()
