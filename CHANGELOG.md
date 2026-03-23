@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.1.0] - 2026-03-22
+### Added
+- Laravel 13 support.
+
+### Changed
+- Minimum PHP version is now 8.3 (dropped PHP 8.2 support).
+
+### Chore
+- Bump dependencies.
+- Resolve test issues on CI.
+
 ## [2.0.2] - 2025-07-24
 ### Added
 - Add generics to `HasDomainFactory` trait for improved static analysis.
