@@ -17,7 +17,7 @@ class UpgradeCommand extends Command
         if (! file_exists(config_path('ddd.php'))) {
             $this->components->warn('Config file was not published. Nothing to upgrade!');
 
-            return;
+            return self::SUCCESS;
         }
 
         $legacyMapping = [
@@ -95,5 +95,7 @@ class UpgradeCommand extends Command
         file_put_contents(config_path('ddd.php'), $newConfigContent);
 
         $this->components->info('Configuration upgraded successfully.');
+
+        return self::SUCCESS;
     }
 }

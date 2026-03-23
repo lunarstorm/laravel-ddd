@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 use Lunarstorm\LaravelDDD\Support\AutoloadManager;
 
 /**
- * @see \Lunarstorm\LaravelDDD\Support\AutoloadManager
+ * @see AutoloadManager
  *
  * @method static void boot()
  * @method static void run()
