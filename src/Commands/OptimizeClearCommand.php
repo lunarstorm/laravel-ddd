@@ -25,5 +25,7 @@ class OptimizeClearCommand extends Command
         DomainCache::clear();
 
         $this->components->info('Domain cache cleared successfully.');
+
+        return self::SUCCESS;
     }
 }

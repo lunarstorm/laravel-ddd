@@ -36,5 +36,7 @@ class DomainListCommand extends Command
         $countDomains = count($table);
 
         $this->info(trans_choice("{$countDomains} domain|{$countDomains} domains", $countDomains));
+
+        return self::SUCCESS;
     }
 }

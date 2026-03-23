@@ -28,5 +28,7 @@ class OptimizeCommand extends Command
         $this->components->task('domain commands', fn () => Autoload::cacheCommands());
         $this->components->task('domain migration paths', fn () => DomainMigration::cachePaths());
         $this->newLine();
+
+        return self::SUCCESS;
     }
 }
