@@ -14,8 +14,11 @@ use Lunarstorm\LaravelDDD\Support\AutoloadManager;
  * @method static array getCustomLayerPaths()
  * @method static array getRegisteredCommands()
  * @method static array getRegisteredProviders()
- * @method static Autoload cacheCommands()
- * @method static Autoload cacheProviders()
+ * @method static array getRegisteredListeners()
+ * @method static array getRegisteredSubscribers()
+ * @method static AutoloadManager cacheCommands()
+ * @method static AutoloadManager cacheProviders()
+ * @method static AutoloadManager cacheListeners()
  */
 class Autoload extends Facade
 {

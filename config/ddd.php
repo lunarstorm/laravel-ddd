@@ -152,6 +152,7 @@ return [
         'policies' => true,
         'factories' => true,
         'migrations' => true,
+        'listeners' => false,
     ],
 
     /*

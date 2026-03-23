@@ -22,16 +22,18 @@ afterEach(function () {
     $this->artisan('optimize:clear')->assertSuccessful()->execute();
 });
 
-it('can optimize discovered domain providers, commands, migrations', function () {
+it('can optimize discovered domain providers, commands, listeners, migrations', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
     $this
         ->artisan('ddd:optimize')
-        ->expectsOutputToContain('Caching DDD providers, commands, migration paths.')
+        ->expectsOutputToContain('Caching DDD providers, commands, listeners, migration paths.')
         ->expectsOutputToContain('domain providers')
         ->expectsOutputToContain('domain commands')
+        ->expectsOutputToContain('domain listeners')
         ->expectsOutputToContain('domain migration paths')
         ->execute();
 
@@ -40,6 +42,8 @@ it('can optimize discovered domain providers, commands, migrations', function ()
 
     expect(DomainCache::get('domain-commands'))
         ->toContain('Domain\Invoicing\Commands\InvoiceDeliver');
+
+    expect(DomainCache::get('domain-listeners'))->toBeArray();
 
     $paths = collect(DomainCache::get('domain-migration-paths'))->join("\n");
 
@@ -51,6 +55,7 @@ it('can clear the cache', function () {
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->not->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
     $this
@@ -60,24 +65,28 @@ it('can clear the cache', function () {
 
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 });
 
 it('will not be cleared by laravel cache clearing', function () {
     expect(DomainCache::get('domain-providers'))->toBeNull();
     expect(DomainCache::get('domain-commands'))->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
     $this->artisan('ddd:optimize')->assertSuccessful()->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->not->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
     $this->artisan('cache:clear')->assertSuccessful()->execute();
 
     expect(DomainCache::get('domain-providers'))->not->toBeNull();
     expect(DomainCache::get('domain-commands'))->not->toBeNull();
+    expect(DomainCache::get('domain-listeners'))->not->toBeNull();
     expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
     if (Feature::LaravelPackageOptimizeCommands->missing()) {
@@ -85,6 +94,7 @@ it('will not be cleared by laravel cache clearing', function () {
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
         expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-listeners'))->not->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
     }
 });
@@ -93,12 +103,14 @@ describe('laravel optimize', function () {
     test('optimize will include ddd:optimize', function () {
         expect(DomainCache::get('domain-providers'))->toBeNull();
         expect(DomainCache::get('domain-commands'))->toBeNull();
+        expect(DomainCache::get('domain-listeners'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
         $this->artisan('optimize')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
         expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-listeners'))->not->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
@@ -109,12 +121,14 @@ describe('laravel optimize', function () {
 
         expect(DomainCache::get('domain-providers'))->not->toBeNull();
         expect(DomainCache::get('domain-commands'))->not->toBeNull();
+        expect(DomainCache::get('domain-listeners'))->not->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->not->toBeNull();
 
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
 
         expect(DomainCache::get('domain-providers'))->toBeNull();
         expect(DomainCache::get('domain-commands'))->toBeNull();
+        expect(DomainCache::get('domain-listeners'))->toBeNull();
         expect(DomainCache::get('domain-migration-paths'))->toBeNull();
 
         $this->artisan('optimize:clear')->assertSuccessful()->execute();
