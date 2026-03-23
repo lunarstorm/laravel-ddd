@@ -40,11 +40,13 @@ class DomainModelMakeCommand extends ModelMakeCommand
             return self::FAILURE;
         }
 
-        parent::handle();
+        /** @phpstan-ignore-next-line staticMethod.void */
+        $result = parent::handle();
 
         $this->afterHandle();
 
-        return self::SUCCESS;
+        /** @phpstan-ignore-next-line function.impossibleType */
+        return is_int($result) ? $result : self::SUCCESS;
     }
 
     protected function buildFactoryReplacements()
