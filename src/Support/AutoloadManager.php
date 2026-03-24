@@ -8,8 +8,10 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Events\DiscoverEvents;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -19,6 +21,7 @@ use Lunarstorm\LaravelDDD\Facades\DDD;
 use Lunarstorm\LaravelDDD\Factories\DomainFactory;
 use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
 use Mockery;
+use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
@@ -42,6 +45,10 @@ class AutoloadManager
     protected static ?Closure $policyResolver = null;
 
     protected static ?Closure $factoryResolver = null;
+
+    protected static array $registeredListeners = [];
+
+    protected static array $registeredSubscribers = [];
 
     protected bool $booted = false;
 
@@ -71,7 +78,8 @@ class AutoloadManager
             ->when(config('ddd.autoload.providers') === true, fn () => $this->handleProviders())
             ->when($this->app->runningInConsole() && config('ddd.autoload.commands') === true, fn () => $this->handleCommands())
             ->when(config('ddd.autoload.policies') === true, fn () => $this->handlePolicies())
-            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories());
+            ->when(config('ddd.autoload.factories') === true, fn () => $this->handleFactories())
+            ->when(config('ddd.autoload.listeners') === true, fn () => $this->handleListeners());
 
         return $this;
     }
@@ -104,6 +112,10 @@ class AutoloadManager
         static::$resolvedPolicies = [];
 
         static::$resolvedFactories = [];
+
+        static::$registeredListeners = [];
+
+        static::$registeredSubscribers = [];
 
         return $this;
     }
@@ -166,6 +178,15 @@ class AutoloadManager
         foreach (static::$registeredProviders as $provider) {
             $this->app->register($provider);
         }
+
+        collect(static::$registeredListeners)
+            ->each(fn (array $eventListeners, string $event) => collect($eventListeners)->each(fn ($listener) => Event::listen($event, $listener)
+            )
+            );
+
+        collect(static::$registeredSubscribers)
+            ->each(fn (string $subscriber) => Event::subscribe($subscriber)
+            );
 
         if ($this->app->runningInConsole() && ! $this->isConsoleBooted()) {
             ConsoleApplication::starting(function (ConsoleApplication $artisan) {
@@ -250,6 +271,24 @@ class AutoloadManager
         return $this;
     }
 
+    protected function handleListeners()
+    {
+        $cached = DomainCache::has('domain-listeners')
+            ? DomainCache::get('domain-listeners')
+            : $this->discoverListeners();
+
+        collect($cached['listeners'] ?? [])
+            ->each(fn (array $eventListeners, string $event) => collect($eventListeners)->each(fn ($listener) => static::$registeredListeners[$event][] = $listener
+            )
+            );
+
+        collect($cached['subscribers'] ?? [])
+            ->each(fn (string $subscriber) => static::$registeredSubscribers[$subscriber] = $subscriber
+            );
+
+        return $this;
+    }
+
     protected function finder($paths)
     {
         $filter = DDD::getAutoloadFilter() ?? function (SplFileInfo $file) {
@@ -322,6 +361,74 @@ class AutoloadManager
             ->toArray();
     }
 
+    public function discoverListeners(): array
+    {
+        $configValue = config('ddd.autoload.listeners');
+
+        if ($configValue === false) {
+            return ['listeners' => [], 'subscribers' => []];
+        }
+
+        $paths = $this->normalizePaths(
+            $configValue === true
+                ? $this->getAllLayerPaths()
+                : $configValue
+        );
+
+        if (empty($paths)) {
+            return ['listeners' => [], 'subscribers' => []];
+        }
+
+        $basePath = $this->app->basePath();
+
+        DiscoverEvents::guessClassNamesUsing(
+            fn (SplFileInfo $file, string $base) => Lody::resolveClassname($file)
+        );
+
+        $discoveredEvents = rescue(
+            fn () => DiscoverEvents::within($paths, $basePath),
+            [],
+            false
+        );
+
+        DiscoverEvents::$guessClassNamesUsingCallback = null;
+
+        $listeners = [];
+        $subscriberCandidates = [];
+
+        collect($discoveredEvents)->each(function (array $eventListeners, string $event) use (&$listeners, &$subscriberCandidates) {
+            collect($eventListeners)->each(function (string $listenerMethod) use ($event, &$listeners, &$subscriberCandidates) {
+                [$listener, $method] = Str::contains($listenerMethod, '@')
+                    ? explode('@', $listenerMethod)
+                    : [$listenerMethod, 'handle'];
+
+                $subscriberCandidates[$listener] = true;
+
+                $resolved = $method === 'handle' || $method === '__invoke'
+                    ? $listener
+                    : [$listener, $method];
+
+                if (! in_array($resolved, $listeners[$event] ?? [], true)) {
+                    $listeners[$event][] = $resolved;
+                }
+            });
+        });
+
+        $subscribers = collect(array_keys($subscriberCandidates))
+            ->filter(fn (string $class) => rescue(function () use ($class) {
+                $method = (new ReflectionClass($class))->getMethod('subscribe');
+
+                return $method->isPublic() && $method->getNumberOfParameters() === 1;
+            }, false, false))
+            ->values()
+            ->toArray();
+
+        return [
+            'listeners' => $listeners,
+            'subscribers' => $subscribers,
+        ];
+    }
+
     public function cacheCommands()
     {
         DomainCache::set('domain-commands', $this->discoverCommands());
@@ -334,6 +441,23 @@ class AutoloadManager
         DomainCache::set('domain-providers', $this->discoverProviders());
 
         return $this;
+    }
+
+    public function cacheListeners()
+    {
+        DomainCache::set('domain-listeners', $this->discoverListeners());
+
+        return $this;
+    }
+
+    public function getRegisteredListeners(): array
+    {
+        return static::$registeredListeners;
+    }
+
+    public function getRegisteredSubscribers(): array
+    {
+        return static::$registeredSubscribers;
     }
 
     protected function resolveAppNamespace()
