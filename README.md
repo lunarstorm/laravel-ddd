@@ -371,6 +371,7 @@ Autoloading behaviour can be configured with the `ddd.autoload` configuration op
     'policies' => true,
     'factories' => true,
     'migrations' => true,
+    'listeners' => false,
 ],
 ```
 ### Service Providers
@@ -389,6 +390,18 @@ If your application implements its own factory discovery using `Factory::guessFa
 
 ### Migrations
 When `ddd.autoload.migrations` is enabled, paths within the domain layer matching the configured `ddd.namespaces.migration` namespace will be auto-registered as a database migration path and recognized by `php artisan migrate`.
+
+### Event Listeners (Since 2.1.1)
+When `ddd.autoload.listeners` is enabled, the package will automatically discover and register event listeners and event subscribers found within the domain layer, using Laravel's native event discovery mechanism (i.e., `#[ListensTo]` attribute or `$listen` property on the listener).
+
+This is opt-in and disabled by default:
+```php
+'autoload' => [
+    // ...
+    'listeners' => false, // set to true to enable
+],
+```
+When enabled, any listener class within the domain layer that handles a specific event — via the `handle()` method or the `#[ListensTo]` attribute — will be automatically registered with Laravel's event dispatcher. Classes that implement a `subscribe()` method (event subscribers) are also detected and registered via `Event::subscribe()`.
 
 ### Ignoring Paths During Autoloading
 To specify folders or paths that should be skipped during autoloading class discovery, add them to the `ddd.autoload_ignore` configuration option. By default, the `Tests` and `Migrations` folders are ignored.
@@ -422,6 +435,7 @@ You may disable autoloading by setting the respective autoload options to `false
 //     'policies' => true,
 //     'factories' => true,
 //     'migrations' => true,
+//     'listeners' => false,
 // ],
 ```
 
@@ -579,7 +593,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Configure whether domain providers, commands, policies, factories,
-    | and migrations should be auto-discovered and registered.
+    | migrations, and event listeners should be auto-discovered and registered.
     |
     */
     'autoload' => [
@@ -588,6 +602,7 @@ return [
         'policies' => true,
         'factories' => true,
         'migrations' => true,
+        'listeners' => false,
     ],
 
     /*

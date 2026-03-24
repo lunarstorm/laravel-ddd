@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.1.1] - 2026-03-24
+### Added
+- Domain event listener and subscriber auto-discovery via `ddd.autoload.listeners` (opt-in, disabled by default).
+
 ## [2.1.0] - 2026-03-22
 ### Added
 - Laravel 13 support.
