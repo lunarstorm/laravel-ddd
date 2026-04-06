@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Events\PublishingStubs;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Support\Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 

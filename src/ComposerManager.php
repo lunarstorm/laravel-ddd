@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD;
+namespace Tey\LaravelDDD;
 
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\Path;
 
 class ComposerManager
 {

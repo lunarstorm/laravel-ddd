@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Support;
+namespace Tey\LaravelDDD\Support;
 
 use Closure;
 use Illuminate\Console\Application as ConsoleApplication;
@@ -17,9 +17,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
 use Lorisleiva\Lody\Lody;
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\Factories\DomainFactory;
-use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Factories\DomainFactory;
+use Tey\LaravelDDD\ValueObjects\DomainObject;
 use Mockery;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;

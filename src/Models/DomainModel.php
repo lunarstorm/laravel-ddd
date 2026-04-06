@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Models;
+namespace Tey\LaravelDDD\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Lunarstorm\LaravelDDD\Factories\HasDomainFactory;
+use Tey\LaravelDDD\Factories\HasDomainFactory;
 
 abstract class DomainModel extends Model
 {

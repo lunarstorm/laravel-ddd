@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Commands\Concerns\InteractsWithStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Commands\Concerns\InteractsWithStubs;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Support\DomainResolver;
 
 abstract class DomainGeneratorCommand extends GeneratorCommand
 {

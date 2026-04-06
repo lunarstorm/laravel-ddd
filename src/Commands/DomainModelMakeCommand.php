@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Foundation\Console\ModelMakeCommand;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Support\DomainResolver;
 
 class DomainModelMakeCommand extends ModelMakeCommand
 {
@@ -62,7 +62,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
             EOT;
 
             $replacements['{{ factory }}'] = $factoryCode;
-            $replacements['{{ factoryImport }}'] = 'use Lunarstorm\LaravelDDD\Factories\HasDomainFactory as HasFactory;';
+            $replacements['{{ factoryImport }}'] = 'use Tey\LaravelDDD\Factories\HasDomainFactory as HasFactory;';
         }
 
         return $replacements;

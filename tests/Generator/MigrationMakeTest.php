@@ -3,10 +3,10 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Support\DomainMigration;
-use Lunarstorm\LaravelDDD\Support\Path;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+use Tey\LaravelDDD\Support\DomainCache;
+use Tey\LaravelDDD\Support\DomainMigration;
+use Tey\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
     config([

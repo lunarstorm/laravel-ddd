@@ -1,5 +1,5 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Tests;
+namespace Tey\LaravelDDD\Tests;
 
 trait BootsTestApplication {}

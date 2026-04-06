@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\InteractsWithStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Commands\Concerns\InteractsWithStubs;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 class DomainFactoryMakeCommand extends FactoryMakeCommand
 {

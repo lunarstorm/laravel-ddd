@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Tests\Fixtures\Enums;
+namespace Tey\LaravelDDD\Tests\Fixtures\Enums;
 
 enum Feature: string
 {

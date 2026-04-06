@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\Domain;
+use Tey\LaravelDDD\Support\Path;
 
 it('can initialize a domain', function ($domainName, $subdomainName) {
     $domain = new Domain($domainName, $subdomainName);

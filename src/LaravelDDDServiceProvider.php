@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD;
+namespace Tey\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\Facades\Event;
-use Lunarstorm\LaravelDDD\Facades\Autoload;
-use Lunarstorm\LaravelDDD\Listeners\MigrationsPrunedSubscriber;
-use Lunarstorm\LaravelDDD\Support\AutoloadManager;
-use Lunarstorm\LaravelDDD\Support\DomainMigration;
+use Tey\LaravelDDD\Facades\Autoload;
+use Tey\LaravelDDD\Listeners\MigrationsPrunedSubscriber;
+use Tey\LaravelDDD\Support\AutoloadManager;
+use Tey\LaravelDDD\Support\DomainMigration;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

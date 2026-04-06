@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Foundation\Console\JobMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
 
 class DomainJobMakeCommand extends JobMakeCommand
 {

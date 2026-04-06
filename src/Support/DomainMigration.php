@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Support;
+namespace Tey\LaravelDDD\Support;
 
 use Illuminate\Support\Str;
 use Lorisleiva\Lody\Lody;

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Lunarstorm\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Facades\DDD;
 
 beforeEach(function () {
     $this->cleanSlate();

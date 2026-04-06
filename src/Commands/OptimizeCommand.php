@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Lunarstorm\LaravelDDD\Facades\Autoload;
-use Lunarstorm\LaravelDDD\Support\DomainMigration;
+use Tey\LaravelDDD\Facades\Autoload;
+use Tey\LaravelDDD\Support\DomainMigration;
 
 class OptimizeCommand extends Command
 {

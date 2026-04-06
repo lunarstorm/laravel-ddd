@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Support;
+namespace Tey\LaravelDDD\Support;
 
-use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
+use Tey\LaravelDDD\ValueObjects\DomainObject;
 
 class Domain
 {

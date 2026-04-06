@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD;
+namespace Tey\LaravelDDD;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Process;
-use Lunarstorm\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Facades\DDD;
 use Symfony\Component\VarExporter\VarExporter;
 
 class ConfigManager

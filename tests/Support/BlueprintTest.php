@@ -1,6 +1,6 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
+use Tey\LaravelDDD\Support\GeneratorBlueprint;
 
 beforeEach(function () {
     config()->set([

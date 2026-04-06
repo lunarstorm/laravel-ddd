@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Factories;
+namespace Tey\LaravelDDD\Factories;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

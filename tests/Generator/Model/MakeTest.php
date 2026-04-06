@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+use Tey\LaravelDDD\Support\Domain;
+use Tey\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 beforeEach(function () {
     $this->cleanSlate();
@@ -184,7 +184,7 @@ it('skips base model creation if configured base model already exists', function
     expect(Artisan::output())->not->toContain("Configured base model {$baseModel} doesn't exist, generating...");
 })->with([
     ['Illuminate\Database\Eloquent\Model'],
-    ['Lunarstorm\LaravelDDD\Models\DomainModel'],
+    ['Tey\LaravelDDD\Models\DomainModel'],
 ]);
 
 it('extends custom base models when applicable', function ($baseModelClass, $baseModelName) {
@@ -213,7 +213,7 @@ it('extends custom base models when applicable', function ($baseModelClass, $bas
         ->toContain("extends {$baseModelName}");
 })->with([
     ['Domain\Shared\Models\BaseModel', 'BaseModel'],
-    ['Lunarstorm\LaravelDDD\Models\DomainModel', 'DomainModel'],
+    ['Tey\LaravelDDD\Models\DomainModel', 'DomainModel'],
     ['Illuminate\Database\Eloquent\NonExistentModel', 'NonExistentModel'],
     ['OtherVendor\OtherPackage\Models\NonExistentModel', 'NonExistentModel'],
 ]);

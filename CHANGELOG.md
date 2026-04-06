@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [3.0.0] - unreleased
+
+### Changed
+- Package renamed from `lunarstorm/laravel-ddd` to `tey/laravel-ddd`.
+- PHP namespace changed from `Lunarstorm\LaravelDDD` to `Tey\LaravelDDD`.
+- Repository moved to [jaspertey/laravel-ddd](https://github.com/jaspertey/laravel-ddd).
+
 ## [2.1.1] - 2026-03-24
 ### Added
 - Domain event listener and subscriber auto-discovery via `ddd.autoload.listeners` (opt-in, disabled by default).

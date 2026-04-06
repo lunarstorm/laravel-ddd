@@ -1,9 +1,9 @@
 # Domain Driven Design Toolkit for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lunarstorm/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lunarstorm/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/lunarstorm/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/lunarstorm/laravel-ddd)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tey/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/tey/laravel-ddd)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/tey/laravel-ddd/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/tey/laravel-ddd/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/tey/laravel-ddd/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/tey/laravel-ddd/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/tey/laravel-ddd.svg?style=flat-square)](https://packagist.org/packages/tey/laravel-ddd)
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate objects outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
 
@@ -11,7 +11,7 @@ Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applic
 You can install the package via composer:
 
 ```bash
-composer require lunarstorm/laravel-ddd
+composer require tey/laravel-ddd
 ```
 
 You may initialize the package using the `ddd:install` artisan command. This will publish the [config file](#config-file), register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
@@ -43,7 +43,7 @@ In production, ensure you run `php artisan ddd:optimize` during the deployment p
 ### Version Compatibility
  Laravel        | LaravelDDD |                                                                                      |
 :---------------|:-----------|:-------------------------------------------------------------------------------------|
- 9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/lunarstorm/laravel-ddd/blob/v0.10.0/README.md)**   |
+ 9.x - 10.24.x  | 0.x        | **[0.x README](https://github.com/tey/laravel-ddd/blob/v0.10.0/README.md)**   |
  10.25.x        | 1.x        |  
  11.x           | 1.x        |
  11.44.x        | 2.x        |
@@ -274,9 +274,9 @@ php artisan ddd:exception Invoicing:/Models/Exceptions/InvoiceNotFoundException
 ### Custom Object Resolution
 If you require advanced customization of generated object naming conventions, you may register a custom resolver using `DDD::resolveObjectSchemaUsing()` in your AppServiceProvider's boot method: 
 ```php
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
-use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\ValueObjects\CommandContext;
+use Tey\LaravelDDD\ValueObjects\ObjectSchema;
 
 DDD::resolveObjectSchemaUsing(function (string $domainName, string $nameInput, string $type, CommandContext $command): ?ObjectSchema {
     if ($type === 'controller' && $command->option('api')) {
@@ -384,7 +384,7 @@ When `ddd.autoload.commands` is enabled, any class within the domain layer exten
 When `ddd.autoload.policies` is enabled, the package will register a custom policy discovery callback to resolve policy names for domain models, and fallback to Laravel's default for all other cases. If your application implements its own policy discovery using `Gate::guessPolicyNamesUsing()`, you should set `ddd.autoload.policies` to `false` to ensure it is not overridden.
 
 ### Factories
-When `ddd.autoload.factories` is enabled, the package will register a custom factory discovery callback to resolve factory names for domain models, and fallback to Laravel's default for all other cases. Note that this does not affect domain models using the `Lunarstorm\LaravelDDD\Factories\HasDomainFactory` trait. Where this is useful is with regular models in the domain layer that use the standard `Illuminate\Database\Eloquent\Factories\HasFactory` trait.
+When `ddd.autoload.factories` is enabled, the package will register a custom factory discovery callback to resolve factory names for domain models, and fallback to Laravel's default for all other cases. Note that this does not affect domain models using the `Tey\LaravelDDD\Factories\HasDomainFactory` trait. Where this is useful is with regular models in the domain layer that use the standard `Illuminate\Database\Eloquent\Factories\HasFactory` trait.
 
 If your application implements its own factory discovery using `Factory::guessFactoryNamesUsing()`, you should set `ddd.autoload.factories` to `false` to ensure it is not overridden.
 
@@ -415,7 +415,7 @@ Note that ignoring folders only applies to class-based autoloading: Service Prov
 
 Paths specified here are relative to the root of each domain. e.g., `src/Domain/Invoicing/{path-to-ignore}`. If more advanced filtering is needed, a callback can be registered using `DDD::filterAutoloadPathsUsing(callback $filter)` in your AppServiceProvider's boot method:
 ```php
-use Lunarstorm\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Facades\DDD;
 use Symfony\Component\Finder\SplFileInfo;
 
 DDD::filterAutoloadPathsUsing(function (SplFileInfo $file) {

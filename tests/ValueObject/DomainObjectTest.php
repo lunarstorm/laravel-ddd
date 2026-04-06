@@ -1,8 +1,8 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Lunarstorm\LaravelDDD\Support\Path;
-use Lunarstorm\LaravelDDD\ValueObjects\DomainObject;
+use Tey\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\ValueObjects\DomainObject;
 
 it('can create a domain object from resolvable class names', function (string $class, $domain, $relativeNamespace, $objectName) {
     $domainObject = DomainObject::fromClass($class);

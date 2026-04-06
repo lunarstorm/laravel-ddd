@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\Domain;
+use Tey\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Support\Path;
 
 use function Laravel\Prompts\table;
 

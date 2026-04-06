@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Events;
+namespace Tey\LaravelDDD\Events;
 
 use Illuminate\Database\Events\MigrationsPruned;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands\Concerns;
+namespace Tey\LaravelDDD\Commands\Concerns;
 
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
-use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
+use Tey\LaravelDDD\Support\Domain;
+use Tey\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Support\GeneratorBlueprint;
 use Symfony\Component\Console\Input\InputOption;
 
 use function Laravel\Prompts\suggest;

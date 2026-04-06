@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands\Concerns;
+namespace Tey\LaravelDDD\Commands\Concerns;
 
-use Lunarstorm\LaravelDDD\Support\GeneratorBlueprint;
+use Tey\LaravelDDD\Support\GeneratorBlueprint;
 
 trait HasGeneratorBlueprint
 {

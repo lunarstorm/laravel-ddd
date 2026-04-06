@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Arr;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\Path;
 
 beforeEach(function () {
     $this->setupTestApplication();

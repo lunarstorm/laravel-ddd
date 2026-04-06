@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Support\Domain;
-use Lunarstorm\LaravelDDD\Support\Path;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+use Tey\LaravelDDD\Support\Domain;
+use Tey\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate domain factories', function ($domainPath, $domainRoot, $domain, $subdomain) {
     Config::set('ddd.domain_path', $domainPath);

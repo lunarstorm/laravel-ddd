@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+use Tey\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 it('can generate action objects', function ($domainPath, $domainRoot) {
     Config::set('ddd.domain_path', $domainPath);

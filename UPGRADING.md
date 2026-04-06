@@ -1,5 +1,32 @@
 # Upgrading
 
+## From 2.x to 3.0.0
+
+### Package Rename
+The package has moved from `lunarstorm/laravel-ddd` to `tey/laravel-ddd`.
+
+```bash
+composer remove lunarstorm/laravel-ddd
+composer require tey/laravel-ddd:^3.0
+```
+
+### PHP Namespace Change
+The root PHP namespace has changed from `Lunarstorm\LaravelDDD` to `Tey\LaravelDDD`.
+
+Find and replace throughout your application:
+```
+Lunarstorm\LaravelDDD  →  Tey\LaravelDDD
+```
+
+### Re-publish Config (if previously published)
+```bash
+php artisan vendor:publish --tag=ddd-config --force
+```
+
+Review any local customizations after re-publishing.
+
+---
+
 ## From 1.2.x to 2.0.x
 - Minimum required Laravel version is 11.44.
 - Minimum PHP version is now 8.2.

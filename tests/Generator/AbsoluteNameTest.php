@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\Path;
 
 it('can override configured object namespace by using absolute dot-path', function ($type, $nameInput, $expectedNamespace, $expectedPath) {
     if (in_array($type, ['class', 'enum', 'interface', 'trait'])) {

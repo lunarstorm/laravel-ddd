@@ -1,7 +1,7 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Support\AutoloadManager;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Support\AutoloadManager;
+use Tey\LaravelDDD\Support\Path;
 
 beforeEach(function () {
     $this->setupTestApplication();

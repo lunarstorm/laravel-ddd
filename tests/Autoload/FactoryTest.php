@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
-use Lunarstorm\LaravelDDD\Support\AutoloadManager;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+use Tey\LaravelDDD\Support\AutoloadManager;
+use Tey\LaravelDDD\Support\DomainCache;
+use Tey\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
 

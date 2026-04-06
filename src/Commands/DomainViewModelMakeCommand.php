@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Support\DomainResolver;
 
 class DomainViewModelMakeCommand extends DomainGeneratorCommand
 {

@@ -1,8 +1,8 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Support\DomainCache;
-use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
-use Lunarstorm\LaravelDDD\Tests\Fixtures\Enums\Feature;
+use Tey\LaravelDDD\Support\DomainCache;
+use Tey\LaravelDDD\Tests\BootsTestApplication;
+use Tey\LaravelDDD\Tests\Fixtures\Enums\Feature;
 
 uses(BootsTestApplication::class);
 

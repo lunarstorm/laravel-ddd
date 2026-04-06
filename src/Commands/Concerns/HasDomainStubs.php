@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands\Concerns;
+namespace Tey\LaravelDDD\Commands\Concerns;
 
 use Illuminate\Support\Str;
-use Lunarstorm\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Facades\DDD;
 
 trait HasDomainStubs
 {

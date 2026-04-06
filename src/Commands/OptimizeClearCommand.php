@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Console\Command;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Tey\LaravelDDD\Support\DomainCache;
 
 class OptimizeClearCommand extends Command
 {

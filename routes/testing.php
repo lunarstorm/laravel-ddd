@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Lunarstorm\LaravelDDD\Facades\Autoload;
+use Tey\LaravelDDD\Facades\Autoload;
 
 Route::prefix('laravel-ddd')
     ->middleware(['web'])

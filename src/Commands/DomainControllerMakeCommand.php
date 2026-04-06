@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
 use Illuminate\Routing\Console\ControllerMakeCommand;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Commands\Concerns\ForwardsToDomainCommands;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Support\Path;
 
 class DomainControllerMakeCommand extends ControllerMakeCommand
 {

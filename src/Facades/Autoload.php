@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Facades;
+namespace Tey\LaravelDDD\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunarstorm\LaravelDDD\Support\AutoloadManager;
+use Tey\LaravelDDD\Support\AutoloadManager;
 
 /**
  * @see AutoloadManager

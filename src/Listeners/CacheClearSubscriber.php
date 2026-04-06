@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Listeners;
+namespace Tey\LaravelDDD\Listeners;
 
 use Illuminate\Events\Dispatcher;
-use Lunarstorm\LaravelDDD\Support\DomainCache;
+use Tey\LaravelDDD\Support\DomainCache;
 
 class CacheClearSubscriber
 {

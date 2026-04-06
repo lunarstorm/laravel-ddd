@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Support;
+namespace Tey\LaravelDDD\Support;
 
 class Path
 {

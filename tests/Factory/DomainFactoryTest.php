@@ -3,8 +3,8 @@
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
-use Lunarstorm\LaravelDDD\Factories\DomainFactory;
-use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+use Tey\LaravelDDD\Factories\DomainFactory;
+use Tey\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
 
@@ -36,7 +36,7 @@ it('can instantiate a domain model factory', function ($domainParameter, $modelN
     });
 
     $this->refreshApplicationWithConfig([
-        'ddd.base_model' => 'Lunarstorm\LaravelDDD\Models\DomainModel',
+        'ddd.base_model' => 'Tey\LaravelDDD\Models\DomainModel',
         'ddd.autoload.factories' => true,
     ]);
 

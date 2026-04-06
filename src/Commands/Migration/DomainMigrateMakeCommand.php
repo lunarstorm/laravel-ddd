@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands\Migration;
+namespace Tey\LaravelDDD\Commands\Migration;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
-use Lunarstorm\LaravelDDD\Support\Path;
+use Tey\LaravelDDD\Commands\Concerns\ResolvesDomainFromInput;
+use Tey\LaravelDDD\Support\Path;
 
 class DomainMigrateMakeCommand extends BaseMigrateMakeCommand
 {

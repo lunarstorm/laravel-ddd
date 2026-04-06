@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\ValueObjects\CommandContext;
-use Lunarstorm\LaravelDDD\ValueObjects\ObjectSchema;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\ValueObjects\CommandContext;
+use Tey\LaravelDDD\ValueObjects\ObjectSchema;
 
 beforeEach(function () {
     $this->setupTestApplication();

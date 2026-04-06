@@ -1,19 +1,19 @@
 {
-    "name": "lunarstorm/laravel-ddd",
+    "name": "tey/laravel-ddd",
     "description": "A Laravel toolkit for Domain Driven Design patterns",
     "keywords": [
-        "lunarstorm",
+        "tey",
         "laravel",
         "laravel-ddd",
         "ddd",
         "domain driven design"
     ],
-    "homepage": "https://github.com/lunarstorm/laravel-ddd",
+    "homepage": "https://github.com/jaspertey/laravel-ddd",
     "license": "MIT",
     "authors": [
         {
             "name": "Jasper Tey",
-            "email": "jasper@lunarstorm.ca",
+            "email": "jasper@jtey.com",
             "role": "Developer"
         }
     ],
@@ -44,13 +44,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Lunarstorm\\LaravelDDD\\": "src",
-            "Lunarstorm\\LaravelDDD\\Database\\Factories\\": "database/factories"
+            "Tey\\LaravelDDD\\": "src",
+            "Tey\\LaravelDDD\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Lunarstorm\\LaravelDDD\\Tests\\": "tests",
+            "Tey\\LaravelDDD\\Tests\\": "tests",
             "App\\": "vendor/orchestra/testbench-core/laravel/app",
             "Database\\Factories\\": "vendor/orchestra/testbench-core/laravel/database/factories",
             "Database\\Seeders\\": "vendor/orchestra/testbench-core/laravel/database/seeders",
@@ -78,10 +78,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lunarstorm\\LaravelDDD\\LaravelDDDServiceProvider"
+                "Tey\\LaravelDDD\\LaravelDDDServiceProvider"
             ],
             "aliases": {
-                "DDD": "Lunarstorm\\LaravelDDD\\Facades\\DDD"
+                "DDD": "Tey\\LaravelDDD\\Facades\\DDD"
             }
         }
     },

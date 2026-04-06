@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD;
+namespace Tey\LaravelDDD;
 
 use Illuminate\Foundation\Console\StubPublishCommand;
 use ReflectionClass;

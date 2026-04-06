@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\ValueObjects;
+namespace Tey\LaravelDDD\ValueObjects;
 
 class CommandContext
 {

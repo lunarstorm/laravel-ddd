@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\ValueObjects;
+namespace Tey\LaravelDDD\ValueObjects;
 
-use Lunarstorm\LaravelDDD\Support\DomainResolver;
+use Tey\LaravelDDD\Support\DomainResolver;
 
 class DomainNamespaces
 {

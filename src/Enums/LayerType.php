@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Enums;
+namespace Tey\LaravelDDD\Enums;
 
 enum LayerType: string
 {

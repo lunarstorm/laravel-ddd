@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands;
+namespace Tey\LaravelDDD\Commands;
 
-use Lunarstorm\LaravelDDD\Commands\Concerns\HasDomainStubs;
+use Tey\LaravelDDD\Commands\Concerns\HasDomainStubs;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DomainBaseModelMakeCommand extends DomainGeneratorCommand

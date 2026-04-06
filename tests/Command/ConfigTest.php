@@ -1,8 +1,8 @@
 <?php
 
-use Lunarstorm\LaravelDDD\Commands\ConfigCommand;
-use Lunarstorm\LaravelDDD\Facades\DDD;
-use Lunarstorm\LaravelDDD\Tests\BootsTestApplication;
+use Tey\LaravelDDD\Commands\ConfigCommand;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Tests\BootsTestApplication;
 
 uses(BootsTestApplication::class);
 

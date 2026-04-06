@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunarstorm\LaravelDDD\Commands\Concerns;
+namespace Tey\LaravelDDD\Commands\Concerns;
 
 trait QualifiesDomainModels
 {
