@@ -3,10 +3,10 @@
 namespace Tey\LaravelDDD\Commands\Concerns;
 
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 use Tey\LaravelDDD\Support\Domain;
 use Tey\LaravelDDD\Support\DomainResolver;
 use Tey\LaravelDDD\Support\GeneratorBlueprint;
-use Symfony\Component\Console\Input\InputOption;
 
 use function Laravel\Prompts\suggest;
 

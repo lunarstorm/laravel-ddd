@@ -3,10 +3,10 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Symfony\Component\Finder\SplFileInfo;
 use Tey\LaravelDDD\Facades\DDD;
 use Tey\LaravelDDD\Support\DomainCache;
 use Tey\LaravelDDD\Tests\BootsTestApplication;
-use Symfony\Component\Finder\SplFileInfo;
 
 uses(BootsTestApplication::class);
 

@@ -17,13 +17,13 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
 use Lorisleiva\Lody\Lody;
-use Tey\LaravelDDD\Facades\DDD;
-use Tey\LaravelDDD\Factories\DomainFactory;
-use Tey\LaravelDDD\ValueObjects\DomainObject;
 use Mockery;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Tey\LaravelDDD\Facades\DDD;
+use Tey\LaravelDDD\Factories\DomainFactory;
+use Tey\LaravelDDD\ValueObjects\DomainObject;
 use Throwable;
 
 class AutoloadManager

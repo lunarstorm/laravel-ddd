@@ -4,12 +4,12 @@ namespace Tey\LaravelDDD;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\Facades\Event;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tey\LaravelDDD\Facades\Autoload;
 use Tey\LaravelDDD\Listeners\MigrationsPrunedSubscriber;
 use Tey\LaravelDDD\Support\AutoloadManager;
 use Tey\LaravelDDD\Support\DomainMigration;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class LaravelDDDServiceProvider extends PackageServiceProvider
 {

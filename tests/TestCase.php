@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Tey\LaravelDDD\LaravelDDDServiceProvider;
-use Tey\LaravelDDD\Support\DomainCache;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\Process\Process;
+use Tey\LaravelDDD\LaravelDDDServiceProvider;
+use Tey\LaravelDDD\Support\DomainCache;
 
 class TestCase extends Orchestra
 {
