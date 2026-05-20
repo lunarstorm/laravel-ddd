@@ -58,7 +58,8 @@ describe('v3 upgrade', function () {
      */
     function makeUpgradeCommand(bool $newPackageInstalled, bool $composerSwapSucceeds = true): UpgradeCommand
     {
-        return new class($newPackageInstalled, $composerSwapSucceeds) extends UpgradeCommand {
+        return new class($newPackageInstalled, $composerSwapSucceeds) extends UpgradeCommand
+        {
             public function __construct(
                 private readonly bool $newPackageInstalled,
                 private readonly bool $composerSwapSucceeds,
@@ -75,7 +76,8 @@ describe('v3 upgrade', function () {
             {
                 $succeeds = $this->composerSwapSucceeds;
 
-                return new class($succeeds) extends Process {
+                return new class($succeeds) extends Process
+                {
                     public function __construct(private readonly bool $succeeds)
                     {
                         // Skip parent constructor — no real command needed in tests.
