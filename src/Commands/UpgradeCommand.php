@@ -74,13 +74,18 @@ class UpgradeCommand extends Command
             return false;
         }
 
-        if (! $this->runComposerPackageSwap()) {
-            // Composer swap failed — don't fall through to the config upgrade.
+        if (! $this->runComposerRequire()) {
+            // Composer require failed — don't fall through to the config upgrade.
             return true;
         }
 
+        // Migrate namespaces BEFORE removing the old package so that the
+        // post-autoload-dump scripts (package:discover etc.) don't crash
+        // when they encounter app code still referencing the old namespace.
         $this->migrateConfigNamespaces();
         $this->migrateAppNamespaces();
+
+        $this->runComposerRemove();
 
         $this->newLine();
         $this->components->info('Running ddd:upgrade from the new package to complete config migration...');
@@ -101,41 +106,46 @@ class UpgradeCommand extends Command
         return true;
     }
 
-    protected function runComposerPackageSwap(): bool
+    protected function runComposerRequire(): bool
     {
-        $this->components->info('Running composer package swap...');
+        $this->components->info('Installing '.static::NEW_PACKAGE.'...');
 
-        $requireProcess = $this->makeProcess(
+        $process = $this->makeProcess(
             ['composer', 'require', static::NEW_PACKAGE.':^3.0', '--no-interaction', '--with-all-dependencies'],
             base_path(),
         );
 
-        $requireProcess->setTimeout(300);
-        $requireProcess->run(function ($type, $buffer) {
+        $process->setTimeout(300);
+        $process->run(function ($type, $buffer) {
             $this->output->write($buffer);
         });
 
-        if (! $requireProcess->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             $this->components->error('Failed to install '.static::NEW_PACKAGE.'. Aborting upgrade.');
 
             return false;
         }
 
-        $removeProcess = $this->makeProcess(
+        return true;
+    }
+
+    protected function runComposerRemove(): void
+    {
+        $this->components->info('Removing '.static::OLD_PACKAGE.'...');
+
+        $process = $this->makeProcess(
             ['composer', 'remove', static::OLD_PACKAGE, '--no-interaction'],
             base_path(),
         );
 
-        $removeProcess->setTimeout(300);
-        $removeProcess->run(function ($type, $buffer) {
+        $process->setTimeout(300);
+        $process->run(function ($type, $buffer) {
             $this->output->write($buffer);
         });
 
-        if (! $removeProcess->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             $this->components->warn(static::OLD_PACKAGE.' could not be removed automatically. You may remove it manually.');
         }
-
-        return true;
     }
 
     protected function migrateConfigNamespaces(): void
