@@ -1,5 +1,41 @@
 # Upgrading
 
+## From 2.x to 3.0.0
+
+The package has been renamed from `lunarstorm/laravel-ddd` to `tey/laravel-ddd`, and the PHP namespace has changed from `Lunarstorm\LaravelDDD` to `Tey\LaravelDDD`.
+
+### Automated upgrade (recommended)
+
+On version 2.1.2 or later, `ddd:upgrade` handles the full migration automatically:
+
+```
+php artisan ddd:upgrade
+```
+
+This will:
+1. Install `tey/laravel-ddd:^3.0` and remove `lunarstorm/laravel-ddd` via Composer.
+2. Replace all `Lunarstorm\LaravelDDD` references in your application code and `config/ddd.php`.
+3. Run `ddd:upgrade` from the new package to migrate any config key changes.
+
+### Manual upgrade
+
+If you prefer to upgrade manually:
+
+```bash
+composer require tey/laravel-ddd:^3.0
+composer remove lunarstorm/laravel-ddd
+```
+
+Then find-and-replace throughout your application:
+```
+Lunarstorm\LaravelDDD  →  Tey\LaravelDDD
+```
+
+Finally, run the upgrade command from the new package to migrate your config:
+```
+php artisan ddd:upgrade
+```
+
 ## From 1.2.x to 2.0.x
 - Minimum required Laravel version is 11.44.
 - Minimum PHP version is now 8.2.

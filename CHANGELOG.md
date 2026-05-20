@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.1.2] - 2026-05-20
+### Changed
+- Enhanced `ddd:upgrade` to automate the full migration to v3 (`tey/laravel-ddd`): swaps the composer package, migrates namespace references in application code and config, then chains into v3's `ddd:upgrade` for config key migration.
+
 ## [2.1.1] - 2026-03-24
 ### Added
 - Domain event listener and subscriber auto-discovery via `ddd.autoload.listeners` (opt-in, disabled by default).
