@@ -106,7 +106,7 @@ class UpgradeCommand extends Command
         $this->components->info('Running composer package swap...');
 
         $requireProcess = $this->makeProcess(
-            ['composer', 'require', static::NEW_PACKAGE.':^3.0', '--no-interaction'],
+            ['composer', 'require', static::NEW_PACKAGE.':^3.0', '--no-interaction', '--with-all-dependencies'],
             base_path(),
         );
 
