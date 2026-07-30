@@ -14,6 +14,8 @@ You can install the package via composer:
 composer require tey/laravel-ddd
 ```
 
+Upgrading from v2? See [UPGRADING](UPGRADING.md).
+
 You may initialize the package using the `ddd:install` artisan command. This will publish the [config file](#config-file), register the domain path in your project's composer.json psr-4 autoload configuration on your behalf, and allow you to publish generator stubs for customization if needed.
 ```bash
 php artisan ddd:install
