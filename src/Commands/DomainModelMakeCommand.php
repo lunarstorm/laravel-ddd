@@ -45,7 +45,6 @@ class DomainModelMakeCommand extends ModelMakeCommand
 
         $this->afterHandle();
 
-        /** @phpstan-ignore-next-line function.impossibleType */
         return is_int($result) ? $result : self::SUCCESS;
     }
 
