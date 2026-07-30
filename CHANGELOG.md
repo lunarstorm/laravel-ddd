@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [3.1.1] - 2026-07-30
+### Chore
+- Fix static analysis under `phpstan/phpstan` 2.2 and `larastan/larastan` 3.10, which changed how `Command::handle()` return types are inferred. No runtime changes; identical to 3.1.0 for consumers.
+- Run the PHPStan workflow on `composer.json` changes so dependency-driven breakages are caught.
+
 ## [3.1.0] - 2026-07-30
 ### Added
 - Support for Symfony 8 components (`symfony/finder`, `symfony/var-exporter`).
