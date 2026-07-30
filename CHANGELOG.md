@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [3.1.0] - 2026-07-30
+### Added
+- Support for Symfony 8 components (`symfony/finder`, `symfony/var-exporter`).
+
+### Chore
+- Bump `actions/checkout` from 6 to 7.
+
 ## [3.0.1] - 2026-05-22
 ### Changed
 - `ddd:upgrade` now delegates config upgrade to `DDD::config()->syncWithLatest()->save()` instead of duplicating the logic inline.
