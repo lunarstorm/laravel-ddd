@@ -23,7 +23,7 @@ class DomainModelMakeCommand extends ModelMakeCommand
     }
 
     /**
-     * @return int
+     * @return bool|null
      */
     public function handle()
     {
@@ -37,15 +37,14 @@ class DomainModelMakeCommand extends ModelMakeCommand
         if (! $this->option('force') && $this->alreadyExists($this->getNameInput())) {
             $this->components->error($this->type.' already exists.');
 
-            return self::FAILURE;
+            return false;
         }
 
-        /** @phpstan-ignore-next-line staticMethod.void */
         $result = parent::handle();
 
         $this->afterHandle();
 
-        return is_int($result) ? $result : self::SUCCESS;
+        return is_bool($result) ? $result : null;
     }
 
     protected function buildFactoryReplacements()

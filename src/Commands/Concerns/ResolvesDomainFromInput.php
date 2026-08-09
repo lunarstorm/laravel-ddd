@@ -3,6 +3,7 @@
 namespace Tey\LaravelDDD\Commands\Concerns;
 
 use Illuminate\Support\Str;
+use ReflectionClass;
 use Symfony\Component\Console\Input\InputOption;
 use Tey\LaravelDDD\Support\Domain;
 use Tey\LaravelDDD\Support\DomainResolver;
@@ -18,12 +19,25 @@ trait ResolvesDomainFromInput
 
     protected $nameIsAbsolute = false;
 
-    protected function getOptions()
+    protected function configure(): void
     {
-        return [
-            ...parent::getOptions(),
-            ['domain', null, InputOption::VALUE_OPTIONAL, 'The domain name'],
-        ];
+        parent::configure();
+
+        // Since Laravel 13.24, the framework's generator commands declare their
+        // definition via $signature (laravel/framework#60926), which takes
+        // precedence over $name and skips getOptions() entirely. Configuring
+        // against the built definition survives both declaration styles, but
+        // by this point the fluent path has already overwritten $this->name
+        // with the parsed signature name, so recover it from the class default.
+        if ($name = (new ReflectionClass(static::class))->getDefaultProperties()['name'] ?? null) {
+            $this->setName($this->name = $name);
+        }
+
+        if (! $this->getDefinition()->hasOption('domain')) {
+            $this->getDefinition()->addOption(
+                new InputOption('domain', null, InputOption::VALUE_OPTIONAL, 'The domain name')
+            );
+        }
     }
 
     protected function rootNamespace()
