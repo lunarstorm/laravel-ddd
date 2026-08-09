@@ -2,7 +2,15 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
-## [3.1.1] - 2026-07-30
+## [3.1.2] - 2026-08-08
+### Fixed
+- `ddd:*` generator commands registering under their parent's `make:*` name (and hijacking the native framework generators) on Laravel 13.24+, which consolidated the framework generator command definitions into `$signature` (laravel/framework#60926). Generator names and the `--domain` option are now configured against the built command definition, which survives both declaration styles ([#115](https://github.com/jaspertey/laravel-ddd/issues/115)).
+
+### Changed
+- `ddd:model` now returns `false` (exit code 0) when the model already exists, matching the behavior and return type of the native `make:*` generators (previously exit code 1).
+
+### Docs
+- The [UPGRADING](UPGRADING.md) guide now leads with the automated v2 → v3 upgrade path (`ddd:upgrade` on v2.1.2+), with manual steps as fallback.
 ### Chore
 - Fix static analysis under `phpstan/phpstan` 2.2 and `larastan/larastan` 3.10, which changed how `Command::handle()` return types are inferred. No runtime changes; identical to 3.1.0 for consumers.
 - Run the PHPStan workflow on `composer.json` changes so dependency-driven breakages are caught.

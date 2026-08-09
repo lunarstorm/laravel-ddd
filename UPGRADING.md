@@ -2,7 +2,24 @@
 
 ## From 2.x to 3.0.0
 
-### Package Rename
+> [!NOTE]
+> v2 (`lunarstorm/laravel-ddd`) is end of life and does not support Laravel 13.24 or later ([#115](https://github.com/jaspertey/laravel-ddd/issues/115)). The `ddd:upgrade` command itself is unaffected on those Laravel versions, so the upgrade path below works regardless.
+
+### Automated Upgrade (Recommended)
+As of v2.1.2, the `ddd:upgrade` command automates the entire upgrade. First update to v2.1.2, then run it:
+
+```bash
+composer require lunarstorm/laravel-ddd:"^2.1.2"
+php artisan ddd:upgrade
+```
+
+The command will install `tey/laravel-ddd:^3.0`, migrate `Lunarstorm\LaravelDDD` namespace references in your config and application code, remove `lunarstorm/laravel-ddd`, and finish by running the new package's config migration.
+
+If you are on v2.1.1 or earlier and cannot update, or prefer to upgrade by hand, follow the manual steps below.
+
+### Manual Upgrade
+
+#### Package Rename
 The package has moved from `lunarstorm/laravel-ddd` to `tey/laravel-ddd`.
 
 ```bash
