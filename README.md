@@ -7,6 +7,16 @@
 
 Laravel-DDD is a toolkit to support domain driven design (DDD) in Laravel applications. One of the pain points when adopting DDD is the inability to use Laravel's native `make` commands to generate objects outside the `App\*` namespace. This package aims to fill the gaps by providing equivalent commands such as `ddd:model`, `ddd:dto`, `ddd:view-model` and many more.
 
+> [!WARNING]
+> **`lunarstorm/laravel-ddd` v2 has reached end of life.** The package continues under a new name, [`tey/laravel-ddd`](https://github.com/jaspertey/laravel-ddd) (v3+), and v2 will receive no further updates.
+>
+> v2 does not support Laravel 13.24 or later: a framework change in 13.24 breaks the registration of the `ddd:*` generator commands ([#115](https://github.com/jaspertey/laravel-ddd/issues/115)), and the fix is only available in v3.1.2+. To upgrade, first update to v2.1.2, then run the automated upgrade:
+> ```bash
+> composer require lunarstorm/laravel-ddd:"^2.1.2"
+> php artisan ddd:upgrade
+> ```
+> See [UPGRADING](https://github.com/jaspertey/laravel-ddd/blob/main/UPGRADING.md) for full details, including manual steps.
+
 ## Installation
 You can install the package via composer:
 

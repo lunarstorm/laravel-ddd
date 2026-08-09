@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-ddd` will be documented in this file.
 
+## [2.1.3] - 2026-08-08
+### Changed
+- v2 is end of life; development continues as `tey/laravel-ddd` (v3+). Run `php artisan ddd:upgrade` to migrate automatically.
+- Added a composer conflict with `illuminate/console >= 13.24.0`: Laravel 13.24 changed how the framework's generator commands are defined, which breaks the registration of the `ddd:*` commands under v2 (jaspertey/laravel-ddd#115). The conflict surfaces this incompatibility at dependency resolution time instead of silently breaking artisan. The fix ships in v3.1.2+.
+
 ## [2.1.2] - 2026-05-20
 ### Changed
 - Enhanced `ddd:upgrade` to automate the full migration to v3 (`tey/laravel-ddd`): swaps the composer package, migrates namespace references in application code and config, then chains into v3's `ddd:upgrade` for config key migration.

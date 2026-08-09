@@ -42,6 +42,9 @@
         "spatie/laravel-data": "Recommended for Data Transfer Objects.",
         "lorisleiva/laravel-actions": "Recommended for Actions."
     },
+    "conflict": {
+        "illuminate/console": ">=13.24.0"
+    },
     "autoload": {
         "psr-4": {
             "Lunarstorm\\LaravelDDD\\": "src",
